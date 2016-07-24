@@ -2,9 +2,10 @@ package edu.uniandes.ecos.codeaholics.main;
 
 import static spark.Spark.before;
 import static spark.Spark.post;
+import static spark.Spark.get;
 import static spark.Spark.staticFiles;
 
-import edu.uniandes.ecos.codeaholics.business.IncidentServices;
+import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -27,13 +28,24 @@ public class App {
 		staticFiles.location("/public");
         /*HTTPS line --- JLRM*/
         //secure("deploy/keystore.jks", "codeaholics", null, null);
+		
+		//Pruebas
+		get("/login", CitizenServices::login);
+		post("/login", CitizenServices::doLogin);
+		get("/signup", CitizenServices::signup);
+		post("/signup", CitizenServices::createUser);
 
-		// Rutas App de android
-		post("/api/login", IncidentServices::doLogin, GeneralUtil.json());
-		post("/api/user/create", IncidentServices::create, GeneralUtil.json());
-		post("/api/doc/get", IncidentServices::getById, GeneralUtil.json());
-
-		// 
+		//Rutas Ciudadano
+		post("/citizen/create", CitizenServices::insertCitizen, GeneralUtil.json());
+		post("/citizen/login", CitizenServices::doLogin, GeneralUtil.json());
+		
+		//Rutas Alcaldia
+		
+		//Admin Alcaldia
+		
+		//Rutas Mintic
+		
+		
 		before("/api/doc/*", Authorization::doDocAuthorization);
 
 	}

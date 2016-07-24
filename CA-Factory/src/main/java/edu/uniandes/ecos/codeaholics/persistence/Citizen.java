@@ -1,10 +1,12 @@
 package edu.uniandes.ecos.codeaholics.persistence;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.bson.Document;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by davidMtz22 on 18/07/2016.
@@ -22,7 +24,7 @@ public class Citizen {
 
 	@SerializedName("_id")
 	private String _id;
-	private Integer identificationNumber;
+	private Integer identification;
 	private String name;
 	private String lastName1;
 	private String lastName2;
@@ -39,12 +41,12 @@ public class Citizen {
 		this._id = _id;
 	}
 
-	public Integer getIdentificationNumber() {
-		return identificationNumber;
+	public Integer getIdentification() {
+		return identification;
 	}
 
-	public void setIdentificationNumber(Integer identificationNumber) {
-		this.identificationNumber = identificationNumber;
+	public void setIdentification(Integer identification) {
+		this.identification = identification;
 	}
 
 	public String getName() {
@@ -111,4 +113,17 @@ public class Citizen {
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
+	
+	public Document toDocument() {
+		Document citizen = new Document();
+		citizen.append(IDENTIFICATION, this.getIdentification())
+				.append(NAME, this.getName())
+				.append(LASTNAME1, this.getLastName1())
+				.append(EMAIL, this.getEmail())
+				.append(SALT, this.getSalt())
+				.append(PASSWORD, this.getPassword());
+		return citizen;
+	}
+
+	
 }

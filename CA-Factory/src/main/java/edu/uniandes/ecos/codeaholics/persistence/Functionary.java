@@ -1,5 +1,7 @@
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import org.bson.Document;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,12 +10,11 @@ import com.google.gson.annotations.SerializedName;
 public class Functionary extends Citizen {
 
 	public static final String POSITION = "position";
-	public static final String PROFILE = "profile";
+	public static final String MAYORALTY = "mayoralty";
 
 	@SerializedName("_id")
 	private String _id;
 	private String position;
-	private String profile;
 	private Mayoralty mayoralty;
 
 	public String getId() {
@@ -32,19 +33,22 @@ public class Functionary extends Citizen {
 		this.position = position;
 	}
 
-	public String getProfile() {
-		return profile;
-	}
-
-	public void setProfile(String profile) {
-		this.profile = profile;
-	}
-
 	public Mayoralty getMayoralty() {
 		return mayoralty;
 	}
 
 	public void setMayoralty(Mayoralty mayoralty) {
 		this.mayoralty = mayoralty;
+	}
+	
+	public Document toDocument() {
+		Document functionary = new Document();
+		functionary.append(IDENTIFICATION, this.getIdentification()).append(NAME, this.getName())
+				.append(LASTNAME1, this.getLastName1()).append(LASTNAME2, this.getLastName2())
+				.append(BIRTHDATE, this.getBirthDate()).append(EMAIL, this.getEmail()).append(SALT, this.getSalt())
+				.append(PASSWORD, this.getPassword()).append(POSITION, this.getPosition())
+				.append(MAYORALTY, this.getMayoralty().getName());
+
+		return functionary;
 	}
 }
