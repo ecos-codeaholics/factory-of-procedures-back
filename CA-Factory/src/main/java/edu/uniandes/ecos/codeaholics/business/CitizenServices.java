@@ -1,9 +1,12 @@
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+
+import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +17,10 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
+import java.util.List;
 import spark.Request;
 import spark.Response;
 
@@ -159,6 +166,35 @@ public class CitizenServices {
 	public static String consultProceduresByDate(Request req, Response res) {
 
 		return "success";
+	}
+	
+	public static String getCitizenList(Request req, Response res) {
+		List<Citizen> dataset =  new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
+		for (Document item : documents) {
+			dataset.add(GSON.fromJson(item.toJson(), Citizen.class));
+		} 
+        Type type = new TypeToken<List<Citizen>>() {}.getType();
+
+        String json = GSON.toJson(dataset, type);
+
+        return json;
+	}
+	
+	public static String getCitizenDetail(Request req, Response res) {
+		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+		Document filter = new Document();
+		filter.append("identification", citizen.getIdentification());
+		List<Citizen> dataset =  new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
+		for (Document item : documents) {
+			dataset.add(GSON.fromJson(item.toJson(), Citizen.class));
+		} 
+        Type type = new TypeToken<List<Citizen>>() {}.getType();
+
+        String json = GSON.toJson(dataset, type);
+
+        return json;
 	}
 
 }

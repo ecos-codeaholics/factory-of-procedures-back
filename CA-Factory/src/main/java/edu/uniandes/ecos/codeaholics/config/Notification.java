@@ -9,44 +9,50 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Notification {
 	
-	static Properties mailServerProperties;
-	static Session getMailSession;
-	static MimeMessage generateMailMessage;
- 
+	// Atributos
+
+	private final static Logger log = LogManager.getLogger(DataBaseUtil.class);
+
+	private static Properties mailServerProperties;
+	private static Session getMailSession;
+	private static MimeMessage generateMailMessage;
+
 	public static void main(String args[]) throws AddressException, MessagingException {
 		sendEmail("jasonlll88@gmail.com");
 		System.out.println("\n\n ===> Your Java Program has just sent an Email successfully. Check your email..");
 	}
- 
+
 	public static void sendEmail(String recipient) throws AddressException, MessagingException {
- 
-		// Step1
-		System.out.println("\n 1st ===> setup Mail Server Properties..");
+
+		log.debug("setup Mail Server Properties..");
 		mailServerProperties = System.getProperties();
 		mailServerProperties.put("mail.smtp.port", "587");
 		mailServerProperties.put("mail.smtp.auth", "true");
 		mailServerProperties.put("mail.smtp.starttls.enable", "true");
-		System.out.println("Mail Server Properties have been setup successfully..");
- 
-		// Step2
-		System.out.println("\n\n 2nd ===> get Mail Session..");
+		log.debug("Mail Server Properties have been setup successfully..");
+
+		log.debug("get Mail Session.. ");
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		generateMailMessage = new MimeMessage(getMailSession);
 		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-		//generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("david.fms22@gmail.com"));
+		// generateMailMessage.addRecipient(Message.RecipientType.CC, new
+		// InternetAddress("david.fms22@gmail.com"));
 		generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
-		String emailBody = "Su registro se ha realizado de forma existosa en nuestro sistema. " + "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+		String emailBody = "Su registro se ha realizado de forma existosa en nuestro sistema. "
+				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
 		generateMailMessage.setContent(emailBody, "text/html");
-		System.out.println("Mail Session has been created successfully..");
- 
-		// Step3
-		System.out.println("\n\n 3rd ===> Get Session and Send mail");
+		log.debug("Mail Session has been created successfully..");
+
+		log.info("-----------------------------------");
+		log.info("Get Session and Send mail");
+		log.info("-----------------------------------");
+		System.out.println("\n 3rd ===> Get Session and Send mail");
 		Transport transport = getMailSession.getTransport("smtp");
- 
-		// Enter your correct gmail UserID and Password
-		// if you have 2FA enabled then provide App Specific Password
 		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 		transport.close();

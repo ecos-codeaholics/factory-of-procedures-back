@@ -71,5 +71,14 @@ public final class DataBaseUtil {
 		log.info("Successful Delete");
 		log.info("-----------------------------------");
 	}
+	public static ArrayList<Document> getAll(String pCollection) {
+		
+		FindIterable<Document> query = db.getCollection(pCollection).find();
+		ArrayList<Document> results = new ArrayList<Document>();
+		for (Document document : query) {
+			results.add(document);
+		}
+		return results;
+	}
 
 }

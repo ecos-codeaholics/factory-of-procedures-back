@@ -36,7 +36,9 @@ public class App {
         //Rutas Ciudadano
         post("/citizen/create", CitizenServices::insertCitizen, GeneralUtil.json());
         post("/citizen/login", CitizenServices::doLogin, GeneralUtil.json());
-
+        post("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
+        post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        
         //Rutas Alcaldia
 
         //Admin Alcaldia
