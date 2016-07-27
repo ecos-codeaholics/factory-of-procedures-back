@@ -169,12 +169,12 @@ public class CitizenServices {
 	}
 	
 	public static String getCitizenList(Request req, Response res) {
-		List<Citizen> dataset =  new ArrayList<>();
+		List<Document> dataset =  new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
 		for (Document item : documents) {
-			dataset.add(GSON.fromJson(item.toJson(), Citizen.class));
+			dataset.add(item);
 		} 
-        Type type = new TypeToken<List<Citizen>>() {}.getType();
+        Type type = new TypeToken<List<Document>>() {}.getType();
 
         String json = GSON.toJson(dataset, type);
 
@@ -182,15 +182,15 @@ public class CitizenServices {
 	}
 	
 	public static String getCitizenDetail(Request req, Response res) {
-		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+        Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
 		Document filter = new Document();
 		filter.append("identification", citizen.getIdentification());
-		List<Citizen> dataset =  new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
+        List<Document> dataset =  new ArrayList<>();
+        ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 		for (Document item : documents) {
-			dataset.add(GSON.fromJson(item.toJson(), Citizen.class));
+			dataset.add(item);
 		} 
-        Type type = new TypeToken<List<Citizen>>() {}.getType();
+        Type type = new TypeToken<List<Document>>() {}.getType();
 
         String json = GSON.toJson(dataset, type);
 

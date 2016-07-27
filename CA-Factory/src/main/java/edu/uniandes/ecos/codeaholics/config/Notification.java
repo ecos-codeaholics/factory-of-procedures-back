@@ -51,7 +51,6 @@ public class Notification {
 		log.info("-----------------------------------");
 		log.info("Get Session and Send mail");
 		log.info("-----------------------------------");
-		System.out.println("\n 3rd ===> Get Session and Send mail");
 		Transport transport = getMailSession.getTransport("smtp");
 		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
