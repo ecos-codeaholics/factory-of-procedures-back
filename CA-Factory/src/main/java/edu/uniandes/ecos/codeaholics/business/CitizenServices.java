@@ -173,6 +173,10 @@ public class CitizenServices {
 		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
 		for (Document item : documents) {
 			dataset.add(item);
+			item.remove("password");
+			item.remove("salt");
+			item.remove("birthDate");
+			item.remove("email");
 		} 
         Type type = new TypeToken<List<Document>>() {}.getType();
 
@@ -188,6 +192,8 @@ public class CitizenServices {
         List<Document> dataset =  new ArrayList<>();
         ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 		for (Document item : documents) {
+			item.remove("password");
+			item.remove("salt");
 			dataset.add(item);
 		} 
         Type type = new TypeToken<List<Document>>() {}.getType();
