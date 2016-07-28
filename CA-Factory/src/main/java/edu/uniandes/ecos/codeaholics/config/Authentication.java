@@ -25,9 +25,8 @@ public final class Authentication {
 	 * @param pPwd contraeeña del ususario
 	 * @return resultado de la autenticacion
 	 */
-	public static boolean doAuthenticationCitizen(String pEmail, String pPwd) {
+	public static Document doAuthenticationCitizen(String pEmail, String pPwd) {
 		
-		boolean authenticated = false;
 		log.info("Verifying user data...");
 		Document user = new Document();
 		user.append("email", pEmail);
@@ -35,6 +34,8 @@ public final class Authentication {
 		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
 
 		if (documents.isEmpty()) {
+			user.append("authenticatedInd", false);
+			user.append("errorMsj", "User Doesn't Exist");
 			log.info("User Doesn't Exist");
 		} else {
 			String salt = documents.get(0).get("salt").toString();
@@ -43,16 +44,19 @@ public final class Authentication {
 			user.append("password", hash[1]);
 
 			ArrayList<Document> results = DataBaseUtil.find(user, "citizen");
+			user.remove("password");
 			if (results.size() > 0) {
 				log.info( pEmail+ " authenticated!");
 				createSession(pEmail, "citizen");
-				authenticated = true;
+				user.append("authenticatedInd", true);
 			} else {
+				user.append("authenticatedInd", false);
+				user.append("errorMsj", "Wrong password");
 				log.info("Wrong password");
 			}
 		}
 
-		return authenticated;
+		return user;
 	}
 	
 	/**

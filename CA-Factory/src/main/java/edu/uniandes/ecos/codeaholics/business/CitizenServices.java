@@ -40,14 +40,9 @@ public class CitizenServices {
 		try {
 
 			Citizen data = GSON.fromJson(req.body(), Citizen.class);
-			String result = null;
-			boolean authenticated = Authentication.doAuthenticationCitizen(data.getEmail(), data.getPassword());
-			if (authenticated) {
-				result = "true";
-			} else {
-				result = "false";
-			}
-			return result;
+			Document result = Authentication.doAuthenticationCitizen(data.getEmail(), data.getPassword());
+			
+			return result.toJson();
 
 		} catch (JsonSyntaxException e) {
 			res.status(400);
