@@ -27,17 +27,12 @@ public class App {
         /*HTTPS line --- JLRM*/
         //secure("deploy/keystore.jks", "codeaholics", null, null);
 
-        //Pruebas
-        get("/login", CitizenServices::login);
-        post("/login", CitizenServices::doLogin);
-        get("/signup", CitizenServices::signup);
-        post("/signup", CitizenServices::createUser);
-
         //Rutas Ciudadano
-        post("/citizen/create", CitizenServices::insertCitizen, GeneralUtil.json());
-        post("/citizen/login", CitizenServices::doLogin, GeneralUtil.json());
+        post("/create", CitizenServices::insertCitizen, GeneralUtil.json());
+        post("/citizenLogin", CitizenServices::doLogin, GeneralUtil.json());
         get("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
         post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        get("/citizen/closeSession", CitizenServices::closeSession, GeneralUtil.json());
         
         //Rutas Alcaldia
 
@@ -46,7 +41,7 @@ public class App {
         //Rutas Mintic
 
 
-        before("/api/doc/*", Authorization::doDocAuthorization);
+        before("/citizen/*", Authorization::authorizeCitizen);
 
         /**
          * Enable CORS in Spark Java to allow origins *

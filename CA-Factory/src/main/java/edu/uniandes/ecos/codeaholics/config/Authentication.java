@@ -105,12 +105,12 @@ public final class Authentication {
 	 */
 	private static void createSession(String pEmail, String pUserProfile) {
 
-		Document sesion = new Document();
-		sesion.append("email", pEmail);
-		sesion.append("user-profile", pUserProfile);
+		Document session = new Document();
+		session.append("email", pEmail);
+		session.append("user-profile", pUserProfile);
 		log.info("Creating Session...");
 		try {
-			DataBaseUtil.save(sesion, "session");
+			DataBaseUtil.save(session, "session");
 
 		} catch (MongoWriteException e) {
 
@@ -126,10 +126,10 @@ public final class Authentication {
 	 *
 	 * @param pEmail correo del ususario al que se le crea la sesion
 	 */
-	private static void closedSession(String pEmail) {
-		Document sesion = new Document();
-		sesion.append("email", pEmail);
+	public static void closedSession(String pEmail) {
+		Document session = new Document();
+		session.append("email", pEmail);
 		log.info("Closing Session...");
-		DataBaseUtil.delete(sesion, "sesion");
+		DataBaseUtil.delete(session, "session");
 	}
 }

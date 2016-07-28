@@ -1,7 +1,8 @@
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -11,26 +12,29 @@ import org.bson.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
-
-import java.lang.reflect.Type;
-import com.google.gson.reflect.TypeToken;
-import java.util.List;
 import spark.Request;
 import spark.Response;
-
-import static edu.uniandes.ecos.codeaholics.persistence.ViewsHelper.render;
 
 public class CitizenServices {
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-	private static Citizen users = new Citizen();
 
+	/***
+	 * Verifica las credenciales del ususario y crea la sesion.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return sesion creada en el sistema
+	 */
 	public static String doLogin(Request req, Response res) {
 
 		try {
@@ -52,6 +56,15 @@ public class CitizenServices {
 
 	}
 
+	/***
+	 * Agrega un ciudadno a la base de datos.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
 	public static String insertCitizen(Request req, Response res) {
 
 		try {
@@ -79,128 +92,146 @@ public class CitizenServices {
 	}
 
 	/***
-	 * Carga la pagina de registro de usuarios.
+	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
 	 * 
 	 * @param req
 	 *            request
 	 * @param res
 	 *            response
-	 * @return estrututa de pagina
+	 * @return lista con json por cada ciudadano
 	 */
-	public static String signup(Request req, Response res) {
-
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("title", "Sign up");
-
-		return render("signup.ftl", params);
-	}
-
-	public static String createUser(Request req, Response res) {
-
-		String email = req.queryParams("email");
-		String password = req.queryParams("password");
-		String name = req.queryParams("name");
-		String lastName = req.queryParams("last-name");
-		Integer identification = Integer.parseInt(req.queryParams("identification"));
-		String[] hash = GeneralUtil.getHash(password, "");
-		users.setPassword(hash[1]);
-		users.setSalt(hash[0]);
-		users.setEmail(email);
-		users.setName(name);
-		users.setLastName1(lastName);
-		users.setIdentification(identification);
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("title", "Sign up");
-
-		// users.addUser(name, lastName, password, email, identification, rol);
-
-		DataBaseUtil.save(users.toDocument(), "citizen");
-		try {
-			Notification.sendEmail(users.getEmail());
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public static String getCitizenList(Request req, Response res) {
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
+		String fullName = "";
+		for (Document item : documents) {
+			fullName = item.get("name").toString() +" "+ item.get("lastName1").toString() +" "+ item.get("lastName2").toString();
+			item.remove("name");
+			item.remove("lastName1");
+			item.remove("lastName2");
+			item.remove("password");
+			item.remove("salt");
+			item.remove("birthDate");
+			item.remove("email");
+			item.put("fullName", fullName);
+			dataset.add(item);
 		}
+		Type type = new TypeToken<List<Document>>() {
+		}.getType();
 
-		params.put("msg", "Success");
+		String json = GSON.toJson(dataset, type);
 
-		return render("signup.ftl", params);
+		return json;
 	}
 
 	/***
-	 * Carga pagina de login.
+	 * Obtiene toda la informacion de un ciudadano dado su numero de
+	 * identificacion.
 	 * 
 	 * @param req
 	 *            request
 	 * @param res
 	 *            response
-	 * @return estrututa de pagina
+	 * @return json informacion disponible del ciudadano
 	 */
-	public static String login(Request req, Response res) {
+	public static String getCitizenDetail(Request req, Response res) {
+		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+		Document filter = new Document();
+		filter.append("identification", citizen.getIdentification());
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
+		for (Document item : documents) {
+			item.remove("password");
+			item.remove("salt");
+			dataset.add(item);
+		}
+		Type type = new TypeToken<List<Document>>() {
+		}.getType();
 
-		HashMap<String, Object> params = new HashMap<>();
+		String json = GSON.toJson(dataset, type);
 
-		params.put("title", "Login");
+		return json;
+	}
+	
+	/***
+	 * Obtiene toda la informacion de un ciudadano dado su numero de
+	 * identificacion.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return json informacion disponible del ciudadano
+	 */
+	public static String closeSession(Request req, Response res) {
+		try {
 
-		return render("login.ftl", params);
+			String email = req.queryParams("email");
+			Authentication.closedSession(email);
+			
+			return "success";
+
+		} catch (JsonSyntaxException e) {
+			res.status(400);
+			return "invalid json format";
+		}
 	}
 
+	/***
+	 * Registra la solicitud de un tramite y toda la infromacion asocida a esa
+	 * solicitud.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
 	public static String startProcedure(Request req, Response res) {
 
 		return "success";
 	}
 
+	/***
+	 * Consulta historico de tramites.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
 	public static String consultProcedures(Request req, Response res) {
 
 		return "success";
 	}
 
+	/***
+	 * Consulta estado de un tramite.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
 	public static String consultProceduresById(Request req, Response res) {
 
 		return "success";
 	}
 
+	/***
+	 * Consulta estado de tramites que se solicitaron en un rango de fechas.
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
 	public static String consultProceduresByDate(Request req, Response res) {
 
 		return "success";
-	}
-	
-	public static String getCitizenList(Request req, Response res) {
-		List<Document> dataset =  new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
-		for (Document item : documents) {
-			dataset.add(item);
-			item.remove("password");
-			item.remove("salt");
-			item.remove("birthDate");
-			item.remove("email");
-		} 
-        Type type = new TypeToken<List<Document>>() {}.getType();
-
-        String json = GSON.toJson(dataset, type);
-
-        return json;
-	}
-	
-	public static String getCitizenDetail(Request req, Response res) {
-        Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
-		Document filter = new Document();
-		filter.append("identification", citizen.getIdentification());
-        List<Document> dataset =  new ArrayList<>();
-        ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
-		for (Document item : documents) {
-			item.remove("password");
-			item.remove("salt");
-			dataset.add(item);
-		} 
-        Type type = new TypeToken<List<Document>>() {}.getType();
-
-        String json = GSON.toJson(dataset, type);
-
-        return json;
 	}
 
 }

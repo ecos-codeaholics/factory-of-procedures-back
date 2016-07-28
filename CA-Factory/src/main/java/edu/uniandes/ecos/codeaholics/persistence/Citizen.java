@@ -1,7 +1,5 @@
 package edu.uniandes.ecos.codeaholics.persistence;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bson.Document;
@@ -98,15 +96,15 @@ public class Citizen {
 	}
 
 	public Date getBirthDate() {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-		formatter.applyPattern(String.valueOf(birthDate));
-		System.out.println(birthDate);
-		try {
-			this.birthDate = formatter.parse(String.valueOf(birthDate));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//
+//		formatter.applyPattern(String.valueOf(birthDate));
+//		System.out.println(birthDate);
+//		try {
+//			this.birthDate = formatter.parse(String.valueOf(birthDate));
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
 		return birthDate;
 	}
 
@@ -119,9 +117,11 @@ public class Citizen {
 		citizen.append(IDENTIFICATION, this.getIdentification())
 				.append(NAME, this.getName())
 				.append(LASTNAME1, this.getLastName1())
+				.append(LASTNAME2, this.getLastName2())
 				.append(EMAIL, this.getEmail())
 				.append(SALT, this.getSalt())
-				.append(PASSWORD, this.getPassword());
+				.append(PASSWORD, this.getPassword())
+				.append(BIRTHDATE, this.getBirthDate());
 		return citizen;
 	}
 
