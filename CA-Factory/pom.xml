@@ -94,6 +94,13 @@
 		    <artifactId>javax.mail-api</artifactId>
 		    <version>1.5.5</version>
 		</dependency>
+		
+		<dependency>
+    		<groupId>io.jsonwebtoken</groupId>
+    		<artifactId>jjwt</artifactId>
+    	<version>0.6.0</version>
+    	
+	</dependency>
 			
 	</dependencies>
 

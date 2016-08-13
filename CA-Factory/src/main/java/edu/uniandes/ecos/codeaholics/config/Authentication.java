@@ -12,100 +12,64 @@ import com.mongodb.MongoWriteException;
 /**
  * Created by davidMtz on 26/6/16.
  */
-public final class Authentication {
+public final class Authentication implements IAuthenticationSvc {
 
 	// Atributos
 	private final static Logger log = LogManager.getLogger(Authentication.class);
 
-	// Metodos
-	/**
-	 * Valida los datos contra la bd.
-	 *
-	 * @param pEmail correo del ususario
-	 * @param pPwd contraeeña del ususario
-	 * @return resultado de la autenticacion
-	 */
-	public static Document doAuthenticationCitizen(String pEmail, String pPwd) {
-		
-		log.info("Verifying user data...");
-		Document user = new Document();
-		user.append("email", pEmail);
-
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
-
-		if (documents.isEmpty()) {
-			user.append("authenticatedInd", false);
-			user.append("errorMsj", "User Doesn't Exist");
-			log.info("User Doesn't Exist");
-		} else {
-			String salt = documents.get(0).get("salt").toString();
-			String[] hash = GeneralUtil.getHash(pPwd, salt);
-
-			user.append("password", hash[1]);
-
-			ArrayList<Document> results = DataBaseUtil.find(user, "citizen");
-			user.remove("password");
-			if (results.size() > 0) {
-				log.info( pEmail+ " authenticated!");
-				createSession(pEmail, "citizen");
-				user.append("authenticatedInd", true);
-			} else {
-				user.append("authenticatedInd", false);
-				user.append("errorMsj", "Wrong password");
-				log.info("Wrong password");
-			}
-		}
-
-		return user;
-	}
+	private String answerStr;
 	
-	/**
-	 * Valida los datos contra la bd.
-	 *
-	 * @param pEmail correo del ususario
-	 * @param pPwd contraeeña del ususario
-	 * @return resultado de la autenticacion
-	 */
-	public static boolean doAuthenticationFuntionary(String pEmail, String pPwd, String pProfile) {
-		
+	// Metodos
+
+	@Override
+	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) {
+
 		boolean authenticated = false;
 		log.info("Verifying user data...");
 		Document user = new Document();
 		user.append("email", pEmail);
 
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, pProfile);
 
 		if (documents.isEmpty()) {
 			log.info("User Doesn't Exist");
 		} else {
-			user.append("userProfile", "citizen");
-			ArrayList<Document> documents2 = DataBaseUtil.find(user, "citizen");
+			user.append("userProfile", pProfile);
+			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
 			if(documents2.isEmpty()){
-				log.info("User Profile Wrong");
+				log.info("Wrong User Profile or not found");
 			}else{
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
 
 				user.append("password", hash[1]);
 
-				ArrayList<Document> results = DataBaseUtil.find(user, "citizen");
+				ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
 				if (results.size() > 0) {
 					log.info( pEmail+ " authenticated!");
 					createSession(pEmail, pProfile);
 					authenticated = true;
+					answerStr = "OK";
 				} else {
 					log.info("Wrong password");
+					answerStr = "NOTOK";
 				}
 			}
 		}
 
 		return authenticated;
+
+	}
+
+	@Override
+	public String getAnswer() {
+		return answerStr;
 	}
 
 	/**
 	 * * Crea una sesion para un usuario dado su email.
-	 *
-	 * @param pEmail correo del ususario al que se le crea la sesion
+	 * @param pEmail correo del usuario al que se le crea la sesion 
+	 * @param pUserProfile perfil del usuario citizen, functionary, etc
 	 */
 	private static void createSession(String pEmail, String pUserProfile) {
 
@@ -130,10 +94,11 @@ public final class Authentication {
 	 *
 	 * @param pEmail correo del ususario al que se le crea la sesion
 	 */
-	public static void closedSession(String pEmail) {
+	public static void closeSession(String pEmail) {
 		Document session = new Document();
 		session.append("email", pEmail);
 		log.info("Closing Session...");
 		DataBaseUtil.delete(session, "session");
 	}
+
 }

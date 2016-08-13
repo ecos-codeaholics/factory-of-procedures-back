@@ -38,7 +38,7 @@ public final class DataBaseUtil {
 		log.info("Successful Insert");
 		log.info("-----------------------------------");
 	}
-	
+
 	/***
 	 * Busca todos los documentos de iguales atributos que el filtro.
 	 * 

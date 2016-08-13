@@ -19,7 +19,8 @@ public class Citizen {
 	public static final String PASSWORD = "password";
 	public static final String SALT = "salt";
 	public static final String BIRTHDATE = "birthDate";
-
+	public static final String PROFILE = "userProfile";
+	
 	@SerializedName("_id")
 	private String _id;
 	private Integer identification;
@@ -30,6 +31,21 @@ public class Citizen {
 	private String password;
 	private String salt;
 	private Date birthDate;
+	private String userProfile;
+
+	/**
+	 * @return the userProfile
+	 */
+	public String getUserProfile() {
+		return userProfile;
+	}
+
+	/**
+	 * @param userProfile the userProfile to set
+	 */
+	public void setUserProfile(String userProfile) {
+		this.userProfile = userProfile;
+	}
 
 	public String getId() {
 		return _id;
@@ -121,7 +137,9 @@ public class Citizen {
 				.append(EMAIL, this.getEmail())
 				.append(SALT, this.getSalt())
 				.append(PASSWORD, this.getPassword())
-				.append(BIRTHDATE, this.getBirthDate());
+				.append(BIRTHDATE, this.getBirthDate())
+				.append(PROFILE, this.getUserProfile());
+		
 		return citizen;
 	}
 

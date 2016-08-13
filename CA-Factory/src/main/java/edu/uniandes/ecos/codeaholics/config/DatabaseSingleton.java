@@ -24,22 +24,25 @@ import com.mongodb.client.MongoDatabase;
 public class DatabaseSingleton {
 
 	// Atributos
-	private static DatabaseSingleton instance = null;
-	
-	private static MongoClient mongoClient = null;
-	
-	private static MongoDatabase mongoDatabase = null;
+	private static DatabaseSingleton instance      = null;
+	private static MongoClient       mongoClient   = null;
+	private static MongoDatabase     mongoDatabase = null;
 
 	// Constructores
 	protected DatabaseSingleton() {
-		String env = DatabaseConfig.DB_ENV;
-		if (env == "replica") {
-			mongoClient = new MongoClient(DatabaseConfig.DB_REPLICA_SET);
-			mongoDatabase = mongoClient.getDatabase(DatabaseConfig.DB_NAME);
-		} else if (env == "local") {
-			mongoClient = new MongoClient(DatabaseConfig.DB_SERVER, DatabaseConfig.DB_SERVER_PORT);
-			mongoDatabase = mongoClient.getDatabase(DatabaseConfig.DB_NAME);
+		
+		DatabaseConfig dbConf = new DatabaseConfig("src/main/resources/config.properties");
+		
+		String env = dbConf.getDbEnv();
+		
+		if (env.equals("replica")){
+			mongoClient = new MongoClient(dbConf.getDbServerAdresses());
+			mongoDatabase = mongoClient.getDatabase(dbConf.getDbName());
+		} else if (env.equals("local")) {
+			mongoClient = new MongoClient(dbConf.getDbServerUrl(), Integer.parseInt(dbConf.getDbPort()));
+			mongoDatabase = mongoClient.getDatabase(dbConf.getDbName());
 		}
+		
 	}
 
 	// Metodos

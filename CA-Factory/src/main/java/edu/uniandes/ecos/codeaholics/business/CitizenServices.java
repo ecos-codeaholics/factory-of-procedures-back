@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -37,17 +38,24 @@ public class CitizenServices {
 	 */
 	public static String doLogin(Request req, Response res) {
 
+		String response = "";
+		
 		try {
 
 			Citizen data = GSON.fromJson(req.body(), Citizen.class);
-			Document result = Authentication.doAuthenticationCitizen(data.getEmail(), data.getPassword());
-			
-			return result.toJson();
+			IAuthenticationSvc authenticate = new Authentication();
+
+			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), "citizen");
+			if (authenticated) {
+				response = authenticate.getAnswer();
+			}
 
 		} catch (JsonSyntaxException e) {
 			res.status(400);
-			return "invalid json format";
+			response = "invalid json format";
 		}
+		
+		return response;
 
 	}
 
@@ -100,7 +108,8 @@ public class CitizenServices {
 		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
 		String fullName = "";
 		for (Document item : documents) {
-			fullName = item.get("name").toString() +" "+ item.get("lastName1").toString() +" "+ item.get("lastName2").toString();
+			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
+					+ item.get("lastName2").toString();
 			item.remove("name");
 			item.remove("lastName1");
 			item.remove("lastName2");
@@ -147,7 +156,7 @@ public class CitizenServices {
 
 		return json;
 	}
-	
+
 	/***
 	 * Obtiene toda la informacion de un ciudadano dado su numero de
 	 * identificacion.
@@ -162,8 +171,8 @@ public class CitizenServices {
 		try {
 
 			String email = req.queryParams("email");
-			Authentication.closedSession(email);
-			
+			Authentication.closeSession(email);
+
 			return "success";
 
 		} catch (JsonSyntaxException e) {
