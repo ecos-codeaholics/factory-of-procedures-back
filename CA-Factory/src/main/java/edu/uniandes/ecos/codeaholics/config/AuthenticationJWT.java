@@ -126,7 +126,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		long expMillis = nowMillis + TOKEN_LIFETIME;
 		Date exp = new Date(expMillis);
 		
-		System.out.println(pSalt);
+		log.debug(pSalt);
 		
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);

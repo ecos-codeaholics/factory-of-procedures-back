@@ -1,26 +1,30 @@
 package edu.uniandes.ecos.codeaholics.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import javax.crypto.SecretKey;
-import javax.xml.bind.DatatypeConverter;
+import java.util.ArrayList;
 
-import org.bson.Document;
 import org.junit.Test;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 
 public class AuthenticationJWTTest {
 
+	Logger logger = LogManager.getRootLogger();
 	public String citizenSalt;
 	public String token;
 	
@@ -28,7 +32,7 @@ public class AuthenticationJWTTest {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("citizen");
-		
+				
 		Citizen citizen = new Citizen();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
@@ -40,8 +44,19 @@ public class AuthenticationJWTTest {
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
-		collection.insertOne(citizen.toDocument());
 		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+	
 		citizenSalt = hash[0];
 		
 	}
@@ -49,14 +64,14 @@ public class AuthenticationJWTTest {
 	@Test
 	public void tokenCreationTest() {
 
-		addCitizen("Andres", "Osorio", "aosorio@uniandes", "Qwerty");
+		addCitizen("Andres", "Osorio", "aosorio@uniandes.edu", "Qwerty");
 		
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
-		boolean authenticated = jwtToken.doAuthentication("aosorio@uniandes", "Qwerty", "citizen");
+		boolean authenticated = jwtToken.doAuthentication("aosorio@uniandes.edu", "Qwerty", "citizen");
 
 		if (authenticated) {
 			token = jwtToken.getAnswer();
-			System.out.println(token);
+			logger.info(token);
 
 			//Verify and decode
 			try {
@@ -64,20 +79,20 @@ public class AuthenticationJWTTest {
 				Claims claims = Jwts.parser().setSigningKey(citizenSalt)
 						.parseClaimsJws(token).getBody();
 
-				System.out.println("ID: " + claims.getId());
-				System.out.println("Subject: " + claims.getSubject());
-				System.out.println("Issuer: " + claims.getIssuer());
-				System.out.println("Expiration: " + claims.getExpiration());
+				logger.info("ID: " + claims.getId());
+				logger.info("Subject: " + claims.getSubject());
+				logger.info("Issuer: " + claims.getIssuer());
+				logger.info("Expiration: " + claims.getExpiration());
 
-				assertEquals("aosorio@uniandes", claims.getId());
+				assertEquals("aosorio@uniandes.edu", claims.getId());
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 				assertFalse(true);
-				System.out.println("Cannot get token claims");
+				logger.info("Cannot get token claims");
 			}
 		} else {
-			System.out.println("User not authenticated");
+			logger.info("User not authenticated");
 			assertFalse(true);
 		}
 

@@ -6,11 +6,14 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.junit.Test;
 
@@ -41,30 +44,43 @@ import edu.uniandes.ecos.codeaholics.persistence.Citizen;
  */
 public class AuthenticationTest {
 
-	public void addCitizen() {
+	Logger logger = LogManager.getRootLogger();
+	
+	public void addCitizen(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("citizen");
 		
 		Citizen citizen = new Citizen();
-		citizen.setName("Andres");
-		citizen.setLastName1("Osorio");
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("aosorio@uniandes");
-		citizen.setPassword("QWERTY");
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
 		citizen.setUserProfile("citizen");
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
-		collection.insertOne(citizen.toDocument());
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
 
 	}
 
 	@Test
 	public void simpleAuthenticationTest() {
 		
-		addCitizen();
+		addCitizen("Andres", "Osorio", "aosorio@uniandes", "QWERTY");
 		
 		Authentication auth = new Authentication();
 		
