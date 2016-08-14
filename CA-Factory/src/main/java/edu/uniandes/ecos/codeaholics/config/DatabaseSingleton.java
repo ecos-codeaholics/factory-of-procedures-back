@@ -21,6 +21,8 @@ package edu.uniandes.ecos.codeaholics.config;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
+import edu.uniandes.ecos.codeaholics.main.App;
+
 public class DatabaseSingleton {
 
 	// Atributos
@@ -31,7 +33,7 @@ public class DatabaseSingleton {
 	// Constructores
 	protected DatabaseSingleton() {
 		
-		DatabaseConfig dbConf = new DatabaseConfig("src/main/resources/config.properties");
+		DatabaseConfig dbConf = new DatabaseConfig(App.CONFIG_FILE);
 		
 		String env = dbConf.getDbEnv();
 		

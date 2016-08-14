@@ -1,9 +1,7 @@
-# AS-Experiments
-Sparkjava application to play with mongodb, lambda expressions and other goodies
+# Project: FABRICA DE TRAMITES 
+Sparkjava application for Project. This is the Backend repository
 
 ## Description
-This web application allows users to register their migraine episodes and obtain a brief analisis about what could be causing it.
-All migraine episodes can be consulted by a Doctor, whom also can give back the diagnostic to the user.
 
 ## Requirements
 
@@ -13,16 +11,29 @@ All migraine episodes can be consulted by a Doctor, whom also can give back the 
 * MongoDB 3.2x
 * Maven
 
-## Â¿How to use?
+## ¿How to use?
 
 * Clone the repository in your projects directory, cd into it and run:
 
-> mvn compile exec:java -Dexec.mainClass="codeAholics.App"
+> mvn clean #optional
+> mvn compile exec:java -Dexec.mainClass="edu.uniandes.ecos.codeaholics.main.App"
+
+Note: on Windows machines, you need:
+
+> mvn compile exec:java -D"exec.mainClass=edu.uniandes.ecos.codeaholics.main.App"
 
 * Finally go to your browser and enter to the following URI:
 
 > localhost:4567
 
-## Enjoy!
+Currently there is a configuration file located at src/main/resources/config.properties that you can edit to change the current configuration of the application.
 
-* test develop branch
+## Tests
+
+In order to run only the unitary tests, you can do:
+
+> mvn test
+
+* For testing use the "development" branch
+
+
