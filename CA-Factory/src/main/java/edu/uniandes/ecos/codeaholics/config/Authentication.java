@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import com.google.gson.Gson;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
 
@@ -49,10 +50,14 @@ public final class Authentication implements IAuthenticationSvc {
 					log.info( pEmail+ " authenticated!");
 					createSession(pEmail, pProfile);
 					authenticated = true;
-					answerStr = "OK";
+					user.remove("password");
+					user.remove("userProfile");
+					Gson gson = new Gson();
+					answerStr = gson.toJson(user);
+					//answerStr = user.toJson(); //as it was done before OK (both ways work)
 				} else {
 					log.info("Wrong password");
-					answerStr = "NOTOK";
+					answerStr = "{message : \"Wrong password\"}";
 				}
 			}
 		}

@@ -36,13 +36,13 @@ public class CitizenServices {
 	 *            response
 	 * @return sesion creada en el sistema
 	 */
-	public static String doLogin(Request req, Response res) {
+	public static String doLogin(Request pRequest, Response pResponse) {
 
 		String response = "";
 		
 		try {
 
-			Citizen data = GSON.fromJson(req.body(), Citizen.class);
+			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
 			IAuthenticationSvc authenticate = new Authentication();
 
 			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), "citizen");
@@ -51,8 +51,8 @@ public class CitizenServices {
 			}
 
 		} catch (JsonSyntaxException e) {
-			res.status(400);
-			response = "invalid json format";
+			pResponse.status(400);
+			response = "{message: \"Invalid json format\"}";
 		}
 		
 		return response;
