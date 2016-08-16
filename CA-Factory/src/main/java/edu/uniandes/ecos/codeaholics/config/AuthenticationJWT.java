@@ -4,25 +4,16 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.mongodb.ErrorCategory;
-import com.mongodb.MongoWriteException;
-
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.config
