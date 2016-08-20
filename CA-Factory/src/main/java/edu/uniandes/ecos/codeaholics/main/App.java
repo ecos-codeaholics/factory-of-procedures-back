@@ -48,7 +48,10 @@ public class App {
 		get("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
 		post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
 		get("/citizen/closeSession", CitizenServices::closeSession, GeneralUtil.json());
-
+		
+		//AO upload documents
+		post("/citezen/documents/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
+		
 		// Rutas Alcaldia
 
 		// Admin Alcaldia

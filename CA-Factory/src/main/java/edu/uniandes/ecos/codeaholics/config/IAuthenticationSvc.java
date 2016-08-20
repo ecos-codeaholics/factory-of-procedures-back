@@ -27,7 +27,7 @@ public interface IAuthenticationSvc {
 	public boolean doAuthentication(String p1, String p2, String p3);
 	
 	/** get an answer from authentication
-	 * @return a String (could be a json token, an OK message
+	 * @return a String (could be a json token, an OK message, etc)
 	 */
 	public String getAnswer();
 }

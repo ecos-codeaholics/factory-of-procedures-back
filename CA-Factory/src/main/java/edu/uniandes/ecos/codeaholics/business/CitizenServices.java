@@ -1,11 +1,19 @@
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
 
 import org.bson.Document;
 
@@ -15,8 +23,11 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
+import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
+import edu.uniandes.ecos.codeaholics.config.FileUtil;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -39,7 +50,7 @@ public class CitizenServices {
 	public static String doLogin(Request pRequest, Response pResponse) {
 
 		String response = "";
-		
+
 		try {
 
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
@@ -54,7 +65,7 @@ public class CitizenServices {
 			pResponse.status(400);
 			response = "{message: \"Invalid json format\"}";
 		}
-		
+
 		return response;
 
 	}
@@ -238,4 +249,29 @@ public class CitizenServices {
 		return "success";
 	}
 
+	
+	
+	/** 
+	 * Servicio para subir documentos
+	 * @param pRequest
+	 * @param pResponse
+	 * @return
+	 */
+	public static String uploadDocuments(Request pRequest, Response pResponse) {
+
+		String response = "";
+		
+		try {
+									
+			IDocumentSvc fileUploader = new DocumentSvc();
+			fileUploader.uploadDocument(pRequest);
+			
+		} catch (JsonSyntaxException e) {
+			pResponse.status(400);
+		}
+
+		return response;
+
+	}
+	
 }
