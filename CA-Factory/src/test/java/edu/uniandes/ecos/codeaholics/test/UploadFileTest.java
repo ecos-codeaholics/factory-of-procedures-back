@@ -73,8 +73,8 @@ public class UploadFileTest {
 		StringBuilder result = new StringBuilder();
 
 		String route = "/citezen/documents/upload";
-		String server = "http://localhost:4567";
-
+		String serverPath = TestsUtil.getServerPath();
+		
 		String attachmentName = "testFile";
 		String attachmentFileName = timeLog;
 
@@ -84,7 +84,7 @@ public class UploadFileTest {
 
 		try {
 
-			URL appUrl = new URL(server + route);
+			URL appUrl = new URL(serverPath + route);
 
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);

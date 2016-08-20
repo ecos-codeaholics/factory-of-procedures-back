@@ -59,10 +59,10 @@ public class LoginTest {
 		StringBuilder result = new StringBuilder();
 
 		String route = "/citizenLogin";
-		String server = "http://localhost:4567";
-
+		String serverPath = TestsUtil.getServerPath();
+		
 		try {
-			URL appUrl = new URL(server + route);
+			URL appUrl = new URL(serverPath + route);
 
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);

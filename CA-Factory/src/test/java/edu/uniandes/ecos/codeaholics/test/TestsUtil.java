@@ -16,6 +16,7 @@ import com.mongodb.client.MongoDatabase;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 
 /**
@@ -90,4 +91,17 @@ public class TestsUtil {
 		return cleanStr;
 	}
 
+	public static String getServerPath() {
+		
+		int port = App.JETTY_SERVER_PORT;
+		String server = "http://localhost";
+
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(server);
+		strBuilder.append(":");
+		strBuilder.append(port);
+		String serverPath = strBuilder.toString();
+		
+		return serverPath;
+	}
 }
