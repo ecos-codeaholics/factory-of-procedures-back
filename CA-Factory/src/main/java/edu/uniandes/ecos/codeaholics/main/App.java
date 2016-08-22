@@ -1,16 +1,23 @@
 package edu.uniandes.ecos.codeaholics.main;
 
-import edu.uniandes.ecos.codeaholics.business.CitizenServices;
-import edu.uniandes.ecos.codeaholics.config.Authorization;
-import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-
-import static spark.Spark.*;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.options;
+import static spark.Spark.port;
+import static spark.Spark.threadPool;
+import static spark.Spark.post;
+import static spark.Spark.secure;
+import static spark.Spark.staticFiles;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import edu.uniandes.ecos.codeaholics.business.CitizenServices;
+import edu.uniandes.ecos.codeaholics.config.Authorization;
+import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 
 /**
  * Created by snaphuman on 6/6/16.
@@ -19,6 +26,9 @@ public class App {
 
 	public static final String CONFIG_FILE = "src/main/resources/config.properties";
 	public static int JETTY_SERVER_PORT = 4567;
+	public static int JETTY_SERVER_MAXTHREADS = 50;
+	public static int JETTY_SERVER_MINTHREADS = 1000;
+	public static int JETTY_SERVER_TIMEOUTMILLIS = 30000;
 	public static boolean USE_SPARK_HTTPS = false;
 
 	/***
@@ -31,6 +41,7 @@ public class App {
 
 		getConfig(CONFIG_FILE);
 		port(JETTY_SERVER_PORT);
+		threadPool(JETTY_SERVER_MAXTHREADS, JETTY_SERVER_MINTHREADS, JETTY_SERVER_TIMEOUTMILLIS);
 			
 		/* HTTPS option : JLRM */
 		if( USE_SPARK_HTTPS ) {
@@ -91,6 +102,9 @@ public class App {
 			input = new FileInputStream( pConfig );
 			prop.load(input);
 			JETTY_SERVER_PORT = Integer.parseInt( prop.getProperty("jetty.server.port") );
+			JETTY_SERVER_MAXTHREADS = Integer.parseInt( prop.getProperty("jetty.server.minthreads") );
+			JETTY_SERVER_MINTHREADS = Integer.parseInt( prop.getProperty("jetty.server.maxthreads") );
+			JETTY_SERVER_TIMEOUTMILLIS = Integer.parseInt( prop.getProperty("jetty.server.timeoutMillis") );
 			USE_SPARK_HTTPS = Boolean.parseBoolean( prop.getProperty("spark.https") );
 		} catch (Exception e) {
 
