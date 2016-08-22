@@ -34,7 +34,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	// Atributos
 	private final static Logger log = LogManager.getLogger(AuthenticationJWT.class);
 
-	private String token;
+	private Object token;
 
 	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
 	public static final String TOKEN_ISSUER = "codeaholics";
@@ -96,7 +96,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @see edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc#getAnswer()
 	 */
 	@Override
-	public String getAnswer() {
+	public Object getAnswer() {
 		return token;
 	}
 

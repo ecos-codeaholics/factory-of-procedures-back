@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.google.gson.Gson;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
 
@@ -17,8 +16,8 @@ public final class Authentication implements IAuthenticationSvc {
 
 	// Atributos
 	private final static Logger log = LogManager.getLogger(Authentication.class);
-
-	private String answerStr;
+	
+	private Object responseObj;
 	
 	// Metodos
 
@@ -51,13 +50,12 @@ public final class Authentication implements IAuthenticationSvc {
 					createSession(pEmail, pProfile);
 					authenticated = true;
 					user.remove("password");
-					user.remove("userProfile");
-					Gson gson = new Gson();
-					answerStr = gson.toJson(user);
-					//answerStr = user.toJson(); //as it was done before OK (both ways work)
+					user.remove("userProfile");					
+					responseObj = user;
+					
 				} else {
 					log.info("Wrong password");
-					answerStr = "{message : \"Wrong password\"}";
+					responseObj = "{message : \"Wrong password\"}";
 				}
 			}
 		}
@@ -67,8 +65,8 @@ public final class Authentication implements IAuthenticationSvc {
 	}
 
 	@Override
-	public String getAnswer() {
-		return answerStr;
+	public Object getAnswer() {
+		return responseObj;
 	}
 
 	/**

@@ -1,20 +1,11 @@
 package edu.uniandes.ecos.codeaholics.business;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
-
 import org.bson.Document;
 
 import com.google.gson.Gson;
@@ -27,7 +18,6 @@ import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
-import edu.uniandes.ecos.codeaholics.config.FileUtil;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -47,9 +37,9 @@ public class CitizenServices {
 	 *            response
 	 * @return sesion creada en el sistema
 	 */
-	public static String doLogin(Request pRequest, Response pResponse) {
+	public static Object doLogin(Request pRequest, Response pResponse) {
 
-		String response = "";
+		Object response = null;
 
 		try {
 

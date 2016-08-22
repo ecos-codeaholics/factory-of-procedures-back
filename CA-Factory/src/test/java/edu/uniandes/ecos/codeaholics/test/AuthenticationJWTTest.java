@@ -27,7 +27,7 @@ public class AuthenticationJWTTest {
 		boolean authenticated = jwtToken.doAuthentication("aosorio@uniandes.edu", "Qwerty", "citizen");
 
 		if (authenticated) {
-			token = jwtToken.getAnswer();
+			token = (String) jwtToken.getAnswer();
 			logger.info(token);
 
 			//Verify and decode

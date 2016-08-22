@@ -29,5 +29,5 @@ public interface IAuthenticationSvc {
 	/** get an answer from authentication
 	 * @return a String (could be a json token, an OK message, etc)
 	 */
-	public String getAnswer();
+	public Object getAnswer();
 }

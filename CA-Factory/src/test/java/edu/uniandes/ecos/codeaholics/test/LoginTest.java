@@ -15,6 +15,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
@@ -60,7 +63,7 @@ public class LoginTest {
 
 		String route = "/citizenLogin";
 		String serverPath = TestsUtil.getServerPath();
-		
+
 		try {
 			URL appUrl = new URL(serverPath + route);
 
@@ -81,13 +84,10 @@ public class LoginTest {
 			InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
 			BufferedReader reader = new BufferedReader(in);
 
-			int line = 0;
 			String text = "";
 			while ((text = reader.readLine()) != null) {
 				jsonResponse += text;
 				result.append(text);
-				line += 1;
-				System.out.println(line);
 			}
 
 			reader.close();
@@ -100,13 +100,12 @@ public class LoginTest {
 			e.printStackTrace();
 		}
 
-		/*
-		 * JsonParser parser = new JsonParser(); JsonObject json =
-		 * parser.parse(result.toString()).getAsJsonObject();
-		 */
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(result.toString()).getAsJsonObject();
 
 		assertEquals(200, httpResult);
 		assertEquals("OK", httpMessage);
+		assertTrue(json.getAsJsonObject().has("email"));
 
 		// System.out.println(json.getAsJsonObject().has("email"));
 
