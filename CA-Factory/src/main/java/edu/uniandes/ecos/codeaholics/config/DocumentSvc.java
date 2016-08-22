@@ -15,6 +15,9 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.Gson;
 
 import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
@@ -36,6 +39,8 @@ import spark.Request;
  */
 public class DocumentSvc implements IDocumentSvc {
 
+	Logger logger = LogManager.getRootLogger();
+	
 	private String answerStr = "";
 		
 	/* (non-Javadoc)
@@ -44,8 +49,18 @@ public class DocumentSvc implements IDocumentSvc {
 	@Override
 	public void uploadDocument(Request pRequest) {
 		
-		File uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
-		uploadDir.mkdir();
+		File uploadDir = null;
+		
+		try {
+			FileUtil.configTmpDir();
+			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			uploadDir.mkdir();
+			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
+		} catch (Exception e) {		
+			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			uploadDir.mkdir();
+			logger.error(e.getMessage());
+		}
 			
 		pRequest.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 		

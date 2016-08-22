@@ -23,8 +23,8 @@ import com.google.gson.JsonParser;
  * 
  * Description: This class provides all sort of File related utilities
  * 
- * Example: Given a directory PATH, return all files that are in this
- * directory according to some criteria
+ * Example: Given a directory PATH, return all files that are in this directory
+ * according to some criteria
  * 
  * Implementation: Returns an ArrayList of string, containing file paths
  * 
@@ -49,7 +49,7 @@ public class FileUtil {
 	 */
 	public static void processRoot() {
 
-		//TODO Need here an exception
+		// TODO Need here an exception
 		allFiles.clear();
 		files = new File(root).listFiles();
 		getSourceFiles(files, allFiles, "");
@@ -132,6 +132,20 @@ public class FileUtil {
 	 */
 	private static String removeLastChar(String str) {
 		return str.substring(0, str.length() - 1);
+	}
+
+	public static void configTmpDir() throws Exception {
+
+
+		// Get the TMP_PATH from an environment variable
+		String value = System.getenv(LOCAL_TMP_PATH_ENV);
+		if( value != null ) {
+			LOCAL_TMP_PATH = value;	
+		} else {
+			throw new Exception("LOCAL_TMP_PATH_ENV not defined!");
+		}
+		
+
 	}
 
 }

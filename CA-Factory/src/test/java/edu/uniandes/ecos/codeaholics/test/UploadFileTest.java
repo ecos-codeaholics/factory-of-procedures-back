@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -86,16 +87,22 @@ public class UploadFileTest {
 
 			URL appUrl = new URL(serverPath + route);
 
+			 System.out.println("===== 0. ");
+             InputStream response = new URL("http://stackoverflow.com").openStream();
+             System.out.println("===== 0. =====");
+			
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);
 			urlConnection.setUseCaches(false);
 			urlConnection.setRequestMethod("POST");
-
+			
+			System.out.println("===== 1. ");		
 			// 1...
 			urlConnection.setRequestProperty("Connection", "Keep-Alive");
 			urlConnection.setRequestProperty("Cache-Control", "no-cache");
 			urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
+			System.out.println("===== 2. ");
 			// 2...
 			DataOutputStream request = new DataOutputStream(urlConnection.getOutputStream());
 
@@ -104,18 +111,21 @@ public class UploadFileTest {
 					+ attachmentFileName + "\"" + crlf);
 			request.writeBytes(crlf);
 
+			System.out.println("===== 2.1 ");
 			// 2.1...
 			// TODO use the actual file / Challenge: send a png file
 			String s = "Hello World!";
 			byte data[] = s.getBytes();
 			request.write(data);
 
+			System.out.println("===== 2.2 ");
 			// 2.2...
 			request.writeBytes(crlf);
 			request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
 			request.flush();
 			request.close();
 
+			System.out.println("===== 3. ");
 			// 3...
 			httpResult = urlConnection.getResponseCode();
 			httpMessage = urlConnection.getResponseMessage();
