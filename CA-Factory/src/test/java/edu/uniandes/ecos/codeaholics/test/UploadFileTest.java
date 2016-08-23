@@ -11,14 +11,10 @@ import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -164,7 +160,7 @@ public class UploadFileTest {
 		assertEquals(200, httpResult);
 		assertEquals("OK", httpMessage);
 
-		removeTestFile(timeLog);
+		TestsUtil.removeTestFile(timeLog);
 
 	}
 
@@ -196,26 +192,6 @@ public class UploadFileTest {
 		}
 	}
 
-	/**
-	 * Remove the created file from local storage
-	 * 
-	 * @param pFileName
-	 */
-	private void removeTestFile(String pFileName) {
-		
-		File file = new File(pFileName);
-		
-		try {
-			Files.delete(file.toPath());
-			logger.info("Temporay file deleted: " + file.getAbsolutePath());
-		} catch (NoSuchFileException x) {
-			logger.error("%s: no such" + " file or directory%n", file);
-		} catch (DirectoryNotEmptyException x) {
-			logger.error("%s not empty%n", file);
-		} catch (IOException x) {
-			// File permission problems are caught here.
-			logger.error(x.getMessage());
-		}
-	}
+
 	
 }

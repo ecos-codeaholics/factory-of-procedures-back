@@ -15,11 +15,14 @@ import com.google.gson.reflect.TypeToken;
 
 import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
+import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
+import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import spark.Request;
 import spark.Response;
@@ -28,19 +31,21 @@ public class CitizenServices {
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 
+	private static IMessageSvc messager = new ResponseMessage();
+	
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return sesion creada en el sistema
 	 */
 	public static Object doLogin(Request pRequest, Response pResponse) {
 
 		Object response = null;
-
+		
 		try {
 
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
@@ -51,9 +56,13 @@ public class CitizenServices {
 				response = authenticate.getAnswer();
 			}
 
+		} catch (WrongUserOrPasswordException e) {
+			pResponse.status(401);
+			response = messager.getNotOkMessage(e.getMessage());
+			
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
-			response = "{message: \"Invalid json format\"}";
+			response = messager.getNotOkMessage(e.getMessage());
 		}
 
 		return response;
@@ -63,48 +72,53 @@ public class CitizenServices {
 	/***
 	 * Agrega un ciudadno a la base de datos.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String insertCitizen(Request req, Response res) {
-
+	public static Object insertCitizen(Request pRequest, Response pResponse) {
+		
+		Object response = null;
+		
 		try {
 
-			Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+			Citizen citizen = GSON.fromJson(pRequest.body(), Citizen.class);
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
 			DataBaseUtil.save(citizen.toDocument(), "citizen");
 			Notification.sendEmail(citizen.getEmail());
 
+			response = messager.getOkMessage("Success");
+						
 		} catch (JsonSyntaxException e) {
-			res.status(400);
-			return "invalid json format";
+			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
+			response = messager.getNotOkMessage(e.getMessage());
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+			response = messager.getNotOkMessage(e.getMessage());
 			e.printStackTrace();
 		}
 
-		req.body();
-		return "success";
+		pRequest.body();
+		return response;
 	}
 
 	/***
 	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return lista con json por cada ciudadano
 	 */
-	public static String getCitizenList(Request req, Response res) {
+	public static String getCitizenList(Request pRequest, Response pResponse) {
+		
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
 		String fullName = "";
@@ -133,14 +147,14 @@ public class CitizenServices {
 	 * Obtiene toda la informacion de un ciudadano dado su numero de
 	 * identificacion.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return json informacion disponible del ciudadano
 	 */
-	public static String getCitizenDetail(Request req, Response res) {
-		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+	public static String getCitizenDetail(Request pRequest, Response pResponse) {
+		Citizen citizen = GSON.fromJson(pRequest.body(), Citizen.class);
 		Document filter = new Document();
 		filter.append("identification", citizen.getIdentification());
 		List<Document> dataset = new ArrayList<>();
@@ -162,81 +176,93 @@ public class CitizenServices {
 	 * Obtiene toda la informacion de un ciudadano dado su numero de
 	 * identificacion.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return json informacion disponible del ciudadano
 	 */
-	public static String closeSession(Request req, Response res) {
+	public static Object closeSession(Request pRequest, Response pResponse) {
+		
+		Object response = null;
+		
 		try {
 
-			String email = req.queryParams("email");
+			String email = pRequest.queryParams("email");
 			Authentication.closeSession(email);
 
-			return "success";
+			response = messager.getOkMessage("Success");
 
 		} catch (JsonSyntaxException e) {
-			res.status(400);
-			return "invalid json format";
+			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
 		}
+		
+		return response;
 	}
 
 	/***
 	 * Registra la solicitud de un tramite y toda la infromacion asocida a esa
 	 * solicitud.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String startProcedure(Request req, Response res) {
+	public static Object startProcedure(Request pRequest, Response pResponse) {
 
-		return "success";
+		Object response;
+		response = messager.getOkMessage("Success");
+		return response;
 	}
 
 	/***
 	 * Consulta historico de tramites.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String consultProcedures(Request req, Response res) {
+	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
-		return "success";
+		Object response;
+		response = messager.getOkMessage("Success");
+		return response;
 	}
 
 	/***
 	 * Consulta estado de un tramite.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String consultProceduresById(Request req, Response res) {
+	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		return "success";
+		Object response;
+		response = messager.getOkMessage("Success");
+		return response;
 	}
 
 	/***
 	 * Consulta estado de tramites que se solicitaron en un rango de fechas.
 	 * 
-	 * @param req
+	 * @param pRequest
 	 *            request
-	 * @param res
+	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String consultProceduresByDate(Request req, Response res) {
-
-		return "success";
+	public static Object consultProceduresByDate(Request pRequest, Response pResponse) {
+		Object response;
+		response = messager.getOkMessage("Success");
+		return response;
 	}
 
 	
@@ -247,17 +273,19 @@ public class CitizenServices {
 	 * @param pResponse
 	 * @return
 	 */
-	public static String uploadDocuments(Request pRequest, Response pResponse) {
+	public static Object uploadDocuments(Request pRequest, Response pResponse) {
 
-		String response = "";
+		Object response = null;
 		
 		try {
 									
 			IDocumentSvc fileUploader = new DocumentSvc();
 			fileUploader.uploadDocument(pRequest);
+			response = messager.getOkMessage("Success");
 			
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
 		}
 
 		return response;

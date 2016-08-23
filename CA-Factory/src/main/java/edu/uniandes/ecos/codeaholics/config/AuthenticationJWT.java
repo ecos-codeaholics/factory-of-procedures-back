@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -47,7 +48,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) {
+	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) throws WrongUserOrPasswordException {
 
 		boolean authenticated = false;
 		log.info("Verifying user data...");
@@ -58,6 +59,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		if (documents.isEmpty()) {
 			log.info("User Doesn't Exist");
+			throw new WrongUserOrPasswordException("User Doesn't Exist","101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
@@ -79,9 +81,10 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 					authenticated = true;
 
 				} else {
-					log.info("Wrong password");
 					token = "{}";
 					authenticated = false;
+					log.info("Wrong password");
+					throw new WrongUserOrPasswordException("Wrong password","103");					
 				}
 			}
 		}

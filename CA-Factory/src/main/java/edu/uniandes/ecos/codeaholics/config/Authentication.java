@@ -9,6 +9,8 @@ import org.bson.Document;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
 
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
+
 /**
  * Created by davidMtz on 26/6/16.
  */
@@ -22,7 +24,7 @@ public final class Authentication implements IAuthenticationSvc {
 	// Metodos
 
 	@Override
-	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) {
+	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) throws WrongUserOrPasswordException {
 
 		boolean authenticated = false;
 		log.info("Verifying user data...");
@@ -33,18 +35,21 @@ public final class Authentication implements IAuthenticationSvc {
 
 		if (documents.isEmpty()) {
 			log.info("User Doesn't Exist");
+			throw new WrongUserOrPasswordException("User Doesn't Exist","101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
 			if(documents2.isEmpty()){
 				log.info("Wrong User Profile or not found");
-			}else{
+				throw new WrongUserOrPasswordException("Wrong User Profile or not found","102");
+			} else {
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
 
 				user.append("password", hash[1]);
 
 				ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
+				
 				if (results.size() > 0) {
 					log.info( pEmail+ " authenticated!");
 					createSession(pEmail, pProfile);
@@ -54,8 +59,10 @@ public final class Authentication implements IAuthenticationSvc {
 					responseObj = user;
 					
 				} else {
+					responseObj = "{}";
+					authenticated = false;
 					log.info("Wrong password");
-					responseObj = "{message : \"Wrong password\"}";
+					throw new WrongUserOrPasswordException("Wrong password","103");					
 				}
 			}
 		}

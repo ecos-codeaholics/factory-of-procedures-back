@@ -24,20 +24,6 @@ import spark.Spark;
 
 public class LoginTest {
 
-	// private class AuthAnswer {
-	// String email;
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	// @Override
-	// public String toString() {
-	// return "AuthAnswer [email=" + email + "]";
-	// }
-	//
-	// }
-
 	Logger logger = LogManager.getRootLogger();
 
 	@BeforeClass
@@ -100,8 +86,8 @@ public class LoginTest {
 			reader.close();
 			in.close();
 
-			System.out.println(jsonResponse);
-			System.out.println(result.toString());
+			logger.info(jsonResponse);
+			logger.info(result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,7 +100,7 @@ public class LoginTest {
 		assertEquals("OK", httpMessage);
 		assertTrue(json.getAsJsonObject().has("email"));
 
-		// System.out.println(json.getAsJsonObject().has("email"));
+		//System.out.println(json.getAsJsonObject().has("email"));
 
 	}
 

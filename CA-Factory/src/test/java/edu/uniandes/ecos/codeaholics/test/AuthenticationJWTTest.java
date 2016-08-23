@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -24,7 +25,14 @@ public class AuthenticationJWTTest {
 		String citizenSalt = utilities.getCitizenSalt();
 		
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
-		boolean authenticated = jwtToken.doAuthentication("aosorio@uniandes.edu", "Qwerty", "citizen");
+		
+		
+		boolean authenticated = false;
+		try {
+			authenticated = jwtToken.doAuthentication("aosorio@uniandes.edu", "Qwerty", "citizen");
+		} catch (WrongUserOrPasswordException e1) {
+			e1.printStackTrace();
+		}
 
 		if (authenticated) {
 			token = (String) jwtToken.getAnswer();

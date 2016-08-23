@@ -3,6 +3,9 @@
  */
 
 package edu.uniandes.ecos.codeaholics.config;
+
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
+
 /**
  * Package: codeAholics
  *
@@ -23,8 +26,9 @@ public interface IAuthenticationSvc {
 	 * @param p2: parameter 2 (passwd)
 	 * @param p3: parameter 3 (profile)
 	 * @return true,false
+	 * @throws WrongUserOrPasswordException 
 	 */
-	public boolean doAuthentication(String p1, String p2, String p3);
+	public boolean doAuthentication(String p1, String p2, String p3) throws WrongUserOrPasswordException;
 	
 	/** get an answer from authentication
 	 * @return a String (could be a json token, an OK message, etc)
