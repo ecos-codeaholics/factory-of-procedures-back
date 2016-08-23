@@ -48,23 +48,49 @@ public class App {
 			secure("deploy/keystore.jks", "codeaholics", null, null);
 		}
 		
+		//
+		
 		// Initialize Database Connection
 		DatabaseSingleton.getInstance();
 		
 		staticFiles.location("/public");
 		
-		// Rutas Ciudadano
-		post("/create", CitizenServices::insertCitizen, GeneralUtil.json());
-		post("/citizenLogin", CitizenServices::doLogin, GeneralUtil.json());
-		get("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
-		post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
-		get("/citizen/closeSession", CitizenServices::closeSession, GeneralUtil.json());
+		 //Rutas Ciudadano
+        // Deberiamos cambiar las rutas por citizens
+        // Para el versionamiento de la API debe comenzar con /api/v1
+        
+        
+        //cambiar esta por /citizens/{info citizens} metodo POST
+        post("/create", 
+        		CitizenServices::insertCitizen, GeneralUtil.json());
+        
+        //cambiar esta por /citizens/sessions/{login info}      metodo POST  
+        post("/citizenLogin", CitizenServices::doLogin, GeneralUtil.json());
+        
+        //cambiar por /citizens metodo GET
+        get("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
+        
+        //cambiar /citizens/{id}        metodo GET
+        post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        
+        //cambiar /citizens/sessions/{session id} metodo DELETE
+        get("/citizen/closeSession", CitizenServices::closeSession, GeneralUtil.json());
+        
+        //	/citizens/{id}/procedures/{procedure info} metodo POST, opciones de filtro
+        post("/citizens/:id/procedures/", CitizenServices::startProcedure, GeneralUtil.json());
+        
+        
+        //	/citizens/{id}/procedures/ metodo GET, opciones de filtro
+        get("/citizens/:id/procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
+        
+        //	/citizens/{id}/procedures/{id} metodo GET
+        get("/citizens/:id/procedures/:idP", CitizenServices::consultProceduresById, GeneralUtil.json());
+              
 
-		// Rutas Alcaldia
+        //Rutas Alcaldia
+        
+        //test
 
-		// Admin Alcaldia
-
-		// Rutas Mintic
 
 		before("/citizen/*", Authorization::authorizeCitizen);
 

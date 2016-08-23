@@ -193,11 +193,11 @@ public class CitizenServices {
 	 */
 	public static String startProcedure(Request req, Response res) {
 
-		return "success";
+		return "success method startProcedure";
 	}
 
 	/***
-	 * Consulta historico de tramites.
+	 * Consulta tramites de un ciudadano.
 	 * 
 	 * @param req
 	 *            request
