@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -67,6 +68,12 @@ public class LoginTest {
 		try {
 			URL appUrl = new URL(serverPath + route);
 
+			//TODO ... study and understand why this fixes the Connection refused error
+			System.out.println("===== 0. ");
+            InputStream response = new URL("http://stackoverflow.com").openStream();
+            response.close();
+            System.out.println("===== 0. =====");
+			
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);
 			urlConnection.setUseCaches(false);
