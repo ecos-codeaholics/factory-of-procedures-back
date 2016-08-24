@@ -92,6 +92,8 @@ public class CitizenServices {
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
 			DataBaseUtil.save(citizen.toDocument(), "citizen");
+			
+			//TODO: replace with new service - EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
 			Notification.sendEmail(citizen.getEmail());
 
 			response = messager.getOkMessage("Success");
