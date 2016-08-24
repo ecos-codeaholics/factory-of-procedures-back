@@ -32,7 +32,7 @@ import com.google.gson.JsonParser;
  */
 public class FileUtil {
 
-	public static String LOCAL_TMP_PATH = "D:/Temp/MyDocuments/";
+	public static String LOCAL_TMP_PATH; // = "D:/Temp/MyDocuments/";
 	public static final String LOCAL_TMP_PATH_ENV = "LOCAL_TMP_PATH_ENV";
 
 	private static String root;
@@ -138,15 +138,30 @@ public class FileUtil {
 	 */
 	public static void configTmpDir() throws Exception {
 
-
-		// Get the TMP_PATH from an environment variable
-		String value = System.getenv(LOCAL_TMP_PATH_ENV);
-		if( value != null ) {
-			LOCAL_TMP_PATH = value;	
-		} else {
-			throw new Exception("LOCAL_TMP_PATH_ENV not defined!");
+		ArrayList<String> localStorage = new ArrayList<String>();
+		
+		localStorage.add(LOCAL_TMP_PATH_ENV); // This is the preferred environment variable
+		localStorage.add("TMP");              // second best - linux, windows
+		localStorage.add("HOME");             // if previous fail, last chance
+		
+		Iterator<String> itrPath = localStorage.iterator();
+		
+		boolean found = false;
+		
+		while( itrPath.hasNext()) {
+			//Get the TMP_PATH from an environment variable
+			String testPath = itrPath.next();
+			String value = System.getenv(testPath);
+			if( value != null ) {
+				LOCAL_TMP_PATH = value;	
+				System.out.println("****" + LOCAL_TMP_PATH);
+				found = true;
+				break;
+			} 
+			
 		}
 		
+		if( !found ) throw new Exception("LOCAL_TMP_PATH_ENV not defined!");
 
 	}
 
