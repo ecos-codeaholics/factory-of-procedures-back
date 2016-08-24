@@ -1,3 +1,7 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.persistence;
 
 import spark.ModelAndView;
@@ -11,6 +15,7 @@ public class ViewsHelper {
 
 	public static String render(String templatePath, HashMap<String, Object> model) {
 
-        return new FreeMarkerEngine().render(new ModelAndView(model, templatePath));
-    }
+		return new FreeMarkerEngine().render(new ModelAndView(model, templatePath));
+	}
+	
 }

@@ -1,3 +1,7 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.security.MessageDigest;
@@ -80,16 +84,28 @@ public final class GeneralUtil {
 		return salt;
 	}
 
+	/**
+	 * @param object
+	 * @return
+	 */
 	public static String toJson(Object object) {
 
 		return new Gson().toJson(object);
 	}
 
+	/**
+	 * @return
+	 */
 	public static ResponseTransformer json() {
 
 		return GeneralUtil::toJson;
 	}
 
+	/**
+	 * @param templatePath
+	 * @param model
+	 * @return
+	 */
 	public static String render(String templatePath, HashMap<String, Object> model) {
 
 		return new FreeMarkerEngine().render(new ModelAndView(model, templatePath));

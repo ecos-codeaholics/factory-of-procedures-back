@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -17,9 +18,9 @@ import edu.uniandes.ecos.codeaholics.config.Authentication;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: This is a test for the normal authentication procedure
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: you send email&password returns email
  *
  * Created: Aug 12, 2016 11:48:02 PM
  * 
@@ -33,8 +34,12 @@ public class AuthenticationTest {
 		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "QWERTY");
 		
 		Authentication auth = new Authentication();
-		
-		assertTrue(auth.doAuthentication("aosorio@uniandes", "QWERTY", "citizen"));
+				
+		try {
+			assertTrue(auth.doAuthentication("aosorio@uniandes", "QWERTY", "citizen"));
+		} catch (WrongUserOrPasswordException e) {		
+			e.printStackTrace();
+		}
 		
 	}
 

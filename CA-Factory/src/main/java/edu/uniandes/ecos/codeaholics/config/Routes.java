@@ -1,3 +1,7 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.config;
 
 public class Routes {

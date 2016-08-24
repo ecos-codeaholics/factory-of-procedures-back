@@ -1,3 +1,7 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.business;
 
 import com.google.gson.Gson;
@@ -51,9 +55,6 @@ public class FunctionaryServices {
 
 		return "success";
 	}
-	
-	
-	
 	
 
 }
