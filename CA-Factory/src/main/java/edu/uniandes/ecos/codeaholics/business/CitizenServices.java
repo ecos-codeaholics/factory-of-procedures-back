@@ -8,7 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 import org.bson.Document;
-
+import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -22,6 +22,7 @@ import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import spark.Request;
 import spark.Response;
+import spark.*;
 
 public class CitizenServices {
 
@@ -89,9 +90,11 @@ public class CitizenServices {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		req.body();
+		
+		res.status(200);
+		res.type("application/json");
 		return "success";
+
 	}
 
 	/***
@@ -109,7 +112,7 @@ public class CitizenServices {
 		String fullName = "";
 		for (Document item : documents) {
 			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
-					+ item.get("lastName2").toString();
+					+ item.get("email").toString();
 			item.remove("name");
 			item.remove("lastName1");
 			item.remove("lastName2");
@@ -119,12 +122,15 @@ public class CitizenServices {
 			item.remove("email");
 			item.put("fullName", fullName);
 			dataset.add(item);
+			
 		}
-		Type type = new TypeToken<List<Document>>() {
-		}.getType();
-
+		
+						
+		Type type = new TypeToken<List<Document>>() {}.getType();
 		String json = GSON.toJson(dataset, type);
-
+		
+		res.type("application/json");
+		
 		return json;
 	}
 
@@ -139,9 +145,11 @@ public class CitizenServices {
 	 * @return json informacion disponible del ciudadano
 	 */
 	public static String getCitizenDetail(Request req, Response res) {
+		System.out.println(req.params("identification"));
 		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
 		Document filter = new Document();
 		filter.append("identification", citizen.getIdentification());
+		
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 		for (Document item : documents) {
@@ -149,11 +157,15 @@ public class CitizenServices {
 			item.remove("salt");
 			dataset.add(item);
 		}
+		
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();
 
 		String json = GSON.toJson(dataset, type);
+		
 
+		
+		res.type("application/json");
 		return json;
 	}
 

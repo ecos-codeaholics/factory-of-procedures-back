@@ -1,12 +1,16 @@
 package edu.uniandes.ecos.codeaholics.main;
 
 import static spark.Spark.before;
+
 import static spark.Spark.get;
+import static spark.Spark.delete;
+import static spark.Spark.put;
 import static spark.Spark.options;
 import static spark.Spark.port;
 import static spark.Spark.threadPool;
 import static spark.Spark.post;
 import static spark.Spark.secure;
+import static spark.Spark.after;
 import static spark.Spark.staticFiles;
 
 import java.io.FileInputStream;
@@ -18,6 +22,7 @@ import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 
 /**
  * Created by snaphuman on 6/6/16.
@@ -48,33 +53,33 @@ public class App {
 			secure("deploy/keystore.jks", "codeaholics", null, null);
 		}
 		
-		//
 		
 		// Initialize Database Connection
 		DatabaseSingleton.getInstance();
 		
 		staticFiles.location("/public");
 		
-		 //Rutas Ciudadano
-        // Deberiamos cambiar las rutas por citizens
-        // Para el versionamiento de la API debe comenzar con /api/v1
+		//Rutas Ciudadano
         
+        //crear ciudadano /CITIZENS/{citizen info} metodo POST
+        post(Routes.CITIZENS, CitizenServices::insertCitizen, GeneralUtil.json());
         
-        //cambiar esta por /citizens/{info citizens} metodo POST
-        post("/create", 
-        		CitizenServices::insertCitizen, GeneralUtil.json());
+        //obtener lista de ciudadanos /CITIZENS/ metodo GET
+        get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
         
-        //cambiar esta por /citizens/sessions/{login info}      metodo POST  
-        post("/citizenLogin", CitizenServices::doLogin, GeneralUtil.json());
+        //obtener detalles de un ciudadano /CITIZENS/{id} metodo GET
+        //post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        	//cambiar Routes.CITIZENS+":id" para probar
+        get("/citizens/:identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
+                      
+        //iniciar sesion /SESSIONS/{info login} metodo POST  
+        post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
         
-        //cambiar por /citizens metodo GET
-        get("/citizen/citizenList", CitizenServices::getCitizenList, GeneralUtil.json());
+        //cerrar sesion /SESSIONS/{session info} metodo DELETE
+        delete(Routes.SESSIONS, CitizenServices::closeSession, GeneralUtil.json());
         
-        //cambiar /citizens/{id}        metodo GET
-        post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
-        
-        //cambiar /citizens/sessions/{session id} metodo DELETE
-        get("/citizen/closeSession", CitizenServices::closeSession, GeneralUtil.json());
+  
+
         
         //	/citizens/{id}/procedures/{procedure info} metodo POST, opciones de filtro
         post("/citizens/:id/procedures/", CitizenServices::startProcedure, GeneralUtil.json());
@@ -89,8 +94,8 @@ public class App {
 
         //Rutas Alcaldia
         
-        //test
-
+               
+        
 
 		before("/citizen/*", Authorization::authorizeCitizen);
 
