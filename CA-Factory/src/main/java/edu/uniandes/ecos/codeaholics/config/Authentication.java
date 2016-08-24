@@ -1,3 +1,7 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.util.ArrayList;
@@ -6,9 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.google.gson.Gson;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
+
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 
 /**
  * Created by davidMtz on 26/6/16.
@@ -18,12 +23,12 @@ public final class Authentication implements IAuthenticationSvc {
 	// Atributos
 	private final static Logger log = LogManager.getLogger(Authentication.class);
 
-	private String answerStr;
-	
+	private Object responseObj;
+
 	// Metodos
 
 	@Override
-	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) {
+	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) throws WrongUserOrPasswordException {
 
 		boolean authenticated = false;
 		log.info("Verifying user data...");
@@ -34,30 +39,34 @@ public final class Authentication implements IAuthenticationSvc {
 
 		if (documents.isEmpty()) {
 			log.info("User Doesn't Exist");
+			throw new WrongUserOrPasswordException("User Doesn't Exist", "101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
-			if(documents2.isEmpty()){
+			if (documents2.isEmpty()) {
 				log.info("Wrong User Profile or not found");
-			}else{
+				throw new WrongUserOrPasswordException("Wrong User Profile or not found", "102");
+			} else {
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
 
 				user.append("password", hash[1]);
 
 				ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
+
 				if (results.size() > 0) {
-					log.info( pEmail+ " authenticated!");
+					log.info(pEmail + " authenticated!");
 					createSession(pEmail, pProfile);
 					authenticated = true;
 					user.remove("password");
 					user.remove("userProfile");
-					Gson gson = new Gson();
-					answerStr = gson.toJson(user);
-					//answerStr = user.toJson(); //as it was done before OK (both ways work)
+					responseObj = user;
+
 				} else {
+					responseObj = "{}";
+					authenticated = false;
 					log.info("Wrong password");
-					answerStr = "{message : \"Wrong password\"}";
+					throw new WrongUserOrPasswordException("Wrong password", "103");
 				}
 			}
 		}
@@ -67,14 +76,17 @@ public final class Authentication implements IAuthenticationSvc {
 	}
 
 	@Override
-	public String getAnswer() {
-		return answerStr;
+	public Object getAnswer() {
+		return responseObj;
 	}
 
 	/**
 	 * * Crea una sesion para un usuario dado su email.
-	 * @param pEmail correo del usuario al que se le crea la sesion 
-	 * @param pUserProfile perfil del usuario citizen, functionary, etc
+	 * 
+	 * @param pEmail
+	 *            correo del usuario al que se le crea la sesion
+	 * @param pUserProfile
+	 *            perfil del usuario citizen, functionary, etc
 	 */
 	private static void createSession(String pEmail, String pUserProfile) {
 
@@ -93,11 +105,12 @@ public final class Authentication implements IAuthenticationSvc {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * * Cierra la sesion de un usuario dado su email.
 	 *
-	 * @param pEmail correo del ususario al que se le crea la sesion
+	 * @param pEmail
+	 *            correo del ususario al que se le crea la sesion
 	 */
 	public static void closeSession(String pEmail) {
 		Document session = new Document();

@@ -4,6 +4,11 @@
 
 package edu.uniandes.ecos.codeaholics.test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +21,7 @@ import com.mongodb.client.MongoDatabase;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 
 /**
@@ -34,7 +40,7 @@ import edu.uniandes.ecos.codeaholics.persistence.Citizen;
  */
 public class TestsUtil {
 	
-	Logger logger = LogManager.getRootLogger();
+	static Logger logger = LogManager.getRootLogger();
 	
 	private String citizenSalt;
 	
@@ -45,6 +51,12 @@ public class TestsUtil {
 		return citizenSalt;
 	}
 
+	/** add citizen to db for testing purposes. if it already exists, just update
+	 * @param pName
+	 * @param pLastName1
+	 * @param pEmail
+	 * @param pPwd
+	 */
 	public void addCitizen(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
@@ -78,16 +90,45 @@ public class TestsUtil {
 		
 	}
 	
-	public static String cleanJsonString( String pStr ) {
-		String cleanStr;
-		int pos1 = pStr.indexOf('"');
-		int pos2 = pStr.lastIndexOf('"');
-		System.out.println(pos1 + " " + pos2 + " " + pStr.length());
-		if( pos1 == 0 && pos2 == (pStr.length()-1)) {
-			cleanStr = pStr.substring(1, pos2);
-		} else
-			cleanStr = pStr;
-		return cleanStr;
-	}
+	
+	/** get jetty server full URL
+	 * @return
+	 */
+	public static String getServerPath() {
+		
+		int port = App.JETTY_SERVER_PORT;
+		String server = "http://localhost";
 
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(server);
+		strBuilder.append(":");
+		strBuilder.append(port);
+		String serverPath = strBuilder.toString();
+		
+		return serverPath;
+	}
+	
+	/**
+	 * Remove a created file from local storage
+	 * 
+	 * @param pFileName
+	 */
+	public static void removeTestFile(String pFileName) {
+		
+		File file = new File(pFileName);
+		
+		try {
+			Files.delete(file.toPath());
+			logger.info("Temporay file deleted: " + file.getAbsolutePath());
+		} catch (NoSuchFileException x) {
+			logger.error("%s: no such" + " file or directory%n", file);
+		} catch (DirectoryNotEmptyException x) {
+			logger.error("%s not empty%n", file);
+		} catch (IOException x) {
+			// File permission problems are caught here.
+			logger.error(x.getMessage());
+		}
+	}
+	
+	
 }

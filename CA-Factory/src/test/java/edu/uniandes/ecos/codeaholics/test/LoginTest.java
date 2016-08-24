@@ -1,9 +1,14 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -15,24 +20,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
 public class LoginTest {
-
-	// private class AuthAnswer {
-	// String email;
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	// @Override
-	// public String toString() {
-	// return "AuthAnswer [email=" + email + "]";
-	// }
-	//
-	// }
 
 	Logger logger = LogManager.getRootLogger();
 
@@ -58,12 +53,18 @@ public class LoginTest {
 		String jsonResponse = "";
 		StringBuilder result = new StringBuilder();
 
-		String route = "/citizenLogin";
-		String server = "http://localhost:4567";
+		String route = Routes.SESSIONS;
+		String serverPath = TestsUtil.getServerPath();
 
 		try {
-			URL appUrl = new URL(server + route);
+			URL appUrl = new URL(serverPath + route);
 
+			//TODO ... study and understand why this fixes the Connection refused error
+			System.out.println("===== 0. ");
+            InputStream response = new URL("http://stackoverflow.com").openStream();
+            response.close();
+            System.out.println("===== 0. =====");
+			
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);
 			urlConnection.setUseCaches(false);
@@ -81,34 +82,30 @@ public class LoginTest {
 			InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
 			BufferedReader reader = new BufferedReader(in);
 
-			int line = 0;
 			String text = "";
 			while ((text = reader.readLine()) != null) {
 				jsonResponse += text;
 				result.append(text);
-				line += 1;
-				System.out.println(line);
 			}
 
 			reader.close();
 			in.close();
 
-			System.out.println(jsonResponse);
-			System.out.println(result.toString());
+			logger.info(jsonResponse);
+			logger.info(result.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		/*
-		 * JsonParser parser = new JsonParser(); JsonObject json =
-		 * parser.parse(result.toString()).getAsJsonObject();
-		 */
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(result.toString()).getAsJsonObject();
 
 		assertEquals(200, httpResult);
 		assertEquals("OK", httpMessage);
+		assertTrue(json.getAsJsonObject().has("email"));
 
-		// System.out.println(json.getAsJsonObject().has("email"));
+		//System.out.println(json.getAsJsonObject().has("email"));
 
 	}
 

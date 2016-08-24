@@ -1,4 +1,9 @@
+/** Copyright or License
+ *
+ */
+
 package edu.uniandes.ecos.codeaholics.test;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
