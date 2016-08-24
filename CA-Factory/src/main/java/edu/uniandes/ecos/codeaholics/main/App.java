@@ -70,7 +70,7 @@ public class App {
         //obtener detalles de un ciudadano /CITIZENS/{id} metodo GET
         //post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
         	//cambiar Routes.CITIZENS+":id" para probar
-        get("/citizens/:identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        get(Routes.CITIZENS+":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
                       
         //iniciar sesion /SESSIONS/{info login} metodo POST  
         post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());

@@ -145,11 +145,20 @@ public class CitizenServices {
 	 * @return json informacion disponible del ciudadano
 	 */
 	public static String getCitizenDetail(Request req, Response res) {
-		System.out.println(req.params("identification"));
-		Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
-		Document filter = new Document();
-		filter.append("identification", citizen.getIdentification());
 		
+		System.out.println(req.params("identification"));
+				
+		//Citizen citizen = GSON.fromJson(req.params().toString(), Citizen.class);
+		//Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
+				
+		Document filter = new Document();
+			
+		//filter = filter.append("identification", citizen.getIdentification());
+		filter = filter.append("identification", req.params("identification"));
+		
+		System.out.println(filter.toString());
+		
+				
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 		for (Document item : documents) {
@@ -157,6 +166,8 @@ public class CitizenServices {
 			item.remove("salt");
 			dataset.add(item);
 		}
+		
+		System.out.println(dataset.get(0));
 		
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();
