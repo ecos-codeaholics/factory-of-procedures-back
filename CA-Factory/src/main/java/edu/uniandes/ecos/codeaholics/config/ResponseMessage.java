@@ -19,6 +19,10 @@ package edu.uniandes.ecos.codeaholics.config;
  */
 public class ResponseMessage implements IMessageSvc {
 
+	public enum Levels {
+	    DEBUG, ERROR, OK, INFO, WARNING;
+	}
+	
 	public class Response {
 		
 		@SuppressWarnings("unused")
