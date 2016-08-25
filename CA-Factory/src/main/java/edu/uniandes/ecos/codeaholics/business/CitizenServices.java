@@ -68,6 +68,7 @@ public class CitizenServices {
 			response = messager.getNotOkMessage(e.getMessage());
 		}
 
+		pResponse.type("application/json");
 		return response;
 
 	}
@@ -111,7 +112,7 @@ public class CitizenServices {
 
 		// HEAD
 		// res.status(200);
-		// res.type("application/json");
+		pResponse.type("application/json");
 		// return "success";
 
 		pRequest.body();
@@ -153,7 +154,6 @@ public class CitizenServices {
 		String json = GSON.toJson(dataset, type);
 
 		pResponse.type("application/json");
-
 		return json;
 	}
 
@@ -168,23 +168,13 @@ public class CitizenServices {
 	 * @return json informacion disponible del ciudadano
 	 */
 public static String getCitizenDetail(Request pRequest, Response pResponse) {
-		
-		System.out.println(pRequest.params("identification"));
-				
-		//Citizen citizen = GSON.fromJson(req.params().toString(), Citizen.class);
-		//Citizen citizen = GSON.fromJson(req.body(), Citizen.class);
 
-
-		Citizen citizen = GSON.fromJson(pRequest.body(), Citizen.class);
+		//Este no hace falta por por que el body del request viene null
+		//Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
 
 		Document filter = new Document();
-			
-		//filter = filter.append("identification", citizen.getIdentification());
-		filter = filter.append("identification", pRequest.params("identification"));
-		
-		System.out.println(filter.toString());
-
-				
+		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
+						
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 		for (Document item : documents) {
@@ -192,17 +182,14 @@ public static String getCitizenDetail(Request pRequest, Response pResponse) {
 			item.remove("salt");
 			dataset.add(item);
 		}
-
-		System.out.println(dataset.get(0));
 		
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();
 
 		String json = GSON.toJson(dataset, type);
-
+		
 		pResponse.type("application/json");
 		return json;
-
 	}
 
 	/***
@@ -216,12 +203,14 @@ public static String getCitizenDetail(Request pRequest, Response pResponse) {
 	 * @return json informacion disponible del ciudadano
 	 */
 	public static Object closeSession(Request pRequest, Response pResponse) {
-
+		
+		
 		Object response = null;
 
 		try {
 
-			String email = pRequest.queryParams("email");
+			String email = pRequest.params("email");
+			System.out.println(email);
 			Authentication.closeSession(email);
 
 			response = messager.getOkMessage("Success");
@@ -231,6 +220,7 @@ public static String getCitizenDetail(Request pRequest, Response pResponse) {
 			response = messager.getNotOkMessage(e.getMessage());
 		}
 
+		pResponse.type("application/json");
 		return response;
 	}
 

@@ -60,61 +60,22 @@ public class App {
 
 		//... Rutas Ciudadano
 
-		// crear ciudadano /CITIZENS/{citizen info} metodo POST
+		// crear ciudadano /CITIZENS/ metodo POST {citizen info json}
 		post(Routes.CITIZENS, CitizenServices::insertCitizen, GeneralUtil.json());
 
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
-		// obtener detalles de un ciudadano /CITIZENS/{id} metodo GET
-		// post("/citizen/getCitizen", CitizenServices::getCitizenDetail,
-		// GeneralUtil.json());
-		// cambiar Routes.CITIZENS+":id" para probar
-		get("/citizens/:identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
+	    //obtener detalles de un ciudadano /CITIZENS/{id} --> template metodo GET
+        get(Routes.CITIZENS+":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
 
-		// iniciar sesion /SESSIONS/{info login} metodo POST
+		// iniciar sesion /SESSIONS/   metodo POST {info login json}
 		post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
 
-		// cerrar sesion /SESSIONS/{session info} metodo DELETE
-		delete(Routes.SESSIONS, CitizenServices::closeSession, GeneralUtil.json());
+		// cerrar sesion /SESSIONS/  metodo DELETE {session info json}
+		delete(Routes.SESSIONS+":email", CitizenServices::closeSession, GeneralUtil.json());
 
-		// /citizens/{id}/procedures/{procedure info} metodo POST, opciones de
-		// filtro
-		post("/citizens/:id/procedures/", CitizenServices::startProcedure, GeneralUtil.json());
-
-		// /citizens/{id}/procedures/ metodo GET, opciones de filtro
-		get("/citizens/:id/procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
-
-		// /citizens/{id}/procedures/{id} metodo GET
-		get("/citizens/:id/procedures/:idP", CitizenServices::consultProceduresById, GeneralUtil.json());
-
-		// TODO: integrate the following routes RESTFUL
-		// AO  : upload documents
-		post("/citezen/documents/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
-		// AO  : download documents
-		//post("/citezen/documents/upload", CitizenServices::downloadDocuments, GeneralUtil.json());
 		
-
-		//Rutas Ciudadano
-        
-        //crear ciudadano /CITIZENS/{citizen info} metodo POST
-        post(Routes.CITIZENS, CitizenServices::insertCitizen, GeneralUtil.json());
-        
-        //obtener lista de ciudadanos /CITIZENS/ metodo GET
-        get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
-        
-        //obtener detalles de un ciudadano /CITIZENS/{id} metodo GET
-        //post("/citizen/getCitizen", CitizenServices::getCitizenDetail, GeneralUtil.json());
-        	//cambiar Routes.CITIZENS+":id" para probar
-        get(Routes.CITIZENS+":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
-                      
-        //iniciar sesion /SESSIONS/{info login} metodo POST  
-        post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
-        
-        //cerrar sesion /SESSIONS/{session info} metodo DELETE
-        delete(Routes.SESSIONS, CitizenServices::closeSession, GeneralUtil.json());
-        
-  
 
 		//... Rutas Alcaldia
 		// TODO
