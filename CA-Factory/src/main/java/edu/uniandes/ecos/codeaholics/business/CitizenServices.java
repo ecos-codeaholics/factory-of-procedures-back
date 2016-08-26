@@ -6,7 +6,9 @@ package edu.uniandes.ecos.codeaholics.business;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -15,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.mongodb.MongoWriteException;
 
 import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
@@ -129,7 +132,7 @@ public class CitizenServices {
 	 *            response
 	 * @return lista con json por cada ciudadano
 	 */
-	public static String getCitizenList(Request pRequest, Response pResponse) {
+	public static Object getCitizenList(Request pRequest, Response pResponse) {
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
@@ -149,12 +152,13 @@ public class CitizenServices {
 
 		}
 
+		
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();
-		String json = GSON.toJson(dataset, type);
+		//String json = GSON.toJson(dataset, type);
 
 		pResponse.type("application/json");
-		return json;
+		return dataset;
 	}
 
 	/***
@@ -167,7 +171,7 @@ public class CitizenServices {
 	 *            response
 	 * @return json informacion disponible del ciudadano
 	 */
-public static String getCitizenDetail(Request pRequest, Response pResponse) {
+public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
 		//Este no hace falta por por que el body del request viene null
 		//Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
@@ -186,10 +190,10 @@ public static String getCitizenDetail(Request pRequest, Response pResponse) {
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();
 
-		String json = GSON.toJson(dataset, type);
+		//String json = GSON.toJson(dataset, type);
 		
 		pResponse.type("application/json");
-		return json;
+		return dataset;
 	}
 
 	/***
@@ -317,5 +321,74 @@ public static String getCitizenDetail(Request pRequest, Response pResponse) {
 		return response;
 
 	}
+	
+	public static Object resetPassword (Request pRequest, Response pResponse) {
+		Object response = null;
+		
+		try {
+			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
+			System.out.println(data.getEmail()+" "+data.getIdentification());
+			
+			Document filter = new Document();
+			filter.append("identification", data.getIdentification());
+			filter.append("email", data.getEmail());
+			
+			
+			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
+			
+			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
+			if (documents.isEmpty()){//throw exception
+				}
+			
+			//Create randomize password
+			String newPassword = GeneralUtil.randomPassword();
+			
+			System.out.println(newPassword);
+			//create hash
+			String newSalt = null;
+			String[] hash = GeneralUtil.getHash(newPassword, "");
+			newPassword = hash[1];
+			newSalt = hash[0];
+			
+			
+			
+			System.out.println(newPassword);
+			System.out.println(newSalt);
+			
+			
+			//send value to change
+			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
+			valuesToReplace.put("password", newPassword);
+			valuesToReplace.put("salt", newSalt);
+			
+			//send salt and password to the register in the DB
+			Document register = new Document(valuesToReplace);
+			System.out.println(register + " Reset Passsword");
+			DataBaseUtil.update(filter, register, "citizen");
+			
+			//send new password by email
+			//TODO replace with the service EmailNotifierSvc
+			try {
+				Notification.sendEmail(documents.get(0).getString("email"));
+			} catch (AddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} 
+		catch (MongoWriteException M) {
+			// TODO: handle exception
+			System.out.println("Mongo Exception");
+			
+		}
+		
+		
+
+				
+		return response;
+	} 
 
 }
