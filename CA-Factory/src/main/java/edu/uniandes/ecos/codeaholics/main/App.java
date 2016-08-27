@@ -1,17 +1,14 @@
 package edu.uniandes.ecos.codeaholics.main;
 
 import static spark.Spark.before;
-
-import static spark.Spark.get;
 import static spark.Spark.delete;
+import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.port;
-import static spark.Spark.threadPool;
 import static spark.Spark.post;
 import static spark.Spark.secure;
-import static spark.Spark.after;
-import static spark.Spark.put;
 import static spark.Spark.staticFiles;
+import static spark.Spark.threadPool;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +54,9 @@ public class App {
 		DatabaseSingleton.getInstance();
 
 		staticFiles.location("/public");
+		
+		//Metodo que habilita el CORS
+		CorsFilter.apply();
 
 		//... Rutas Ciudadano
 
@@ -87,7 +87,7 @@ public class App {
 		//... Rutas Mintic
 		// TODO
 
-		before("/citizen/*", Authorization::authorizeCitizen);
+		before("/algo/*", Authorization::authorizeCitizen);
 
 		/**
 		 * Enable CORS in Spark Java to allow origins *
@@ -109,47 +109,7 @@ public class App {
 			return "OK";
 		});
 
-		before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
-
 	}
-
-	/*
-	 * Enables CORS on requests. This method is an initialization method and should be called once.
-	 * 
-	 * https://sparktutorials.github.io/2016/05/01/cors.html
-	 *
-	 * TODO: check if this is a more complete solution to adding CORS (AO)
-	 * TODO: remove the SuppressWaring when done
-	 * 
-	 */
-	
-	@SuppressWarnings("unused")
-	private static void enableCORS(final String origin, final String methods, final String headers) {
-
-	    options("/*", (request, response) -> {
-
-	        String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
-	        if (accessControlRequestHeaders != null) {
-	            response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
-	        }
-
-	        String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
-	        if (accessControlRequestMethod != null) {
-	            response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
-	        }
-
-	        return "OK";
-	    });
-
-	    before((request, response) -> {
-	        response.header("Access-Control-Allow-Origin", origin);
-	        response.header("Access-Control-Request-Method", methods);
-	        response.header("Access-Control-Allow-Headers", headers);
-	        // Note: this may or may not be necessary in your particular application
-	        response.type("application/json");
-	    });
-	}
-	
 
 	/** 
 	 * Get JETTY configuration from properties file
