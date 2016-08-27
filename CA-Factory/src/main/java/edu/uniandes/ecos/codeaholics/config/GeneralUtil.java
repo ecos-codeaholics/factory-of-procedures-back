@@ -6,6 +6,7 @@ package edu.uniandes.ecos.codeaholics.config;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -110,5 +111,18 @@ public final class GeneralUtil {
 
 		return new FreeMarkerEngine().render(new ModelAndView(model, templatePath));
 	}
-
+	
+	public static String randomPassword(){
+		String result= null;
+		String string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		SecureRandom rnd = new SecureRandom();
+		int length = 10;
+		
+		StringBuilder sb = new StringBuilder( length );
+		   for( int i = 0; i < length; i++ ) 
+		      sb.append(string.charAt(rnd.nextInt(string.length()) ) );
+		result = sb.toString();
+		
+		return result;	
+	}
 }

@@ -5,7 +5,6 @@
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.util.ArrayList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -41,6 +40,7 @@ public final class DataBaseUtil {
 		log.info("-----------------------------------");
 		log.info("Successful Insert");
 		log.info("-----------------------------------");
+		
 	}
 
 	/***
@@ -83,6 +83,31 @@ public final class DataBaseUtil {
 			results.add(document);
 		}
 		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * @param pFilter
+	 * @param pRegister
+	 * @param pCollection
+	 * @throws MongoWriteException
+	 */
+	public static void update(Document pFilter, Document pRegister, String pCollection) throws MongoWriteException {
+		//create JSON with the $SET parameter (It's use to update a register in the DB)
+		Document registerOperator = new Document();
+		registerOperator.append("$set", pRegister);
+		
+		//get the collection
+		MongoCollection<Document> collection = db.getCollection(pCollection);
+				
+		//update the DB
+		log.debug("Updating " + pRegister);
+		log.debug("In Collection " + pCollection);
+		collection.updateOne(pFilter, registerOperator);
+		log.info("-----------------------------------");
+		log.info("Successful Updated");
+		log.info("-----------------------------------");
 	}
 
 }

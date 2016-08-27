@@ -68,7 +68,13 @@ public class App {
 
 	    //obtener detalles de un ciudadano /CITIZENS/{id} --> template metodo GET
         get(Routes.CITIZENS+":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
-
+        
+	    //reset de clave /CITIZENS/ metodo PUT {info password recovery json, {email, id}}
+        put(Routes.CITIZENS, CitizenServices::resetPassword, GeneralUtil.json());
+        
+	    //cambio de clave /CITIZENS/{id} metodo PUT {info change password json, {old password, new pass}}
+        put(Routes.CITIZENS, CitizenServices::getCitizenDetail, GeneralUtil.json());
+        
 		// iniciar sesion /SESSIONS/   metodo POST {info login json}
 		post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
 
@@ -116,7 +122,7 @@ public class App {
 	 * @param pConfig
 	 *               this is the path and name of the configuration file
 	 */
-	private static void getConfig(String pConfig) {
+	private static void getConfig (String pConfig) {
 
 		Properties prop = new Properties();
 		InputStream input = null;
