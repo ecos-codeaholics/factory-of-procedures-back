@@ -6,6 +6,7 @@ import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.put;
 import static spark.Spark.secure;
 import static spark.Spark.staticFiles;
 import static spark.Spark.threadPool;
