@@ -31,7 +31,7 @@ public class Notification {
 		System.out.println("\n\n ===> Your Java Program has just sent an Email successfully. Check your email..");
 	}
 
-	public static void sendEmail(String recipient) throws AddressException, MessagingException {
+	public static void sendEmail (String recipient) throws AddressException, MessagingException {
 
 		log.debug("setup Mail Server Properties..");
 		mailServerProperties = System.getProperties();

@@ -25,6 +25,8 @@ import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
+import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
+import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
@@ -347,14 +349,8 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			//create hash
 			String newSalt = null;
 			String[] hash = GeneralUtil.getHash(newPassword, "");
-			newPassword = hash[1];
+			String newPasswordHashed = hash[1];
 			newSalt = hash[0];
-			
-			
-			
-			System.out.println(newPassword);
-			System.out.println(newSalt);
-			
 			
 			//send value to change
 			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
@@ -363,31 +359,32 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			
 			//send salt and password to the register in the DB
 			Document register = new Document(valuesToReplace);
-			System.out.println(register + " Reset Passsword");
 			DataBaseUtil.update(filter, register, "citizen");
 			
-			//send new password by email
-			//TODO replace with the service EmailNotifierSvc
-			try {
-				Notification.sendEmail(documents.get(0).getString("email"));
-			} catch (AddressException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//create array list to ssend as a parameter to the EmailNotifierSvc
+			ArrayList<String> parametersEmail = new ArrayList<>();
+			parametersEmail.add(data.getEmail());
+			parametersEmail.add(newPassword);
 			
+			//Send Email
+			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
+			sendPassword.send(EmailType.RECOVERY, parametersEmail);
+			
+			
+			//Notification.sendEmail("jasonlll88@hotmail.com");
 		} 
 		catch (MongoWriteException M) {
 			// TODO: handle exception
 			System.out.println("Mongo Exception");
 			
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		
-
-				
 		return response;
 	} 
 

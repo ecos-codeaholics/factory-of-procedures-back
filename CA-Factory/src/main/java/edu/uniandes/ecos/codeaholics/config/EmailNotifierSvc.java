@@ -4,9 +4,15 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  *
  * Class: EmailNotifierSvc EmailNotifierSvc.java
  * 
- * Original Author: @author Jheison Rodriguez
+ * Original Author: @author Andres Osorio
  * 
  * Description: Notify by email
  * 
@@ -26,6 +32,8 @@ import org.apache.logging.log4j.Logger;
  * Created: Aug 24, 2016 3:50:47 PM
  * 
  */
+
+	
 public class EmailNotifierSvc {
 
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
@@ -61,6 +69,7 @@ public class EmailNotifierSvc {
 		mailServerProperties.put("mail.smtp.starttls.enable", "true");
 		log.debug("Mail Server Properties have been setup successfully..");
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+		
 	}
 	
 	public void add() {
@@ -71,9 +80,38 @@ public class EmailNotifierSvc {
 		
 	}
 	
-	public void send( EmailType pContext, String pToEmail ) {
+	/**
+	 * 
+	 * @param pContext
+	 * @param pToEmail ArrayList, the first parameter is the email which are going to recive the msj, In the case of recovery the second parameter is the new password
+	 * @throws AddressException
+	 * @throws MessagingException
+	 */
+	public void send( EmailType pContext, ArrayList<String> pToEmail ) throws AddressException, MessagingException  {
+		if (pContext == EmailType.RECOVERY){
+				generateMailMessage = new MimeMessage(getMailSession);
+				generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
+				generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
+				String emailBody = "Su password a sido restaurado de forma existosa en nuestro sistema. "
+						+ "<br>Su nuevo password es: "+pToEmail.get(1)
+						+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+				generateMailMessage.setContent(emailBody, "text/html");
+				log.debug("Mail Session has been created successfully..");
+				log.info("-----------------------------------");
+				log.info("Get Session and Send mail to recover the password");
+				log.info("-----------------------------------");
+				Transport transport = getMailSession.getTransport("smtp");
+				transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+				transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+				transport.close();
+					 
+						
+		}
+		
 		
 		
 	}
+	
+
 	
 }
