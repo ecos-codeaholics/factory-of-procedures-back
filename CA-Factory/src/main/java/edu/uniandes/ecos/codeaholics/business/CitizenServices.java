@@ -12,11 +12,14 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.management.relation.RelationServiceNotRegisteredException;
+
 import org.bson.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.mongodb.MongoClientException;
 import com.mongodb.MongoWriteException;
 
 import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
@@ -341,6 +344,8 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			
 			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
 			if (documents.isEmpty()){//throw exception
+				 throw new MongoClientException("Usuario e identificacion no coinciden");
+				
 				}
 			
 			//Create randomize password
@@ -355,7 +360,7 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			
 			//send value to change
 			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
-			valuesToReplace.put("password", newPassword);
+			valuesToReplace.put("password", newPasswordHashed);
 			valuesToReplace.put("salt", newSalt);
 			
 			//send salt and password to the register in the DB
@@ -371,9 +376,15 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 			sendPassword.send(EmailType.RECOVERY, parametersEmail);
 			
-			
+			response = messager.getOkMessage("Success");
+		
 			//Notification.sendEmail("jasonlll88@hotmail.com");
 		} 
+		
+		catch (MongoClientException M) {
+			// TODO: handle exception
+			System.out.println("Success");
+		}
 		catch (MongoWriteException M) {
 			// TODO: handle exception
 			System.out.println("Mongo Exception");
