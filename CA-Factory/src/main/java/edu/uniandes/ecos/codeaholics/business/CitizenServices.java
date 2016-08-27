@@ -39,6 +39,8 @@ public class CitizenServices {
 
 	private static IMessageSvc messager = new ResponseMessage();
 
+	private static IDocumentSvc fileManager = new DocumentSvc();
+	
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
 	 * 
@@ -309,8 +311,7 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
 		try {
 
-			IDocumentSvc fileUploader = new DocumentSvc();
-			fileUploader.uploadDocument(pRequest);
+			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage("Success");
 
 		} catch (JsonSyntaxException e) {
@@ -384,11 +385,45 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 			System.out.println("Mongo Exception");
 			
 		}
-		
-		
-
-				
+						
 		return response;
 	} 
 
+	public static Object downloadDocuments(Request pRequest, Response pResponse) {
+
+		Object response = null;
+
+		try {
+
+			response = fileManager.downloadDocument(pRequest, pResponse);
+
+		} catch (JsonSyntaxException e) {
+			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
+		}
+
+		return response;
+
+	}
+	
+	public static Object listDocuments(Request pRequest, Response pResponse) {
+
+		Object response = null;
+
+		try {
+
+			response = fileManager.listDocuments();
+
+		} catch (JsonSyntaxException e) {
+			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+
+	}
+	
 }
