@@ -99,6 +99,7 @@ public class CitizenServices {
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
+			citizen.setUserProfile("citizen");
 			DataBaseUtil.save(citizen.toDocument(), "citizen");
 			
 			//TODO: replace with new service - EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
