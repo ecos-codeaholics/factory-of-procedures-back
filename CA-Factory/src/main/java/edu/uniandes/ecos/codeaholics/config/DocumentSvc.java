@@ -50,7 +50,8 @@ public class DocumentSvc implements IDocumentSvc {
 	Logger logger = LogManager.getRootLogger();
 	
 	private String answerStr = "";
-		
+	
+
 	/* (non-Javadoc)
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#uploadDocument(Request pRequest)
 	 */
@@ -96,7 +97,7 @@ public class DocumentSvc implements IDocumentSvc {
 
 				Gson gson = new Gson();
 				answerStr = gson.toJson(rDoc);
-				System.out.println(answerStr);
+				logger.info(answerStr);
 				
 			}
 			
@@ -113,9 +114,21 @@ public class DocumentSvc implements IDocumentSvc {
 	@Override
 	public HttpServletResponse downloadDocument(Request pRequest, Response pResponse) {
 
-		String key = pRequest.queryParams("filepath");
-		Path path = Paths.get(key);
-
+		String locationDir = null;
+		Path path = null;
+		String outFileName = null;
+		try {
+			FileUtil.configTmpDir();
+			locationDir = FileUtil.LOCAL_TMP_PATH;
+			String key = pRequest.queryParams("filepath");
+			path = Paths.get(locationDir + "/" + key);
+			outFileName = key;
+			
+		} catch (Exception e) {
+			locationDir = "";
+			logger.error(e.getMessage());
+		}
+		
 		byte[] data = null;
 		try {
 			data = Files.readAllBytes(path);
@@ -123,9 +136,9 @@ public class DocumentSvc implements IDocumentSvc {
 
 			e1.printStackTrace();
 		}
-
+	
 		HttpServletResponse raw = pResponse.raw();
-		pResponse.header("Content-Disposition", "attachment; filename=image.jpg");
+		pResponse.header("Content-Disposition", "attachment; filename=" + outFileName);
 		pResponse.type("application/force-download");
 		try {
 			raw.getOutputStream().write(data);

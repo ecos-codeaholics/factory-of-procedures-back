@@ -8,8 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.servlet.http.Part;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -63,14 +61,14 @@ public class FileUtil {
 	 * @param output
 	 * @param fileExt
 	 */
-	public static void getSourceFiles(File[] current_files, ArrayList<String> output, String fileExt) {
+	public static void getSourceFiles(File[] pCurrentFiles, ArrayList<String> pOutput, String pFileExt) {
 
-		for (File file : current_files) {
+		for (File file : pCurrentFiles) {
 			if ( file.isDirectory() && (currentLevel < MAX_DEPTH_LEVEL) ) {
-				getSourceFiles(file.listFiles(), output, fileExt);
+				getSourceFiles(file.listFiles(), pOutput, pFileExt);
 				currentLevel += 1;
 			} else {
-				output.add(file.getAbsolutePath());
+				pOutput.add(file.getAbsolutePath());
 			}
 		}
 	}
@@ -78,6 +76,7 @@ public class FileUtil {
 	/**
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private static String getList() {
 
 		ArrayList<String> files = listDownloadedFiles(LOCAL_TMP_PATH);
@@ -101,16 +100,6 @@ public class FileUtil {
 		return allFiles;
 	}
 
-	/**
-	 * @param part
-	 * @return
-	 */
-	/*
-	 * private static String getFileName(Part part) { for (String cd :
-	 * part.getHeader("content-disposition").split(";")) { if
-	 * (cd.trim().startsWith("filename")) { return cd.substring(cd.indexOf('=')
-	 * + 1).trim().replace("\"", ""); } } return null; }
-	 */
 
 	/**
 	 * @param pPath
@@ -128,8 +117,8 @@ public class FileUtil {
 	 * @param str
 	 * @return
 	 */
-	public static String removeLastChar(String str) {
-		return str.substring(0, str.length() - 1);
+	public static String removeLastChar(String pStr) {
+		return pStr.substring(0, pStr.length() - 1);
 	}
 
 	/**
@@ -154,7 +143,7 @@ public class FileUtil {
 			String value = System.getenv(testPath);
 			if (value != null) {
 				LOCAL_TMP_PATH = value;
-				System.out.println("****" + LOCAL_TMP_PATH);
+				//System.out.println("****" + LOCAL_TMP_PATH);
 				found = true;
 				break;
 			}

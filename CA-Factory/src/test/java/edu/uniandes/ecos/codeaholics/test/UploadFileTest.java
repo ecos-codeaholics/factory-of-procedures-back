@@ -8,10 +8,7 @@ import static org.junit.Assert.*;
 import static spark.Spark.post;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -46,8 +43,8 @@ import spark.Spark;
  */
 public class UploadFileTest {
 
-	Logger logger = LogManager.getRootLogger();
-	String filePath = "";
+	Logger logger = LogManager.getLogger(UploadFileTest.class);
+	//String filePath = "";
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -66,7 +63,7 @@ public class UploadFileTest {
 		logger.info("Running upload test");
 
 		String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-		createTestFile(timeLog);
+		TestsUtil.createTestFile(timeLog);
 
 		int httpResult = 0;
 		String httpMessage = "";
@@ -130,21 +127,18 @@ public class UploadFileTest {
 			InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
 			BufferedReader reader = new BufferedReader(in);
 
-			int line = 0;
 			String text = "";
 			while ((text = reader.readLine()) != null) {
 				jsonResponse += text;
 				result.append(text);
-				line += 1;
-				System.out.println(line);
 			}
 
 			reader.close();
 			in.close();
 			//urlConnection.disconnect();
 			
-			System.out.println(jsonResponse);
-			System.out.println(result.toString());
+			logger.info(jsonResponse);
+			logger.info(result.toString());
 		
 			//TODO: move this outside of the try catch once the Connection error is understood
 			assertEquals(200, httpResult);
@@ -158,34 +152,4 @@ public class UploadFileTest {
 		
 	}
 
-	/**
-	 * create a temporary file for this test
-	 * 
-	 * @param pFileName
-	 */
-	public void createTestFile(String pFileName) {
-
-		BufferedWriter writer = null;
-		try {
-
-			File logFile = new File(pFileName);
-			filePath = logFile.getCanonicalPath();
-			logger.info(filePath);
-
-			writer = new BufferedWriter(new FileWriter(logFile));
-			writer.write("Hello world!");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				// Close the writer regardless of what happens...
-				writer.close();
-			} catch (Exception e) {
-			}
-		}
-	}
-
-
-	
 }

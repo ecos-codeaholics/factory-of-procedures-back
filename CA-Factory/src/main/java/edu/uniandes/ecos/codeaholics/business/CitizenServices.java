@@ -159,7 +159,6 @@ public class CitizenServices {
 			dataset.add(item);
 
 		}
-
 		
 		Type type = new TypeToken<List<Document>>() {
 		}.getType();

@@ -19,7 +19,7 @@ import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 
 public class MessagesTest {
 	
-	Logger logger = LogManager.getRootLogger();
+	Logger logger = LogManager.getLogger(MessagesTest.class);
 	
 	private IMessageSvc messageSvc = new ResponseMessage();
 	
