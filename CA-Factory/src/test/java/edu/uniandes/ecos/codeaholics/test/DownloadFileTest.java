@@ -157,6 +157,7 @@ public class DownloadFileTest {
 		try {
 			tmpFilePath = TestsUtil.getTmpDir() + File.separator + tmpFile;
 			saveDir = TestsUtil.getTmpDir() + File.separator + "downloads";
+			TestsUtil.checkDir(saveDir);
 
 		} catch (Exception e1) {
 			tmpFilePath = tmpFile;
@@ -170,7 +171,7 @@ public class DownloadFileTest {
 		URL appUrl;
 
 		try {
-			
+
 			appUrl = new URL(serverPath + DOC_DOWNLOAD_ROUTE + "?filepath=" + tmpFile);
 
 			// TODO ... study and understand why this fixes the Connection
@@ -185,8 +186,8 @@ public class DownloadFileTest {
 			httpResult = urlConnection.getResponseCode();
 			httpMessage = urlConnection.getResponseMessage();
 
-			if ( httpResult == HttpURLConnection.HTTP_OK ) {
-				
+			if (httpResult == HttpURLConnection.HTTP_OK) {
+
 				String fileName = "";
 				String disposition = urlConnection.getHeaderField("Content-Disposition");
 				String contentType = urlConnection.getContentType();
@@ -224,7 +225,7 @@ public class DownloadFileTest {
 				inputStream.close();
 
 				success = true;
-				
+
 				logger.info("File downloaded");
 			} else {
 				logger.info("No file to download. Server replied HTTP code: " + httpResult);
@@ -238,7 +239,7 @@ public class DownloadFileTest {
 		assertEquals(200, httpResult);
 		assertEquals("OK", httpMessage);
 		assertTrue(success);
-		
+
 	}
 
 }

@@ -12,6 +12,8 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -167,21 +169,57 @@ public class TestsUtil {
 	 */
 	public static String getTmpDir() throws Exception {
 
-		String tmpVar = "TMP"; // second best - linux, windows
+		String tmpPath = null;
+		ArrayList<String> localStorage = new ArrayList<String>();
+
+		localStorage.add("LOCAL_TMP_PATH_ENV"); // This is the preferred
+												// environment variable
+		localStorage.add("TMP"); // second best - linux, windows
+		localStorage.add("HOME"); // if previous fail, last chance
+
+		Iterator<String> itrPath = localStorage.iterator();
+
 		boolean found = false;
 
 		// Get the TMP_PATH from an environment variable
-		String value = System.getenv(tmpVar);
-		if (value != null) {
-			found = true;
-			return value;
+		while (itrPath.hasNext()) {
+			String testPath = itrPath.next();
+			String value = System.getenv(testPath);
+			if (value != null) {
+				tmpPath = value;
+				found = true;
+				break;
+			}
 		}
-
 		if (!found)
 			throw new Exception("TMP not defined!");
 
-		return null;
+		return tmpPath;
 
 	}
 
+	/** Check if the input directory exists, if not then create it
+	 * @param inputDir
+	 */
+	public static void checkDir(String inputDir) {
+
+		File theDir = new File(inputDir);
+
+		// if the directory does not exist, create it
+		if (!theDir.exists()) {
+			logger.info("creating directory: " + inputDir);
+			boolean result = false;
+
+			try {
+				theDir.mkdir();
+				result = true;
+			} catch (SecurityException se) {
+				se.printStackTrace();
+			}
+			if (result) {
+				logger.info("DIR created");
+			}
+		}
+
+	}
 }
