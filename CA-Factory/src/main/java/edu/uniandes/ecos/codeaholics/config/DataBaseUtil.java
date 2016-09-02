@@ -87,11 +87,12 @@ public final class DataBaseUtil {
 	
 	
 	/**
+	 * Actualiza un registro en la base de datos
 	 * 
-	 * @param pFilter
-	 * @param pRegister
-	 * @param pCollection
-	 * @throws MongoWriteException
+	 * @param pFilter documento filtro
+	 * @param pRegister registro para actualizar
+	 * @param pCollection coleccion en donde actulizarlo
+	 * @throws MongoWriteException exception de mongo
 	 */
 	public static void update(Document pFilter, Document pRegister, String pCollection) throws MongoWriteException {
 		//create JSON with the $SET parameter (It's use to update a register in the DB)

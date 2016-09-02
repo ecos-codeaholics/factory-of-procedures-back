@@ -31,9 +31,7 @@ import org.apache.logging.log4j.Logger;
  *
  * Created: Aug 24, 2016 3:50:47 PM
  * 
- */
-
-	
+ */	
 public class EmailNotifierSvc {
 
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
@@ -60,6 +58,7 @@ public class EmailNotifierSvc {
 	private static String EMAIL_RECOVERY_CONF = "src/main/resources/email/recovery.properties";
 	private static String EMAIL_UPDATE_CONF = "src/main/resources/email/update.properties";
 	
+
 	public EmailNotifierSvc() {
 		
 		log.debug("setup Mail Server Properties..");
@@ -81,6 +80,7 @@ public class EmailNotifierSvc {
 	}
 	
 	/**
+	 * para enviar lso email dependiendo del contexto
 	 * 
 	 * @param pContext
 	 * @param pToEmail ArrayList, the first parameter is the email which are going to recive the msj, In the case of recovery the second parameter is the new password
@@ -104,9 +104,24 @@ public class EmailNotifierSvc {
 				transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 				transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 				transport.close();
-					 
-						
 		}
+		else if (pContext == EmailType.REGISTRATION){
+			generateMailMessage = new MimeMessage(getMailSession);
+			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
+			generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
+			String emailBody = "Su registro se ha realizado de forma existosa en nuestro sistema. "
+					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+			generateMailMessage.setContent(emailBody, "text/html");
+			log.debug("Mail Session has been created successfully..");
+
+			log.info("-----------------------------------");
+			log.info("Get Session and Send mail");
+			log.info("-----------------------------------");
+			Transport transport = getMailSession.getTransport("smtp");
+			transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+			transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+			transport.close();
+	}
 		
 		
 		

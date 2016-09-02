@@ -1,7 +1,3 @@
-/** Copyright or License
- *
- */
-
 package edu.uniandes.ecos.codeaholics.business;
 
 import java.lang.reflect.Type;
@@ -84,7 +80,7 @@ public class CitizenServices {
 	}
 
 	/***
-	 * Agrega un ciudadno a la base de datos.
+	 * Agrega un ciudadano a la base de datos.
 	 * 
 	 * @param pRequest
 	 *            request
@@ -105,8 +101,17 @@ public class CitizenServices {
 			citizen.setUserProfile("citizen");
 			DataBaseUtil.save(citizen.toDocument(), "citizen");
 			
+			
+			//create array list to send as a parameter to the EmailNotifierSvc
+			ArrayList<String> parametersEmail = new ArrayList<>();
+			parametersEmail.add(citizen.getEmail());
+			
+			
 			//TODO: replace with new service - EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
-			Notification.sendEmail(citizen.getEmail());
+			//Notification.sendEmail(citizen.getEmail());
+			//Send Email
+			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
 
 			response = messager.getOkMessage("Success");
 
@@ -204,17 +209,15 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 	}
 
 	/***
-	 * Obtiene toda la informacion de un ciudadano dado su numero de
-	 * identificacion.
+	 * Cierra la sesion de un usuario
 	 * 
 	 * @param pRequest
 	 *            request
 	 * @param pResponse
 	 *            response
-	 * @return json informacion disponible del ciudadano
+	 * @return json con mensaje de exito o de falla
 	 */
 	public static Object closeSession(Request pRequest, Response pResponse) {
-		
 		
 		Object response = null;
 
@@ -328,6 +331,15 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
 	}
 	
+	/**
+	 * ENvia un nuevo password aleatorio al email del usuario
+	 * 
+	 * @param pRequest 
+	 * 				Request
+	 * @param pResponse
+	 * 				Response
+	 * @return	json object con la informacion de exito o falla del mensaje
+	 */
 	public static Object resetPassword (Request pRequest, Response pResponse) {
 		Object response = null;
 		
@@ -400,6 +412,14 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 		return response;
 	} 
 
+	/**
+	 * Metodo que se encarga de descargar los documento.
+	 * @param pRequest
+	 * 				Request
+	 * @param pResponse
+	 * 				Response
+	 * @return json object message
+	 */
 	public static Object downloadDocuments(Request pRequest, Response pResponse) {
 
 		Object response = null;
@@ -417,6 +437,16 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
 	}
 	
+	
+	/**
+	 * Metodo que envia la lista de documentos almacenados
+	 *
+	 * @param pRequest
+	 * 				Request
+	 * @param pResponse
+	 * 				Response
+	 * @return	json object message
+	 */
 	public static Object listDocuments(Request pRequest, Response pResponse) {
 
 		Object response = null;

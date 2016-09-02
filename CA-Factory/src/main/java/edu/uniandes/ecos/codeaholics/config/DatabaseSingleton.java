@@ -30,7 +30,9 @@ public class DatabaseSingleton {
 	private static MongoClient       mongoClient   = null;
 	private static MongoDatabase     mongoDatabase = null;
 
-	// Constructores
+	/**
+	 * contructor de la base de datos, crea la base de datos replica o local dependientdo de la seleccion 
+	 */
 	protected DatabaseSingleton() {
 		
 		DatabaseConfig dbConf = new DatabaseConfig(App.CONFIG_FILE);
@@ -48,6 +50,11 @@ public class DatabaseSingleton {
 	}
 
 	// Metodos
+	/**
+	 * crea una instancia de la base de datos
+	 * 
+	 * @return instancia de la base de datos
+	 */
 	public static DatabaseSingleton getInstance() {
 		if (instance == null) {
 			instance = new DatabaseSingleton();

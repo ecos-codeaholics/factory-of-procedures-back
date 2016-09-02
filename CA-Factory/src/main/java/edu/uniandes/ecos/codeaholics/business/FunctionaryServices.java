@@ -43,7 +43,7 @@ public class FunctionaryServices {
 	}
 	
 	/***
-	 * Actuliza el estado de una tramite en una secretaria por aprobado
+	 * Actualiza el estado de una tramite en una secretaria por aprobado
 	 * 
 	 * @param req
 	 *            request

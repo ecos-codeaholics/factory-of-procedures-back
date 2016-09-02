@@ -16,6 +16,12 @@ import java.util.Properties;
 /**
  * Created by snaphuman on 6/6/16.
  */
+/**
+ * Configuracion de la base de datos mongo
+ * 
+ * @author Codeaholics
+ *
+ */
 
 public class DatabaseConfig {
 
@@ -31,6 +37,10 @@ public class DatabaseConfig {
 	private static String[] dbReplicaSetIPs;
 	private static List<ServerAddress> dbServerAdresses;
 
+	/**
+	 * Configuracion de la base de datos
+	 * @param pConfig ruta del archivo de configuracion
+	 */
 	public DatabaseConfig(String pConfig) {
 
 		Properties prop = new Properties();

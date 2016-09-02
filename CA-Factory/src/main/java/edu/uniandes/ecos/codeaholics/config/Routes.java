@@ -4,6 +4,12 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
+/**
+ * Rutas de todos lo webservices
+ * 
+ * @author Codeaholics
+ *
+ */
 public class Routes {
 	
 	//Rutas de sesiones sesion.

@@ -28,11 +28,21 @@ public class FunctionalityAuthorizationException extends Exception {
 
 	private String errorCode = "Authorization error";
 
+	/**
+	 * 
+	 * 
+	 * @param message
+	 * @param errorCode
+	 */
 	public FunctionalityAuthorizationException(String message, String errorCode){
 		super(message);
 		this.errorCode=errorCode;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getErrorCode() {
 		return this.errorCode;
 	}

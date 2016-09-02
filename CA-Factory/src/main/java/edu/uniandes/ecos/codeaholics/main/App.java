@@ -23,22 +23,24 @@ import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Routes;
 
 /**
- * Created by snaphuman on 6/6/16.
+ * 
+ * @author Codeaholics
+ *
  */
 public class App {
 
 	public static final String CONFIG_FILE       = "src/main/resources/config.properties";
 	public static int JETTY_SERVER_PORT          = 4567;
-	public static int JETTY_SERVER_MAXTHREADS    = 50;
-	public static int JETTY_SERVER_MINTHREADS    = 1000;
+	public static int JETTY_SERVER_MAXTHREADS    = 1000;
+	public static int JETTY_SERVER_MINTHREADS    = 50;
 	public static int JETTY_SERVER_TIMEOUTMILLIS = 30000;
 	public static boolean USE_SPARK_HTTPS        = false;
 
 	/***
 	 * Metodo principal del sistema.
 	 *
-	 * @param args
-	 *            argumentos
+	 * @param args argumentos
+	 * 
 	 */
 	public static void main(String[] args) {
 
@@ -46,21 +48,28 @@ public class App {
 		port(JETTY_SERVER_PORT);
 		threadPool(JETTY_SERVER_MAXTHREADS, JETTY_SERVER_MINTHREADS, JETTY_SERVER_TIMEOUTMILLIS);
 
-		/* HTTPS option : JLRM */
+		/**
+		 *  HTTPS option : JLRM
+		 */
 		if (USE_SPARK_HTTPS) {
 			secure("deploy/keystore.jks", "codeaholics", null, null);
 		}
 
-		// Initialize Database Connection
+		/**
+		 *  Initialize Database Connection
+		 */
 		DatabaseSingleton.getInstance();
 
 		staticFiles.location("/public");
 		
-		//Metodo que habilita el CORS
+		/**
+		 * Enable CORS
+		 */
 		CorsFilter.apply();
 
-		//... Rutas Ciudadano
-
+		/**
+		 * Citizen Routes
+		 */
 		// crear ciudadano /CITIZENS/ metodo POST {citizen info json}
 		post(Routes.CITIZENS, CitizenServices::insertCitizen, GeneralUtil.json());
 
@@ -83,17 +92,22 @@ public class App {
 		delete(Routes.SESSIONS+":email", CitizenServices::closeSession, GeneralUtil.json());
 
 		
-
-		//... Rutas Alcaldia
+		/**
+		 * 	Routes Mayoralty
+		 */
 		// TODO
 
-
-		//... Admin Alcaldia
+		/**
+		 * Routes Administrator Mayoralty
+		 */
 		// TODO
 		
-		//... Rutas Mintic
+		/**
+		 * Routes MINTIC
+		 */
 		// TODO
 
+		// 
 		before("/algo/*", Authorization::authorizeCitizen);
 
 		/**
