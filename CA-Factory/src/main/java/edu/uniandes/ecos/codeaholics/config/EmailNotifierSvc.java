@@ -38,7 +38,7 @@ public class EmailNotifierSvc {
 	
 	public enum EmailType {
 		
-		REGISTRATION, RECOVERY, UPDATE;
+		REGISTRATION, RESET, UPDATE, CHANGE;
 		
 	}
 	
@@ -88,12 +88,12 @@ public class EmailNotifierSvc {
 	 * @throws MessagingException
 	 */
 	public void send( EmailType pContext, ArrayList<String> pToEmail ) throws AddressException, MessagingException  {
-		if (pContext == EmailType.RECOVERY){
+		if (pContext == EmailType.RESET){
 				generateMailMessage = new MimeMessage(getMailSession);
 				generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
 				generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
 				String emailBody = "Su password a sido restaurado de forma existosa en nuestro sistema. "
-						+ "<br>Su nuevo password es: "+pToEmail.get(1)
+						+ "<br><br><br>Su nuevo password es: "+pToEmail.get(1)
 						+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
 				generateMailMessage.setContent(emailBody, "text/html");
 				log.debug("Mail Session has been created successfully..");
@@ -122,7 +122,23 @@ public class EmailNotifierSvc {
 			transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 			transport.close();
 	}
-		
+		else if (pContext == EmailType.CHANGE){
+			generateMailMessage = new MimeMessage(getMailSession);
+			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
+			generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
+			String emailBody = "Su password a sido camiado exitosamente en nuestro sistema. "
+					+ "<br><br><br>Su nuevo password es: "+pToEmail.get(1)
+					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+			generateMailMessage.setContent(emailBody, "text/html");
+			log.debug("Mail Session has been created successfully..");
+			log.info("-----------------------------------");
+			log.info("Get Session and Send mail to recover the password");
+			log.info("-----------------------------------");
+			Transport transport = getMailSession.getTransport("smtp");
+			transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+			transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+			transport.close();
+	}
 		
 		
 	}

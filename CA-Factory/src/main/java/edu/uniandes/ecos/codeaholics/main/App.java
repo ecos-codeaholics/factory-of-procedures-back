@@ -83,7 +83,7 @@ public class App {
         put(Routes.CITIZENS, CitizenServices::resetPassword, GeneralUtil.json());
         
 	    //cambio de clave /CITIZENS/{id} metodo PUT {info change password json, {old password, new pass}}
-        put(Routes.CITIZENS, CitizenServices::getCitizenDetail, GeneralUtil.json());
+        put(Routes.CITIZENS+":identification", CitizenServices::changePassword, GeneralUtil.json());
         
 		// iniciar sesion /SESSIONS/   metodo POST {info login json}
 		post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
