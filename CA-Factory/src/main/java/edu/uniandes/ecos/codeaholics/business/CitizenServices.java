@@ -1,6 +1,6 @@
 package edu.uniandes.ecos.codeaholics.business;
 
-import java.lang.reflect.Type;
+//import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import javax.management.relation.RelationServiceNotRegisteredException;
+//import javax.management.relation.RelationServiceNotRegisteredException;
 
 import org.bson.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.reflect.TypeToken;
 import com.mongodb.MongoClientException;
 import com.mongodb.MongoWriteException;
 
@@ -22,12 +22,13 @@ import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
+import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-import edu.uniandes.ecos.codeaholics.config.Notification;
+//import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -38,10 +39,16 @@ public class CitizenServices {
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 
+	private static IAuthenticationSvc authenticate = null;
+
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
+
+	private static String authenticationMethod = "JWT"; //... JWT, Simple
 	
+	private static String USER_PROFILE = "citizen";
+
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
 	 * 
@@ -58,11 +65,28 @@ public class CitizenServices {
 		try {
 
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
-			IAuthenticationSvc authenticate = new Authentication();
+
+			if (authenticationMethod.equals("JWT")) {
+				authenticate = new AuthenticationJWT();
+			} else {
+				authenticate = new Authentication();
+			}
 
 			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), "citizen");
 			if (authenticated) {
-				response = authenticate.getAnswer();
+
+				if (authenticationMethod.equals("JWT")) {
+					// 1. process header Autorization : Bearer <token>
+					StringBuilder bStr = new StringBuilder();
+					//bStr.append("Bearer");
+					//bStr.append(" ");
+					bStr.append((String) authenticate.getAnswer());
+					pResponse.header("access-control-expose-headers", "Authorization");
+					pResponse.header("Authorization", bStr.toString());
+					response = messager.getOkMessage("Successful login");
+				} else {
+					response = authenticate.getAnswer();
+				}
 			}
 
 		} catch (WrongUserOrPasswordException e) {
@@ -98,33 +122,32 @@ public class CitizenServices {
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
-			citizen.setUserProfile("citizen");
-			DataBaseUtil.save(citizen.toDocument(), "citizen");
-			
-			
-			//create array list to send as a parameter to the EmailNotifierSvc
+			citizen.setUserProfile(USER_PROFILE);
+			DataBaseUtil.save(citizen.toDocument(), USER_PROFILE);
+
+			// create array list to send as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();
 			parametersEmail.add(citizen.getEmail());
-			
-			
-			//TODO: replace with new service - EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
-			//Notification.sendEmail(citizen.getEmail());
-			//Send Email
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
 
-			response = messager.getOkMessage("Success");
+			// TODO: replace with new service -
+			// EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
+			// Notification.sendEmail(citizen.getEmail());
+			// Send Email
+			// EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			// sendEmail.send(EmailType.REGISTRATION, parametersEmail);
+
+			response = messager.getOkMessage("Successful registration");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
-		} catch (AddressException e) {
-			response = messager.getNotOkMessage(e.getMessage());
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			response = messager.getNotOkMessage(e.getMessage());
-			e.printStackTrace();
-		}
+		} /*
+			 * catch (AddressException e) { response =
+			 * messager.getNotOkMessage(e.getMessage()); //change message
+			 * e.printStackTrace(); } catch (MessagingException e) { response =
+			 * messager.getNotOkMessage(e.getMessage()); //change message
+			 * e.printStackTrace(); }
+			 */
 
 		// HEAD
 		// res.status(200);
@@ -148,7 +171,7 @@ public class CitizenServices {
 	public static Object getCitizenList(Request pRequest, Response pResponse) {
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll("citizen");
+		ArrayList<Document> documents = DataBaseUtil.getAll(USER_PROFILE);
 		String fullName = "";
 		for (Document item : documents) {
 			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
@@ -164,10 +187,10 @@ public class CitizenServices {
 			dataset.add(item);
 
 		}
-		
-		Type type = new TypeToken<List<Document>>() {
-		}.getType();
-		//String json = GSON.toJson(dataset, type);
+
+		//Type type = new TypeToken<List<Document>>() {
+		//}.getType();
+		// String json = GSON.toJson(dataset, type);
 
 		pResponse.type("application/json");
 		return dataset;
@@ -183,27 +206,26 @@ public class CitizenServices {
 	 *            response
 	 * @return json informacion disponible del ciudadano
 	 */
-public static Object getCitizenDetail(Request pRequest, Response pResponse) {
+	public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
-		//Este no hace falta por por que el body del request viene null
-		//Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
+		// Este no hace falta por por que el body del request viene null
+		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
 
 		Document filter = new Document();
 		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
-						
+
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
 		for (Document item : documents) {
 			item.remove("password");
 			item.remove("salt");
 			dataset.add(item);
 		}
-		
-		Type type = new TypeToken<List<Document>>() {
-		}.getType();
 
-		//String json = GSON.toJson(dataset, type);
-		
+		//Type type = new TypeToken<List<Document>>() {
+		//}.getType();
+		// String json = GSON.toJson(dataset, type);
+
 		pResponse.type("application/json");
 		return dataset;
 	}
@@ -218,7 +240,7 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 	 * @return json con mensaje de exito o de falla
 	 */
 	public static Object closeSession(Request pRequest, Response pResponse) {
-		
+
 		Object response = null;
 
 		try {
@@ -330,77 +352,76 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 		return response;
 
 	}
-	
+
 	/**
 	 * ENvia un nuevo password aleatorio al email del usuario
 	 * 
-	 * @param pRequest 
-	 * 				Request
+	 * @param pRequest
+	 *            Request
 	 * @param pResponse
-	 * 				Response
-	 * @return	json object con la informacion de exito o falla del mensaje
+	 *            Response
+	 * @return json object con la informacion de exito o falla del mensaje
 	 */
-	public static Object resetPassword (Request pRequest, Response pResponse) {
+	public static Object resetPassword(Request pRequest, Response pResponse) {
 		Object response = null;
-		
+
 		try {
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
-			System.out.println(data.getEmail()+" "+data.getIdentification());
-			
+			System.out.println(data.getEmail() + " " + data.getIdentification());
+
 			Document filter = new Document();
 			filter.append("identification", data.getIdentification());
 			filter.append("email", data.getEmail());
-			
-			
-			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
-			
-			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
-			if (documents.isEmpty()){//throw exception
-				 throw new MongoClientException("Usuario e identificacion no coinciden");
-				
-				}
-			
-			//Create randomize password
+
+			ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
+
+			// TODO throw an exception about that email and identification
+			// doesn't correspond to a registered user
+			if (documents.isEmpty()) {// throw exception
+				throw new MongoClientException("Usuario e identificacion no coinciden");
+
+			}
+
+			// Create randomize password
 			String newPassword = GeneralUtil.randomPassword();
-			
+
 			System.out.println(newPassword);
-			//create hash
+			// create hash
 			String newSalt = null;
 			String[] hash = GeneralUtil.getHash(newPassword, "");
 			String newPasswordHashed = hash[1];
 			newSalt = hash[0];
-			
-			//send value to change
+
+			// send value to change
 			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
 			valuesToReplace.put("password", newPasswordHashed);
 			valuesToReplace.put("salt", newSalt);
-			
-			//send salt and password to the register in the DB
+
+			// send salt and password to the register in the DB
 			Document register = new Document(valuesToReplace);
-			DataBaseUtil.update(filter, register, "citizen");
-			
-			//create array list to ssend as a parameter to the EmailNotifierSvc
+			DataBaseUtil.update(filter, register, USER_PROFILE);
+
+			// create array list to ssend as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();
 			parametersEmail.add(data.getEmail());
 			parametersEmail.add(newPassword);
-			
-			//Send Email
+
+			// Send Email
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 			sendPassword.send(EmailType.RECOVERY, parametersEmail);
-			
+
 			response = messager.getOkMessage("Success");
-		
-			//Notification.sendEmail("jasonlll88@hotmail.com");
-		} 
-		
+
+			// Notification.sendEmail("jasonlll88@hotmail.com");
+		}
+
 		catch (MongoClientException M) {
 			// TODO: handle exception
 			System.out.println("Success");
-		}
-		catch (MongoWriteException M) {
+		} catch (MongoWriteException M) {
 			// TODO: handle exception
 			System.out.println("Mongo Exception");
-			
+
 		} catch (AddressException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -410,14 +431,15 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 		}
 
 		return response;
-	} 
+	}
 
 	/**
 	 * Metodo que se encarga de descargar los documento.
+	 * 
 	 * @param pRequest
-	 * 				Request
+	 *            Request
 	 * @param pResponse
-	 * 				Response
+	 *            Response
 	 * @return json object message
 	 */
 	public static Object downloadDocuments(Request pRequest, Response pResponse) {
@@ -436,16 +458,15 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 		return response;
 
 	}
-	
-	
+
 	/**
 	 * Metodo que envia la lista de documentos almacenados
 	 *
 	 * @param pRequest
-	 * 				Request
+	 *            Request
 	 * @param pResponse
-	 * 				Response
-	 * @return	json object message
+	 *            Response
+	 * @return json object message
 	 */
 	public static Object listDocuments(Request pRequest, Response pResponse) {
 
@@ -466,5 +487,5 @@ public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 		return response;
 
 	}
-	
+
 }

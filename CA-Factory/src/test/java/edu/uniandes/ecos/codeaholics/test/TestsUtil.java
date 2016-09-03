@@ -8,6 +8,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -220,6 +222,23 @@ public class TestsUtil {
 				logger.info("DIR created");
 			}
 		}
+	}
+	
+	public static void isConnected() throws IOException {
+		
+	    String strUrl = "http://stackoverflow.com/about";
+    
+	    try {
+	        URL url = new URL(strUrl);
+	        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+	        urlConn.connect();
+
+	    } catch (IOException e) {
+	        logger.error("Error creating HTTP connection");
+	        e.printStackTrace();
+	        throw e;
+	    }
 
 	}
+	
 }
