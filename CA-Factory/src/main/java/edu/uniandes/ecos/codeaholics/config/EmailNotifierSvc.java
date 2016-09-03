@@ -27,40 +27,41 @@ import org.apache.logging.log4j.Logger;
  * 
  * Description: Notify by email
  * 
- * Implementation: This is the implementation of interface INotifierSvc (replaces old Notification)
+ * Implementation: This is the implementation of interface INotifierSvc
+ * (replaces old Notification)
  *
  * Created: Aug 24, 2016 3:50:47 PM
  * 
- */	
-public class EmailNotifierSvc {
+ */
+public class EmailNotifierSvc implements INotifierSvc {
 
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
-	
+
 	public enum EmailType {
-		
+
 		REGISTRATION, RESET, UPDATE, CHANGE;
 		
+
 	}
-	
+
 	public class Email {
-		
+
 		String body;
 		String subject;
 		String signature;
-		
+
 	}
-		
+
 	private static Properties mailServerProperties;
 	private static Session getMailSession;
 	private static MimeMessage generateMailMessage;
-	
+
 	private static String EMAIL_REGISTRATION_CONF = "src/main/resources/email/registration.properties";
 	private static String EMAIL_RECOVERY_CONF = "src/main/resources/email/recovery.properties";
 	private static String EMAIL_UPDATE_CONF = "src/main/resources/email/update.properties";
-	
 
 	public EmailNotifierSvc() {
-		
+
 		log.debug("setup Mail Server Properties..");
 		mailServerProperties = System.getProperties();
 		mailServerProperties.put("mail.smtp.port", "587");
@@ -68,25 +69,29 @@ public class EmailNotifierSvc {
 		mailServerProperties.put("mail.smtp.starttls.enable", "true");
 		log.debug("Mail Server Properties have been setup successfully..");
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
-		
+
 	}
-	
+
 	public void add() {
-			
+
 	}
-	
+
 	public void build() {
-		
+
 	}
-	
+
 	/**
 	 * para enviar lso email dependiendo del contexto
 	 * 
 	 * @param pContext
-	 * @param pToEmail ArrayList, the first parameter is the email which are going to recive the msj, In the case of recovery the second parameter is the new password
+	 * @param pToEmail
+	 *            ArrayList, the first parameter is the email which are going to
+	 *            recive the msj, In the case of recovery the second parameter
+	 *            is the new password
 	 * @throws AddressException
 	 * @throws MessagingException
 	 */
+
 	public void send( EmailType pContext, ArrayList<String> pToEmail ) throws AddressException, MessagingException  {
 		if (pContext == EmailType.RESET){
 				generateMailMessage = new MimeMessage(getMailSession);
@@ -106,6 +111,7 @@ public class EmailNotifierSvc {
 				transport.close();
 		}
 		else if (pContext == EmailType.REGISTRATION){
+
 			generateMailMessage = new MimeMessage(getMailSession);
 			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
 			generateMailMessage.setSubject("Bienvenido a Fabrica de Tramites");
@@ -121,6 +127,7 @@ public class EmailNotifierSvc {
 			transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 			transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 			transport.close();
+
 	}
 		else if (pContext == EmailType.CHANGE){
 			generateMailMessage = new MimeMessage(getMailSession);
@@ -144,5 +151,7 @@ public class EmailNotifierSvc {
 	}
 	
 
-	
-}
+
+	}
+
+
