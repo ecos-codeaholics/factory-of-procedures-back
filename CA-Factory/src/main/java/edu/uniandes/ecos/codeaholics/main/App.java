@@ -87,6 +87,8 @@ public class App {
         
 		// iniciar sesion /SESSIONS/   metodo POST {info login json}
 		post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
+		
+		post("/citizens/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
 
 		// cerrar sesion /SESSIONS/  metodo DELETE {session info json}
 		delete(Routes.SESSIONS+":email", CitizenServices::closeSession, GeneralUtil.json());
