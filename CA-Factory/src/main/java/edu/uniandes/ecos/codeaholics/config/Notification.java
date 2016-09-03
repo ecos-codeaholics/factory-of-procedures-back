@@ -25,11 +25,8 @@ public class Notification {
 	private static Properties mailServerProperties;
 	private static Session getMailSession;
 	private static MimeMessage generateMailMessage;
+	
 
-	public static void main(String args[]) throws AddressException, MessagingException {
-		sendEmail("jasonlll88@gmail.com");
-		System.out.println("\n\n ===> Your Java Program has just sent an Email successfully. Check your email..");
-	}
 
 	public static void sendEmail (String recipient) throws AddressException, MessagingException {
 

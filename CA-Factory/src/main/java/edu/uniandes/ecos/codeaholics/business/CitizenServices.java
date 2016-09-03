@@ -12,10 +12,8 @@ import javax.mail.internet.AddressException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -25,24 +23,20 @@ import com.google.gson.JsonSyntaxException;
 import com.mongodb.MongoClientException;
 import com.mongodb.MongoWriteException;
 
-import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
-import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
-import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
-
-import edu.uniandes.ecos.codeaholics.config.ChangePwdModelHelper;
-
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
-
+import edu.uniandes.ecos.codeaholics.config.ChangePwdModelHelper;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
+import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
+import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 //import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
-
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import spark.Request;
 import spark.Response;
@@ -150,21 +144,23 @@ public class CitizenServices {
 			// EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
 			// Notification.sendEmail(citizen.getEmail());
 			// Send Email
-			// EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			// sendEmail.send(EmailType.REGISTRATION, parametersEmail);
+			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
 
 			response = messager.getOkMessage("Successful registration");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
-		} /*
-			 * catch (AddressException e) { response =
-			 * messager.getNotOkMessage(e.getMessage()); //change message
-			 * e.printStackTrace(); } catch (MessagingException e) { response =
-			 * messager.getNotOkMessage(e.getMessage()); //change message
-			 * e.printStackTrace(); }
-			 */
+		} catch (AddressException e) {
+			response = messager.getNotOkMessage(e.getMessage()); // change
+																	// message
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			response = messager.getNotOkMessage(e.getMessage()); // change
+																	// message
+			e.printStackTrace();
+		}
 
 		// HEAD
 		// res.status(200);
@@ -491,8 +487,8 @@ public class CitizenServices {
 						
 			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 			if (documents.isEmpty()){
-				log.info("User Doesn´t Exists");
-				throw new WrongUserOrPasswordException("User Doesn´t Exists", "400");				
+				log.info("User Doesnï¿½t Exists");
+				throw new WrongUserOrPasswordException("User Doesnï¿½t Exists", "400");				
 			}
 			
 			savedPassword = documents.get(0).getString("password");
