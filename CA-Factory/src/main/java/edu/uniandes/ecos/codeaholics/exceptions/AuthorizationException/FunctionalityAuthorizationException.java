@@ -26,7 +26,7 @@ public class FunctionalityAuthorizationException extends Exception {
 	 */
 	private static final long serialVersionUID = 3658325432136145937L;
 
-	private String errorCode = "Authorization error";
+	private String errorCode = "Error de autorización";
 
 	/**
 	 * 
