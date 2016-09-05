@@ -1,7 +1,3 @@
-/** Copyright or License
- *
- */
-
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.util.ArrayList;
@@ -26,7 +22,6 @@ public final class Authentication implements IAuthenticationSvc {
 	private Object responseObj;
 
 	// Metodos
-
 	@Override
 	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) throws WrongUserOrPasswordException {
 

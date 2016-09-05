@@ -12,7 +12,7 @@ package edu.uniandes.ecos.codeaholics.config;
  * 
  * Description: [one line class summary]
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: successInd : false (no problem) true (alarm)
  *
  * Created: Aug 23, 2016 4:02:21 PM
  * 
@@ -26,22 +26,22 @@ public class ResponseMessage implements IMessageSvc {
 	public class Response {
 		
 		@SuppressWarnings("unused")
-		private boolean successInd = false;
+		private boolean errorInd = false;
 		@SuppressWarnings("unused")
-		private String errorMsg;
+		private String responseMsg;
 		
 		/**
 		 * @param successInd the successInd to set
 		 */
-		public void setSuccessInd(boolean successInd) {
-			this.successInd = successInd;
+		public void setErrorInd(boolean errorInd) {
+			this.errorInd = errorInd;
 		}
 
 		/**
 		 * @param errorMsg the errorMsg to set
 		 */
-		public void setErrorMsg(String errorMsg) {
-			this.errorMsg = errorMsg;
+		public void setResponseMsg(String responseMsg) {
+			this.responseMsg = responseMsg;
 		}
 
 	}
@@ -49,8 +49,8 @@ public class ResponseMessage implements IMessageSvc {
 	@Override
 	public Object getOkMessage(String message) {
 		Response response = new Response();
-		response.setSuccessInd(true);
-		response.setErrorMsg(message);
+		response.setErrorInd(false);
+		response.setResponseMsg(message);
 		return response;
 	}
 
@@ -58,8 +58,8 @@ public class ResponseMessage implements IMessageSvc {
 	@Override
 	public Object getNotOkMessage(String message) {
 		Response response = new Response();
-		response.setSuccessInd(false);
-		response.setErrorMsg(message);
+		response.setErrorInd(true);
+		response.setResponseMsg(message);
 		return response;
 	}
 

@@ -17,7 +17,7 @@ import io.jsonwebtoken.Jwts;
 
 public class AuthenticationJWTTest {
 
-	Logger logger = LogManager.getRootLogger();
+	Logger logger = LogManager.getLogger(AuthenticationJWTTest.class);
 	
 	public String token;
 		

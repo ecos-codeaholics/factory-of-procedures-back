@@ -27,19 +27,23 @@ import spark.Response;
 
 public interface IDocumentSvc {
 
-	/**
+	/** Upload file method
 	 * @param pRequest
 	 */
 	public void uploadDocument(Request pRequest);
 	
-	/**
-	 * 
-	 */
+
+	/** Download file method
+	 * @param pRequest
+	 * @param pResponse
+	 * @return A Http servlet responde ( downloaded file )
+	 */         
 	public HttpServletResponse downloadDocument(Request pRequest, Response pResponse);
 	
 	/**
 	 * 
 	 */
-	public void listDocuments();
+	public String listDocuments();
 	
 }
+

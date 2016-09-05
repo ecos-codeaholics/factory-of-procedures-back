@@ -11,9 +11,9 @@ import spark.Request;
 import spark.Response;
 
 public class FunctionaryServices {
-	
+
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-	
+
 	/***
 	 * Consulta tramites asignados a un funcionario.
 	 * 
@@ -27,7 +27,7 @@ public class FunctionaryServices {
 
 		return "success";
 	}
-	
+
 	/***
 	 * Consulta estado y detalles de un tramite por id
 	 * 
@@ -41,9 +41,9 @@ public class FunctionaryServices {
 
 		return "success";
 	}
-	
+
 	/***
-	 * Actuliza el estado de una tramite en una secretaria por aprobado
+	 * Actualiza el estado de una tramite en una secretaria por aprobado
 	 * 
 	 * @param req
 	 *            request
@@ -55,6 +55,5 @@ public class FunctionaryServices {
 
 		return "success";
 	}
-	
 
 }

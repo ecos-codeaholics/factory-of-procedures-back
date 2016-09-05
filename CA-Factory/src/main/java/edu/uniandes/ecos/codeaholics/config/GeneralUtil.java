@@ -6,6 +6,7 @@ package edu.uniandes.ecos.codeaholics.config;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -33,10 +34,10 @@ public final class GeneralUtil {
 	 * @param digest arreglo de bytes a convertir
 	 * @return String creado a partir de digest
 	 */
-	private static String toHexadecimal(byte[] digest) {
+	private static String toHexadecimal(byte[] pDigest) {
 		
 		String hash = "";
-		for (byte aux : digest) {
+		for (byte aux : pDigest) {
 			int b = aux & 0xff;
 			if (Integer.toHexString(b).length() == 1)
 				hash += "0";
@@ -88,9 +89,9 @@ public final class GeneralUtil {
 	 * @param object
 	 * @return
 	 */
-	public static String toJson(Object object) {
+	public static String toJson(Object pObject) {
 
-		return new Gson().toJson(object);
+		return new Gson().toJson(pObject);
 	}
 
 	/**
@@ -106,9 +107,22 @@ public final class GeneralUtil {
 	 * @param model
 	 * @return
 	 */
-	public static String render(String templatePath, HashMap<String, Object> model) {
+	public static String render(String pTemplatePath, HashMap<String, Object> pModel) {
 
-		return new FreeMarkerEngine().render(new ModelAndView(model, templatePath));
+		return new FreeMarkerEngine().render(new ModelAndView(pModel, pTemplatePath));
 	}
-
+	
+	public static String randomPassword(){
+		String result= null;
+		String string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		SecureRandom rnd = new SecureRandom();
+		int length = 10;
+		
+		StringBuilder sb = new StringBuilder( length );
+		   for( int i = 0; i < length; i++ ) 
+		      sb.append(string.charAt(rnd.nextInt(string.length()) ) );
+		result = sb.toString();
+		
+		return result;	
+	}
 }

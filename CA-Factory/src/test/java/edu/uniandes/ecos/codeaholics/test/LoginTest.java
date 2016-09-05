@@ -101,7 +101,7 @@ public class LoginTest {
 
 			assertEquals(200, httpResult);
 			assertEquals("OK", httpMessage);
-			assertTrue(json.getAsJsonObject().has("email"));
+			assertTrue(json.getAsJsonObject().has("responseMsg"));
 
 		} catch (Exception e) {
 			e.printStackTrace();

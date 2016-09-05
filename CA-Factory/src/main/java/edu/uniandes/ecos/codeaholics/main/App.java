@@ -1,17 +1,15 @@
 package edu.uniandes.ecos.codeaholics.main;
 
 import static spark.Spark.before;
-
-import static spark.Spark.get;
 import static spark.Spark.delete;
+import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.port;
-import static spark.Spark.threadPool;
 import static spark.Spark.post;
-import static spark.Spark.secure;
-import static spark.Spark.after;
 import static spark.Spark.put;
+import static spark.Spark.secure;
 import static spark.Spark.staticFiles;
+import static spark.Spark.threadPool;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,22 +23,24 @@ import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Routes;
 
 /**
- * Created by snaphuman on 6/6/16.
+ * 
+ * @author Codeaholics
+ *
  */
 public class App {
 
 	public static final String CONFIG_FILE       = "src/main/resources/config.properties";
 	public static int JETTY_SERVER_PORT          = 4567;
-	public static int JETTY_SERVER_MAXTHREADS    = 50;
-	public static int JETTY_SERVER_MINTHREADS    = 1000;
+	public static int JETTY_SERVER_MAXTHREADS    = 1000;
+	public static int JETTY_SERVER_MINTHREADS    = 50;
 	public static int JETTY_SERVER_TIMEOUTMILLIS = 30000;
 	public static boolean USE_SPARK_HTTPS        = false;
 
 	/***
 	 * Metodo principal del sistema.
 	 *
-	 * @param args
-	 *            argumentos
+	 * @param args argumentos
+	 * 
 	 */
 	public static void main(String[] args) {
 
@@ -48,62 +48,69 @@ public class App {
 		port(JETTY_SERVER_PORT);
 		threadPool(JETTY_SERVER_MAXTHREADS, JETTY_SERVER_MINTHREADS, JETTY_SERVER_TIMEOUTMILLIS);
 
-		/* HTTPS option : JLRM */
+		/**
+		 *  HTTPS option : JLRM
+		 */
 		if (USE_SPARK_HTTPS) {
 			secure("deploy/keystore.jks", "codeaholics", null, null);
 		}
 
-		// Initialize Database Connection
+		/**
+		 *  Initialize Database Connection
+		 */
 		DatabaseSingleton.getInstance();
 
 		staticFiles.location("/public");
+		
+		/**
+		 * Enable CORS
+		 */
+		CorsFilter.apply();
 
-		//... Rutas Ciudadano
-
-		// crear ciudadano /CITIZENS/{citizen info} metodo POST
+		/**
+		 * Citizen Routes
+		 */
+		// crear ciudadano /CITIZENS/ metodo POST {citizen info json}
 		post(Routes.CITIZENS, CitizenServices::insertCitizen, GeneralUtil.json());
 
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
-		// obtener detalles de un ciudadano /CITIZENS/{id} metodo GET
-		// post("/citizen/getCitizen", CitizenServices::getCitizenDetail,
-		// GeneralUtil.json());
-		// cambiar Routes.CITIZENS+":id" para probar
-		get("/citizens/:identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
-
-		// iniciar sesion /SESSIONS/{info login} metodo POST
+	    //obtener detalles de un ciudadano /CITIZENS/{id} --> template metodo GET
+        get(Routes.CITIZENS+":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
+        
+	    //reset de clave /CITIZENS/ metodo PUT {info password recovery json, {email, id}}
+        put(Routes.CITIZENS, CitizenServices::resetPassword, GeneralUtil.json());
+        
+	    //cambio de clave /CITIZENS/{id} metodo PUT {info change password json, {old password, new pass}}
+        put(Routes.CITIZENS+":identification", CitizenServices::changePassword, GeneralUtil.json());
+        
+		// iniciar sesion /SESSIONS/   metodo POST {info login json}
 		post(Routes.SESSIONS, CitizenServices::doLogin, GeneralUtil.json());
-
-		// cerrar sesion /SESSIONS/{session info} metodo DELETE
-		delete(Routes.SESSIONS, CitizenServices::closeSession, GeneralUtil.json());
-
-		// /citizens/{id}/procedures/{procedure info} metodo POST, opciones de
-		// filtro
-		post("/citizens/:id/procedures/", CitizenServices::startProcedure, GeneralUtil.json());
-
-		// /citizens/{id}/procedures/ metodo GET, opciones de filtro
-		get("/citizens/:id/procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
-
-		// /citizens/{id}/procedures/{id} metodo GET
-		get("/citizens/:id/procedures/:idP", CitizenServices::consultProceduresById, GeneralUtil.json());
-
-		// TODO: integrate the following routes RESTFUL
-		// AO  : upload documents
-		post("/citezen/documents/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
-		// AO  : download documents
-		//post("/citezen/documents/upload", CitizenServices::downloadDocuments, GeneralUtil.json());
 		
-		//... Rutas Alcaldia
+		post("/citizens/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
+
+		// cerrar sesion /SESSIONS/  metodo DELETE {session info json}
+		delete(Routes.SESSIONS+":email", CitizenServices::closeSession, GeneralUtil.json());
+
+		
+		/**
+		 * 	Routes Mayoralty
+		 */
 		// TODO
 
-		//... Admin Alcaldia
+		/**
+		 * Routes Administrator Mayoralty
+		 */
 		// TODO
 		
-		//... Rutas Mintic
+		/**
+		 * Routes MINTIC
+		 */
 		// TODO
 
-		before("/citizen/*", Authorization::authorizeCitizen);
+		// 
+		before("/algo/*", Authorization::authorizeCitizen);
 
 		/**
 		 * Enable CORS in Spark Java to allow origins *
@@ -125,54 +132,14 @@ public class App {
 			return "OK";
 		});
 
-		before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
-
 	}
-
-	/*
-	 * Enables CORS on requests. This method is an initialization method and should be called once.
-	 * 
-	 * https://sparktutorials.github.io/2016/05/01/cors.html
-	 *
-	 * TODO: check if this is a more complete solution to adding CORS (AO)
-	 * TODO: remove the SuppressWaring when done
-	 * 
-	 */
-	
-	@SuppressWarnings("unused")
-	private static void enableCORS(final String origin, final String methods, final String headers) {
-
-	    options("/*", (request, response) -> {
-
-	        String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
-	        if (accessControlRequestHeaders != null) {
-	            response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
-	        }
-
-	        String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
-	        if (accessControlRequestMethod != null) {
-	            response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
-	        }
-
-	        return "OK";
-	    });
-
-	    before((request, response) -> {
-	        response.header("Access-Control-Allow-Origin", origin);
-	        response.header("Access-Control-Request-Method", methods);
-	        response.header("Access-Control-Allow-Headers", headers);
-	        // Note: this may or may not be necessary in your particular application
-	        response.type("application/json");
-	    });
-	}
-	
 
 	/** 
 	 * Get JETTY configuration from properties file
 	 * @param pConfig
 	 *               this is the path and name of the configuration file
 	 */
-	private static void getConfig(String pConfig) {
+	private static void getConfig (String pConfig) {
 
 		Properties prop = new Properties();
 		InputStream input = null;

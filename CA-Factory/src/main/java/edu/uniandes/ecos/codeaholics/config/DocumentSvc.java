@@ -11,7 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 import spark.Request;
@@ -44,7 +49,9 @@ public class DocumentSvc implements IDocumentSvc {
 
 	Logger logger = LogManager.getRootLogger();
 	
-		
+	private String answerStr = "";
+	
+
 	/* (non-Javadoc)
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#uploadDocument(Request pRequest)
 	 */
@@ -89,8 +96,8 @@ public class DocumentSvc implements IDocumentSvc {
 				rDoc.setTimestamp(System.currentTimeMillis());
 
 				Gson gson = new Gson();
-				String answerStr = gson.toJson(rDoc);
-				System.out.println(answerStr);
+				answerStr = gson.toJson(rDoc);
+				logger.info(answerStr);
 				
 			}
 			
@@ -106,30 +113,42 @@ public class DocumentSvc implements IDocumentSvc {
 	 */
 	@Override
 	public HttpServletResponse downloadDocument(Request pRequest, Response pResponse) {
+
+		String locationDir = null;
+		Path path = null;
+		String outFileName = null;
+		try {
+			FileUtil.configTmpDir();
+			locationDir = FileUtil.LOCAL_TMP_PATH;
+			String key = pRequest.queryParams("filepath");
+			path = Paths.get(locationDir + "/" + key);
+			outFileName = key;
+			
+		} catch (Exception e) {
+			locationDir = "";
+			logger.error(e.getMessage());
+		}
 		
-        String key = pRequest.queryParams("filepath");
-        Path path = Paths.get("/tmp/"+key);
-        
-        byte[] data = null;
-        try {
-            data = Files.readAllBytes(path);
-        } catch (Exception e1) {
+		byte[] data = null;
+		try {
+			data = Files.readAllBytes(path);
+		} catch (Exception e1) {
 
-            e1.printStackTrace();
-        }
+			e1.printStackTrace();
+		}
+	
+		HttpServletResponse raw = pResponse.raw();
+		pResponse.header("Content-Disposition", "attachment; filename=" + outFileName);
+		pResponse.type("application/force-download");
+		try {
+			raw.getOutputStream().write(data);
+			raw.getOutputStream().flush();
+			raw.getOutputStream().close();
+		} catch (Exception e) {
 
-        HttpServletResponse raw = pResponse.raw();
-        pResponse.header("Content-Disposition", "attachment; filename=image.jpg");
-        pResponse.type("application/force-download");
-        try {
-            raw.getOutputStream().write(data);
-            raw.getOutputStream().flush();
-            raw.getOutputStream().close();
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-        return raw;
+			e.printStackTrace();
+		}
+		return raw;
 
 	}
 
@@ -137,9 +156,41 @@ public class DocumentSvc implements IDocumentSvc {
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#listDocuments()
 	 */
 	@Override
-	public void listDocuments() {
-		// TODO Auto-generated method stub
+	public String listDocuments() {
+		
+		String allFiles = "";
+
+		try {
+
+			FileUtil.configTmpDir();
+			ArrayList<String> files = FileUtil.listDownloadedFiles(FileUtil.LOCAL_TMP_PATH);
+			Iterator<String> itrFiles = files.iterator();
+			allFiles += "[";
+
+			while (itrFiles.hasNext()) {
+				String jsonStr = "{\"file" + "\": \"" + itrFiles.next().replace("\\", "/") + "\"}";
+				JsonParser parser = new JsonParser();
+				JsonObject obj = parser.parse(jsonStr).getAsJsonObject();
+				allFiles += obj.toString() + ",";
+			}
+			allFiles = FileUtil.removeLastChar(allFiles) + "]";
+			
+		} catch (Exception e) {
+			allFiles = "[{}]";
+			e.printStackTrace();
+		}
+
+		return allFiles;
 
 	}
 
+	/**
+	 * @return the answerStr
+	 */
+	public String getAnswerStr() {
+		return answerStr;
+	}
+
+	
 }
+

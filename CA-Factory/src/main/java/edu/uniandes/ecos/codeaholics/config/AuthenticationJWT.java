@@ -63,8 +63,9 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
-			if (documents2.isEmpty()) {
+			if (documents2.isEmpty()) {			
 				log.info("User Profile Wrong");
+				throw new WrongUserOrPasswordException("Wrong user credentials","104");
 			} else {
 
 				String salt = documents.get(0).get("salt").toString();

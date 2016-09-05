@@ -19,7 +19,7 @@ import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 
 public class MessagesTest {
 	
-	Logger logger = LogManager.getRootLogger();
+	Logger logger = LogManager.getLogger(MessagesTest.class);
 	
 	private IMessageSvc messageSvc = new ResponseMessage();
 	
@@ -33,8 +33,8 @@ public class MessagesTest {
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(jsonInString).getAsJsonObject();
 		
-		assertTrue(json.getAsJsonObject().has("successInd"));
-		assertTrue(json.getAsJsonObject().has("errorMsg"));
+		assertTrue(json.getAsJsonObject().has("errorInd"));
+		assertTrue(json.getAsJsonObject().has("responseMsg"));
 		
 	}
 
@@ -47,8 +47,8 @@ public class MessagesTest {
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(jsonInString).getAsJsonObject();
 		
-		assertTrue(json.getAsJsonObject().has("successInd"));
-		assertTrue(json.getAsJsonObject().has("errorMsg"));
+		assertTrue(json.getAsJsonObject().has("errorInd"));
+		assertTrue(json.getAsJsonObject().has("responseMsg"));
 		
 		logger.info(jsonInString);
 
