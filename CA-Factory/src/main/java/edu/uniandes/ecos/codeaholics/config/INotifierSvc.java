@@ -18,7 +18,7 @@ import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: Servicio de notificación (email, sms, etc)
+ * Description: Servicio de notificacion (email, sms, etc)
  * 
  * Implementation: []
  *
