@@ -24,7 +24,7 @@ public class WrongUserOrPasswordException extends Exception {
 	 */
 	private static final long serialVersionUID = -5988451809797528194L;
 
-	private String errorCode="Nombre de usuario o clave errónea";
+	private String errorCode="Nombre de usuario o clave erronea";
 	
 	/**
 	 * Assign message and error code to the exception 

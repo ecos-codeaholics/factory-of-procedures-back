@@ -96,7 +96,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 		if (pContext == EmailType.RESET) {
 			generateMailMessage = new MimeMessage(getMailSession);
 			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-			generateMailMessage.setSubject("Bienvenido a la Fábrica de Trámites");
+			generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
 			String emailBody = "Su clave ha sido restaurada de manera exitosa en nuestro sistema. "
 					+ "<br><br><br>Su nuevo password es: " + pToEmail.get(1)
 					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
@@ -114,7 +114,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 			generateMailMessage = new MimeMessage(getMailSession);
 			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-			generateMailMessage.setSubject("Bienvenido a la Fábrica de Trámites");
+			generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
 			String emailBody = "Su registro se ha realizado de manera exitosa en nuestro sistema. "
 					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
 			generateMailMessage.setContent(emailBody, "text/html");
@@ -131,8 +131,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 		} else if (pContext == EmailType.CHANGE) {
 			generateMailMessage = new MimeMessage(getMailSession);
 			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-			generateMailMessage.setSubject("Bienvenido a la Fábrica de Trámites");
-			String emailBody = "Su clave ha sido cambiada exitósamente en nuestro sistema. "
+			generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
+			String emailBody = "Su clave ha sido cambiada exitosamente en nuestro sistema. "
 					+ "<br><br><br>Su nueva clave es: " + pToEmail.get(1)
 					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
 			generateMailMessage.setContent(emailBody, "text/html");
