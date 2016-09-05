@@ -3,6 +3,8 @@
  */
 
 package edu.uniandes.ecos.codeaholics.config;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Package: edu.uniandes.ecos.codeaholics.config
  *
@@ -21,6 +23,7 @@ package edu.uniandes.ecos.codeaholics.config;
  * 
  */
 import spark.Request;
+import spark.Response;
 
 public interface IDocumentSvc {
 
@@ -32,7 +35,7 @@ public interface IDocumentSvc {
 	/**
 	 * 
 	 */
-	public void downloadDocument();
+	public HttpServletResponse downloadDocument(Request pRequest, Response pResponse);
 	
 	/**
 	 * 

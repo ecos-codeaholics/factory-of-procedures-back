@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +24,7 @@ import com.google.gson.Gson;
 
 import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 import spark.Request;
+import spark.Response;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.config
@@ -41,7 +44,6 @@ public class DocumentSvc implements IDocumentSvc {
 
 	Logger logger = LogManager.getRootLogger();
 	
-	private String answerStr = "";
 		
 	/* (non-Javadoc)
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#uploadDocument(Request pRequest)
@@ -87,7 +89,7 @@ public class DocumentSvc implements IDocumentSvc {
 				rDoc.setTimestamp(System.currentTimeMillis());
 
 				Gson gson = new Gson();
-				answerStr = gson.toJson(rDoc);
+				String answerStr = gson.toJson(rDoc);
 				System.out.println(answerStr);
 				
 			}
@@ -103,8 +105,31 @@ public class DocumentSvc implements IDocumentSvc {
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#downloadDocument()
 	 */
 	@Override
-	public void downloadDocument() {
-		// TODO Auto-generated method stub
+	public HttpServletResponse downloadDocument(Request pRequest, Response pResponse) {
+		
+        String key = pRequest.queryParams("filepath");
+        Path path = Paths.get("/tmp/"+key);
+        
+        byte[] data = null;
+        try {
+            data = Files.readAllBytes(path);
+        } catch (Exception e1) {
+
+            e1.printStackTrace();
+        }
+
+        HttpServletResponse raw = pResponse.raw();
+        pResponse.header("Content-Disposition", "attachment; filename=image.jpg");
+        pResponse.type("application/force-download");
+        try {
+            raw.getOutputStream().write(data);
+            raw.getOutputStream().flush();
+            raw.getOutputStream().close();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return raw;
 
 	}
 
@@ -117,12 +142,4 @@ public class DocumentSvc implements IDocumentSvc {
 
 	}
 
-	/**
-	 * @return the answerStr
-	 */
-	public String getAnswerStr() {
-		return answerStr;
-	}
-
-	
 }

@@ -34,6 +34,7 @@ public class CitizenServices {
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 
+	private static IDocumentSvc fileManager = new DocumentSvc();
 	private static IMessageSvc messager = new ResponseMessage();
 
 	/***
@@ -49,6 +50,8 @@ public class CitizenServices {
 
 		Object response = null;
 
+		
+		
 		try {
 
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
@@ -303,8 +306,25 @@ public class CitizenServices {
 
 		try {
 
-			IDocumentSvc fileUploader = new DocumentSvc();
-			fileUploader.uploadDocument(pRequest);
+			fileManager.uploadDocument(pRequest);
+			response = messager.getOkMessage("Success");
+
+		} catch (JsonSyntaxException e) {
+			pResponse.status(400);
+			response = messager.getNotOkMessage(e.getMessage());
+		}
+
+		return response;
+
+	}
+	
+	public static Object downloadDocuments(Request pRequest, Response pResponse) {
+
+		Object response = null;
+
+		try {
+
+			Object httpResponse = fileManager.downloadDocument(pRequest, pResponse);
 			response = messager.getOkMessage("Success");
 
 		} catch (JsonSyntaxException e) {
