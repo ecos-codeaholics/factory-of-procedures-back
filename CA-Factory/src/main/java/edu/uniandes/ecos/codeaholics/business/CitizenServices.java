@@ -124,7 +124,7 @@ public class CitizenServices {
 			System.out.println(email);
 			Authentication.closeSession(email);
 
-			response = messager.getOkMessage("Success");
+			response = messager.getOkMessage("Proceso Exitoso");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
@@ -148,10 +148,10 @@ public class CitizenServices {
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
 		// HEAD
-		// return "success method startProcedure";
+		// return "Proceso Exitoso method startProcedure";
 
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 
 	}
@@ -168,7 +168,7 @@ public class CitizenServices {
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 	}
 
@@ -184,7 +184,7 @@ public class CitizenServices {
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 	}
 
@@ -199,7 +199,7 @@ public class CitizenServices {
 	 */
 	public static Object consultProceduresByDate(Request pRequest, Response pResponse) {
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 	}
 
@@ -217,7 +217,7 @@ public class CitizenServices {
 		try {
 
 			fileManager.uploadDocument(pRequest);
-			response = messager.getOkMessage("Success");
+			response = messager.getOkMessage("Proceso Exitoso");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);

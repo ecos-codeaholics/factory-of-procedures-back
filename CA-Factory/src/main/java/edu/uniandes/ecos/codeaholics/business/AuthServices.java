@@ -89,7 +89,7 @@ public class AuthServices {
 					bStr.append((String) authenticate.getAnswer());
 					pResponse.header("access-control-expose-headers", "Authorization");
 					pResponse.header("Authorization", bStr.toString());
-					response = messager.getOkMessage("Successful login");
+					response = messager.getOkMessage("Inicio de sesion Exitoso");
 				} else {
 					response = authenticate.getAnswer();
 				}
@@ -142,7 +142,7 @@ public class AuthServices {
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
 
-			response = messager.getOkMessage("Successful registration");
+			response = messager.getOkMessage("Registro Exitoso");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
@@ -160,7 +160,7 @@ public class AuthServices {
 		// HEAD
 		// res.status(200);
 		pResponse.type("application/json");
-		// return "success";
+		// return "Proceso Exitoso";
 
 		pRequest.body();
 		return response;
@@ -199,8 +199,8 @@ public class AuthServices {
 			
 			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
 			if (documents.isEmpty()){//throw exception
-				log.info("Identification or Email wrong");
-				throw new WrongUserOrPasswordException("Identification or Email wrong", "400");	
+				log.info("Identificacion y correo no concuerdan");
+				throw new WrongUserOrPasswordException("Identificacion y correo no concuerdan", "400");	
 				}
 			
 			//Create randomize password
@@ -235,7 +235,7 @@ public class AuthServices {
 
 			sendPassword.send(EmailType.CHANGE, parametersEmail);
 			
-			response = messager.getOkMessage("Success");
+			response = messager.getOkMessage("Proceso Exitoso");
 
 						
 		} 
@@ -247,7 +247,7 @@ public class AuthServices {
 		
 		catch (MongoClientException M) {
 			// TODO: handle exception
-			System.out.println("Success");
+			System.out.println("Proceso Exitoso");
 		} catch (MongoWriteException M) {
 			// TODO: handle exception
 			System.out.println("Mongo Exception");
@@ -288,8 +288,8 @@ public class AuthServices {
 						
 			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
 			if (documents.isEmpty()){
-				log.info("User Doesn�t Exists");
-				throw new WrongUserOrPasswordException("User Doesn�t Exists", "400");				
+				log.info("Usuario no registrado");
+				throw new WrongUserOrPasswordException("Usuario no registrado", "400");				
 			}
 			
 			savedPassword = documents.get(0).getString("password");
@@ -301,8 +301,8 @@ public class AuthServices {
 			passwordHashed = hash[1];
 
 			if (!passwordHashed.equals(savedPassword)){
-				log.info("Wrong Password");
-				throw new WrongUserOrPasswordException("Wrong Password", "400");
+				log.info("Contraseña Incorrecta");
+				throw new WrongUserOrPasswordException("Contraseña Incorrecta", "400");
 			}
 			
 			//create hashed NEW password and salt
@@ -328,7 +328,7 @@ public class AuthServices {
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 			sendPassword.send(EmailType.CHANGE, parametersEmail);
 			
-			response = messager.getOkMessage("Success");
+			response = messager.getOkMessage("Proceso Exitoso");
 			
 		} 
 		catch (WrongUserOrPasswordException e) {
@@ -338,7 +338,7 @@ public class AuthServices {
 		
 		catch (MongoClientException M) {
 			// TODO: handle exception
-			System.out.println("Success");
+			System.out.println("Proceso Exitoso");
 		}
 		catch (MongoWriteException M) {
 			// TODO: handle exception

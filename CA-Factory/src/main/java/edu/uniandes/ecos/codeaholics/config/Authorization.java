@@ -35,7 +35,7 @@ public final class Authorization {
 	 * @return resultado de la verificación
 	 */
 	public static String authorizeCitizen(Request req, Response res) {
-		boolean authorized = false;
+		boolean autorizado = false;
 
 		String email = req.queryParams("email");
 		if (email != null && !email.equals("")) {
@@ -44,18 +44,18 @@ public final class Authorization {
 			session.append("user-profile", "citizen");
 			ArrayList<Document> documents = DataBaseUtil.find(session, "session");
 			if (documents.size() > 0) {
-				log.info("authorized!");
-				authorized = true;
+				log.info("autorizado!");
+				autorizado = true;
 			} else {
-				log.info("not authorized!");
+				log.info("no autorizado!");
 			}
 
-			if (!authorized) {
-				halt(401, "You are authorized");
+			if (!autorizado) {
+				halt(401, "No eres bienvenido aqui");
 			}
-			return "success";
+			return "Proceso Exitoso";
 		} else {
-			halt(401, "You are not authorized");
+			halt(401, "No eres bienvenido aqui");
 			return "incorrect";
 		}
 	}
@@ -71,7 +71,7 @@ public final class Authorization {
 	 * @return resultado de la verificación
 	 */
 	public static String authorizeFuntionary(Request req, Response res) {
-		boolean authorized = false;
+		boolean autorizado = false;
 
 		String email = req.queryParams("email");
 		if (email != null && !email.equals("")) {
@@ -80,18 +80,18 @@ public final class Authorization {
 			session.append("user-profile", "funtionary");
 			ArrayList<Document> documents = DataBaseUtil.find(session, "session");
 			if (documents.size() > 0) {
-				log.info("authorized!");
-				authorized = true;
+				log.info("autorizado!");
+				autorizado = true;
 			} else {
-				log.info("not authorized!");
+				log.info("no autorizado!");
 			}
 
-			if (!authorized) {
-				halt(401, "You are authorized");
+			if (!autorizado) {
+				halt(401, "No eres bienvenido aqui");
 			}
-			return "success";
+			return "Proceso Exitoso";
 		} else {
-			halt(401, "You are not authorized");
+			halt(401, "No eres bienvenido aqui");
 			return "incorrect";
 		}
 	}
@@ -107,7 +107,7 @@ public final class Authorization {
 	 * @return resultado de la verificación
 	 */
 	public static String authorizeAdmin(Request req, Response res) {
-		boolean authorized = false;
+		boolean autorizado = false;
 
 		String email = req.queryParams("email");
 		if (email != null && !email.equals("")) {
@@ -116,18 +116,18 @@ public final class Authorization {
 			session.append("user-profile", "admin");
 			ArrayList<Document> documents = DataBaseUtil.find(session, "session");
 			if (documents.size() > 0) {
-				log.info("authorized!");
-				authorized = true;
+				log.info("autorizado!");
+				autorizado = true;
 			} else {
-				log.info("not authorized!");
+				log.info("not autorizado!");
 			}
 
-			if (!authorized) {
-				halt(401, "You are authorized");
+			if (!autorizado) {
+				halt(401, "No eres bienvenido aqui");
 			}
-			return "success";
+			return "Proceso Exitoso";
 		} else {
-			halt(401, "You are not authorized");
+			halt(401, "No eres bienvenido aqui");
 			return "incorrect";
 		}
 	}

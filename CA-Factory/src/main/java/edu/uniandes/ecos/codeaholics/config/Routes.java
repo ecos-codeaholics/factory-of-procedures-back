@@ -25,6 +25,6 @@ public class Routes {
 	public static final String ADMIN = "/admin/";
 
 	// Rutas de authenticacion
-	public static final String AUTH = "/aut/";
+	public static final String AUTH = "/auth/";
 
 }
