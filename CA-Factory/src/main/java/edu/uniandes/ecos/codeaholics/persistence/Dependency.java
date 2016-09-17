@@ -17,13 +17,13 @@ public class Dependency {
 
 	public static final String NAME = "name";
 	public static final String EXTENSION = "extension";
-	public static final String FUNTIONARIES = "funtionaries";
+	public static final String FUNCTIONARIES = "functionaries";
 
 	@SerializedName("_id")
 	private String _id;
 	private String name;
 	private String extension;
-	private ArrayList<Funtionary> funtionaries;
+	private ArrayList<Functionary> functionaries;
 
 	public String getId() {
 		return _id;
@@ -49,29 +49,29 @@ public class Dependency {
 		this.extension = extension;
 	}
 
-	public ArrayList<Funtionary> getFuntionaries() {
-		return funtionaries;
+	public ArrayList<Functionary> getFunctionaries() {
+		return functionaries;
 	}
 
-	public void setFuntionaries(ArrayList<Funtionary> funtionaries) {
-		this.funtionaries = funtionaries;
+	public void setFunctionaries(ArrayList<Functionary> functionaries) {
+		this.functionaries = functionaries;
 	}
 
 	public Document toDocument() {
 		Document dependency = new Document();
 		dependency.append(NAME, this.getName())
 				  .append(EXTENSION, this.getExtension())
-				  .append(FUNTIONARIES, funtionariesDocuments());
+				  .append(FUNCTIONARIES, functionariesDocuments());
 
 		return dependency;
 	}
 
-	public Document funtionariesDocuments() {
-		Document funtionariesDocs = new Document();
-		for (int i = 0; i < this.getFuntionaries().size(); i++) {
-			funtionariesDocs.append("FUNTIONARY" + (i + 1), this.getFuntionaries().get(i).toDocument());
+	public Document functionariesDocuments() {
+		Document functionariesDocs = new Document();
+		for (int i = 0; i < this.getFunctionaries().size(); i++) {
+			functionariesDocs.append("FUNCTIONARY" + (i + 1), this.getFunctionaries().get(i).toDocument());
 		}
-		return funtionariesDocs;
+		return functionariesDocs;
 
 	}
 

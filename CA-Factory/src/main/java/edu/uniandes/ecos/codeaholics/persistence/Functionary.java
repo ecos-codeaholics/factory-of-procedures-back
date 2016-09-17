@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by davidMtz22 on 18/07/2016.
  */
-public class Funtionary extends Citizen {
+public class Functionary extends Citizen {
 
 	public static final String POSITION = "position";
 	public static final String MAYORALTY = "mayoralty";
