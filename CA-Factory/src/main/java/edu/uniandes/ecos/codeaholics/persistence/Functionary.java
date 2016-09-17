@@ -50,9 +50,9 @@ public class Functionary extends Citizen {
 		functionary.append(IDENTIFICATION, this.getIdentification()).append(NAME, this.getName())
 				.append(LASTNAME1, this.getLastName1()).append(LASTNAME2, this.getLastName2())
 				.append(BIRTHDATE, this.getBirthDate()).append(EMAIL, this.getEmail()).append(SALT, this.getSalt())
-				.append(PASSWORD, this.getPassword()).append(POSITION, this.getPosition())
+				.append(PASSWORD, this.getPassword()).append(POSITION, this.getPosition()).append(PROFILE, this.getUserProfile())
 				.append(MAYORALTY, this.getMayoralty().getName());
-
+							
 		return functionary;
 	}
 }

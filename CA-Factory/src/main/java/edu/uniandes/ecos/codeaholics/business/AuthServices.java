@@ -46,14 +46,13 @@ public class AuthServices {
 
 	private static IMessageSvc messager = new ResponseMessage();
 
-	
 	private final static Logger log = LogManager.getLogger(AuthServices.class);
 
+	private static String authenticationMethod = "JWT"; // ... JWT, Simple
 
-	private static String authenticationMethod = "JWT"; //... JWT, Simple
+	private static String CITIZEN_USER_PROFILE = "citizen";
 
-	
-	private static String USER_PROFILE = "citizen";
+	private static String FUNCTIONARY_USER_PROFILE = "functionary";
 
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
@@ -78,14 +77,14 @@ public class AuthServices {
 				authenticate = new Authentication();
 			}
 
-			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), "citizen");
+			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), data.getUserProfile());
 			if (authenticated) {
 
 				if (authenticationMethod.equals("JWT")) {
 					// 1. process header Autorization : Bearer <token>
 					StringBuilder bStr = new StringBuilder();
-					//bStr.append("Bearer");
-					//bStr.append(" ");
+					// bStr.append("Bearer");
+					// bStr.append(" ");
 					bStr.append((String) authenticate.getAnswer());
 					pResponse.header("access-control-expose-headers", "Authorization");
 					pResponse.header("Authorization", bStr.toString());
@@ -125,11 +124,12 @@ public class AuthServices {
 		try {
 
 			Citizen citizen = GSON.fromJson(pRequest.body(), Citizen.class);
+
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
-			citizen.setUserProfile(USER_PROFILE);
-			DataBaseUtil.save(citizen.toDocument(), USER_PROFILE);
+			citizen.setUserProfile(CITIZEN_USER_PROFILE);
+			DataBaseUtil.save(citizen.toDocument(), CITIZEN_USER_PROFILE);
 
 			// create array list to send as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();
@@ -166,6 +166,32 @@ public class AuthServices {
 		return response;
 
 	}
+	
+	/***
+	 * Agrega un ciudadano a la base de datos.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object insertFunctionaryMock() {
+
+		Object response = null;
+
+		try {
+
+			response = messager.getOkMessage("Registro Exitoso");
+
+		} catch (JsonSyntaxException e) {
+			response = messager.getNotOkMessage(e.getMessage());
+		}
+
+		return response;
+
+	}
+
 
 	/**
 	 * ENvia un nuevo password aleatorio al email del usuario
@@ -173,46 +199,43 @@ public class AuthServices {
 	 * @param pRequest
 	 *            Request
 	 * @param pResponse
-<<<<<<< HEAD
-	 * 				Response
-	 * @return	json object con la informacion de exito o falla del mensaje
-	 * @throws WrongUserOrPasswordException 
-=======
 	 *            Response
 	 * @return json object con la informacion de exito o falla del mensaje
->>>>>>> branch 'development' of https://github.com/ecos-codeaholics/factory-of-procedures-back.git
+	 * @throws WrongUserOrPasswordException
 	 */
 
-	public static Object resetPassword (Request pRequest, Response pResponse) throws WrongUserOrPasswordException {
+	public static Object resetPassword(Request pRequest, Response pResponse) throws WrongUserOrPasswordException {
 
 		Object response = null;
 
 		try {
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
-			System.out.println(data.getEmail() + " " + data.getIdentification());
+
+			log.info(data.getEmail() + " " + data.getIdentification());
 
 			Document filter = new Document();
 			filter.append("identification", data.getIdentification());
 			filter.append("email", data.getEmail());
-			
-			ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
-			
-			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
-			if (documents.isEmpty()){//throw exception
+
+			String userProfile = data.getUserProfile();
+			ArrayList<Document> documents = DataBaseUtil.find(filter, userProfile);
+
+			// TODO throw an exception about that email and identification
+			// doesn't correspond to a registered user
+			if (documents.isEmpty()) {// throw exception
 				log.info("Identificacion y correo no concuerdan");
-				throw new WrongUserOrPasswordException("Identificacion y correo no concuerdan", "400");	
-				}
-			
-			//Create randomize password
+				throw new WrongUserOrPasswordException("Identificacion y correo no concuerdan", "400");
+			}
+
+			// Create randomize password
 			String newPassword = GeneralUtil.randomPassword();
 
-			System.out.println(newPassword);
+			log.info("new passwd" + newPassword);
 			// create hash
 			String newSalt = null;
 			String[] hash = GeneralUtil.getHash(newPassword, "");
 			String newPasswordHashed = hash[1];
 			newSalt = hash[0];
-
 
 			// send value to change
 			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
@@ -222,7 +245,7 @@ public class AuthServices {
 			// send salt and password to the register in the DB
 			Document register = new Document(valuesToReplace);
 
-			DataBaseUtil.update(filter, register, USER_PROFILE);
+			DataBaseUtil.update(filter, register, userProfile);
 
 			// create array list to ssend as a parameter to the EmailNotifierSvc
 
@@ -234,122 +257,128 @@ public class AuthServices {
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 
 			sendPassword.send(EmailType.CHANGE, parametersEmail);
-			
+
 			response = messager.getOkMessage("Proceso Exitoso");
 
-						
-		} 
-		
+		}
+
 		catch (WrongUserOrPasswordException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
 		}
-		
-		catch (MongoClientException M) {
-			// TODO: handle exception
-			System.out.println("Proceso Exitoso");
-		} catch (MongoWriteException M) {
-			// TODO: handle exception
-			System.out.println("Mongo Exception");
+
+		catch (MongoClientException mongoEx) {
+			log.info(mongoEx.getMessage());
+			
+		} catch (MongoWriteException mongoEx) {
+			log.info(mongoEx.getMessage());
 
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return response;
 
-	} 
-	
-	
-	public static Object changePassword (Request pRequest, Response pResponse) throws WrongUserOrPasswordException, AddressException, MessagingException {
-		
+	}
+
+	public static Object changePassword(Request pRequest, Response pResponse)
+			throws WrongUserOrPasswordException, AddressException, MessagingException {
+
 		// Atributos
-		
+
 		Object response = null;
-		
+
 		try {
 			ChangePwdModelHelper data = GSON.fromJson(pRequest.body(), ChangePwdModelHelper.class);
-			
+
 			Integer identification = Integer.parseInt(pRequest.params("identification"));
 			String password = data.getPassword();
 			String newPassword = data.getNewpassword();
 			String newPasswordHashed = "";
-			String savedPassword ="";
-			String savedSalt= "";
+			String savedPassword = "";
+			String savedSalt = "";
 			String passwordHashed = "";
 			String newSalt = "";
-			
-			Document filter =  new Document();
+
+			Document filter = new Document();
 			filter.append("identification", identification);
-						
-			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
-			if (documents.isEmpty()){
+
+			ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN_USER_PROFILE);
+			if (documents.isEmpty()) {
 				log.info("Usuario no registrado");
-				throw new WrongUserOrPasswordException("Usuario no registrado", "400");				
+				throw new WrongUserOrPasswordException("Usuario no registrado", "400");
 			}
-			
+
 			savedPassword = documents.get(0).getString("password");
 			savedSalt = documents.get(0).getString("salt");
-			
-			//create hashed password to validate with the password saved in the DB
-			
+
+			// create hashed password to validate with the password saved in the
+			// DB
+
 			String[] hash = GeneralUtil.getHash(password, savedSalt);
 			passwordHashed = hash[1];
 
-			if (!passwordHashed.equals(savedPassword)){
-				log.info("Contraseña Incorrecta");
-				throw new WrongUserOrPasswordException("Contraseña Incorrecta", "400");
+			if (!passwordHashed.equals(savedPassword)) {
+				log.info("Contrasena Incorrecta");
+				throw new WrongUserOrPasswordException("Contrasena Incorrecta", "400");
 			}
-			
-			//create hashed NEW password and salt
+
+			// create hashed NEW password and salt
 			hash = GeneralUtil.getHash(newPassword, "");
 			newPasswordHashed = hash[1];
 			newSalt = hash[0];
-			
-			//organize value to change
+
+			// organize value to change
 			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
 			valuesToReplace.put("password", newPasswordHashed);
 			valuesToReplace.put("salt", newSalt);
-			
-			//send salt and password to the register in the DB
-			Document register = new Document(valuesToReplace);
-			DataBaseUtil.update(filter, register, "citizen");
-			
-			//create array list to send as a parameter to the EmailNotifierSvc
+
+			// Update the DB
+			updatePwdInDB(filter, valuesToReplace, CITIZEN_USER_PROFILE);
+
+			// create array list to send as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();
 			parametersEmail.add(documents.get(0).getString("email"));
 			parametersEmail.add(newPassword);
-			
-			//Send Email
+
+			// Send Email
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 			sendPassword.send(EmailType.CHANGE, parametersEmail);
-			
+
 			response = messager.getOkMessage("Proceso Exitoso");
-			
-		} 
-		catch (WrongUserOrPasswordException e) {
+
+		} catch (WrongUserOrPasswordException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
 		}
-		
-		catch (MongoClientException M) {
-			// TODO: handle exception
-			System.out.println("Proceso Exitoso");
-		}
-		catch (MongoWriteException M) {
-			// TODO: handle exception
-			System.out.println("Mongo Exception");
+
+		catch (MongoClientException mongoE) {
+			log.info(mongoE.getMessage());
+			
+		} catch (MongoWriteException mongoE) {
+			log.info(mongoE.getMessage());
+			
 		}
 
-		
-		
 		pResponse.type("application/json");
 		return response;
 
+	}
+
+	private static void updatePwdInDB(Document filter, Map<String, Object> valuesToReplace, String profile)
+			throws MongoWriteException {
+
+		try {
+			// send salt and password to the register in the DB
+			Document register = new Document(valuesToReplace);
+			DataBaseUtil.update(filter, register, profile);
+			
+		} catch (MongoWriteException e) {
+			throw e;
+		}
 	}
 
 }

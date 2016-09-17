@@ -28,6 +28,8 @@ import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Functionary;
+import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -97,6 +99,54 @@ public class TestsUtil {
 
 	}
 
+	
+	/**
+	 * @param pName
+	 * @param pLastName1
+	 * @param pEmail
+	 * @param pPwd
+	 */
+	public void addFunctionary(String pName, String pLastName1, String pEmail, String pPwd) {
+		
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+		Mayoralty mayorality = new Mayoralty();
+		mayorality.setName("Lenguazaque");
+		mayorality.setAddress("CRA 123 45 1");
+		mayorality.setUrl("https://lenguazaque.gov.co");
+		mayorality.setPhone("333555888");
+		
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+		
+		citizen.setMayoralty(mayorality);
+		citizen.setPosition("Secretario Tesoreria");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];	
+	}
+	
 	/**
 	 * get jetty server full URL
 	 * 

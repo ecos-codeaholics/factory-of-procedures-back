@@ -6,6 +6,8 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -27,6 +29,8 @@ import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUse
  */
 public class AuthenticationTest {
 
+	Logger logger = LogManager.getLogger(AuthenticationTest.class);
+	
 	@Test
 	public void simpleAuthenticationTest() {
 		

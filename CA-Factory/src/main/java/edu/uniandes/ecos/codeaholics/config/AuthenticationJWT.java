@@ -11,6 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import com.mongodb.ErrorCategory;
+import com.mongodb.MongoWriteException;
+
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -39,7 +42,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
 	public static final String TOKEN_ISSUER = "codeaholics";
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -59,13 +62,13 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		if (documents.isEmpty()) {
 			log.info("User Doesn't Exist");
-			throw new WrongUserOrPasswordException("User Doesn't Exist","101");
+			throw new WrongUserOrPasswordException("User Doesn't Exist", "101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
-			if (documents2.isEmpty()) {			
+			if (documents2.isEmpty()) {
 				log.info("User Profile Wrong");
-				throw new WrongUserOrPasswordException("Wrong user credentials","104");
+				throw new WrongUserOrPasswordException("Wrong user credentials", "104");
 			} else {
 
 				String salt = documents.get(0).get("salt").toString();
@@ -76,16 +79,16 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 				ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
 
 				if (results.size() > 0) {
-
 					log.info(pEmail + " authenticated! create token.");
 					token = createJWT(pEmail, TOKEN_ISSUER, pProfile, salt, "Something");
 					authenticated = true;
+					createSession(pEmail, pProfile);
 
 				} else {
 					token = "{}";
 					authenticated = false;
 					log.info("Wrong password");
-					throw new WrongUserOrPasswordException("Wrong password","103");					
+					throw new WrongUserOrPasswordException("Wrong password", "103");
 				}
 			}
 		}
@@ -120,9 +123,9 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		Date now = new Date(nowMillis);
 		long expMillis = nowMillis + TOKEN_LIFETIME;
 		Date exp = new Date(expMillis);
-		
+
 		log.debug(pSalt);
-		
+
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
@@ -135,6 +138,45 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
 
+	}
+
+	/**
+	 * * Crea una sesion para un usuario dado su email.
+	 * 
+	 * @param pEmail
+	 *            correo del usuario al que se le crea la sesion
+	 * @param pUserProfile
+	 *            perfil del usuario citizen, functionary, etc
+	 */
+	private static void createSession(String pEmail, String pUserProfile) {
+
+		Document session = new Document();
+		session.append("email", pEmail);
+		session.append("user-profile", pUserProfile);
+		log.info("Creating Session...");
+		try {
+			DataBaseUtil.save(session, "session");
+
+		} catch (MongoWriteException e) {
+
+			if (e.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {
+				log.info("Already exist session for user: " + pEmail);
+			}
+			throw e;
+		}
+	}
+
+	/**
+	 * * Cierra la sesion de un usuario dado su email.
+	 *
+	 * @param pEmail
+	 *            correo del ususario al que se le crea la sesion
+	 */
+	public static void closeSession(String pEmail) {
+		Document session = new Document();
+		session.append("email", pEmail);
+		log.info("Closing Session...");
+		DataBaseUtil.delete(session, "session");
 	}
 
 }
