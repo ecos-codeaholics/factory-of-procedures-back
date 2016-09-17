@@ -63,10 +63,6 @@ public class CitizenServices {
 
 		}
 
-		// Type type = new TypeToken<List<Document>>() {
-		// }.getType();
-		// String json = GSON.toJson(dataset, type);
-
 		pResponse.type("application/json");
 		return dataset;
 	}

@@ -85,7 +85,7 @@ public class App {
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
 
 		// iniciar sesion /SESSIONS/ metodo POST {info login json}
-		post(Routes.AUTH, AuthServices::doLogin, GeneralUtil.json());
+		post(Routes.AUTH + "/login", AuthServices::doLogin, GeneralUtil.json());
 
 		/**
 		 * Citizen Routes
@@ -98,7 +98,7 @@ public class App {
 		// GET
 		get(Routes.CITIZENS + ":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
 
-		post("/citizens/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
+		post("/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
 
 		// cerrar sesion /SESSIONS/ metodo DELETE {session info json}
 		delete(Routes.SESSIONS + ":email", CitizenServices::closeSession, GeneralUtil.json());
