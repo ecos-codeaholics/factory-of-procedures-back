@@ -83,9 +83,10 @@ public class App {
 		// cambio de clave /CITIZENS/{id} metodo PUT {info change password json,
 		// {old password, new pass}}
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
+		
+		post(Routes.AUTH +"/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
 
-		// iniciar sesion /SESSIONS/ metodo POST {info login json}
-		post(Routes.AUTH + "/login", AuthServices::doLogin, GeneralUtil.json());
+		
 
 		/**
 		 * Citizen Routes
@@ -98,15 +99,13 @@ public class App {
 		// GET
 		get(Routes.CITIZENS + ":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
 
-		post("/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
-
 		// cerrar sesion /SESSIONS/ metodo DELETE {session info json}
 		delete(Routes.SESSIONS + ":email", CitizenServices::closeSession, GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty
 		 */
-		// TODO
+		// TODO	
 
 		/**
 		 * Routes Administrator Mayoralty
