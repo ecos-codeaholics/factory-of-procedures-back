@@ -84,7 +84,7 @@ public class App {
 		// {old password, new pass}}
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
 		
-		post(Routes.AUTH +"/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
+		post(Routes.AUTH +"upload", CitizenServices::uploadDocuments, GeneralUtil.json());
 
 		
 
