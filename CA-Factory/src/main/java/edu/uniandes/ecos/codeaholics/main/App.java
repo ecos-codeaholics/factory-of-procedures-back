@@ -95,7 +95,7 @@ public class App {
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
-		// obtener detalles de un ciudadano /CITIZENS/{id} --> template metodo
+		// obtener detalles de unƒ ciudadano /CITIZENS/{id} --> template metodo
 		// GET
 		get(Routes.CITIZENS + ":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
 
