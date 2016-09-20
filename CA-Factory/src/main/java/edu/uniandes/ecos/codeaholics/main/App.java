@@ -85,10 +85,9 @@ public class App {
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
 		
 		// iniciar sesion /SESSIONS/ metodo POST {info login json}
-		post(Routes.AUTH, AuthServices::doLogin, GeneralUtil.json());
+		post(Routes.AUTH +"login/", AuthServices::doLogin, GeneralUtil.json());
 		
-		post(Routes.AUTH +"upload", CitizenServices::uploadDocuments, GeneralUtil.json());
-
+		post(Routes.AUTH +"upload/", CitizenServices::uploadDocuments, GeneralUtil.json());
 		
 
 		/**
