@@ -4,20 +4,29 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import java.util.ArrayList;
+
 import org.bson.Document;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by davidMtz22 on 18/07/2016.
+ * Created by davidMtz22 on 19/09/2016.
  */
 public class Procedure {
 
 	public static final String NAME = "name";
+	public static final String ACTIVITIES = "activities";
+	public static final String REQUIRED = "required";
+	public static final String FIELDS = "fields";
 
 	@SerializedName("_id")
 	private String _id;
 	private String name;
+	private ArrayList<Activity> activities;
+	private ArrayList<FileDocument> required;
+	private ArrayList<FormField> fields;
+	
 
 	public String getId() {
 		return _id;
@@ -35,11 +44,65 @@ public class Procedure {
 		this.name = name;
 	}
 
+	public ArrayList<Activity> getActivities() {
+		return activities;
+	}
+
+	public void setActivities(ArrayList<Activity> activities) {
+		this.activities = activities;
+	}
+
+	public ArrayList<FileDocument> getRequired() {
+		return required;
+	}
+
+	public void setRequired(ArrayList<FileDocument> required) {
+		this.required = required;
+	}
+
+	public ArrayList<FormField> getFields() {
+		return fields;
+	}
+
+	public void setFields(ArrayList<FormField> fields) {
+		this.fields = fields;
+	}
+
 	public Document toDocument() {
 		Document procedure = new Document();
 		procedure.append(NAME, this.getName());
+		procedure.append(ACTIVITIES, activitiesDocuments());
+		procedure.append(REQUIRED, requiredDocuments());
+		procedure.append(FIELDS, fieldsDocuments());
 
 		return procedure;
+	}
+	
+	public Document activitiesDocuments() {
+		Document activitiesDocs = new Document();
+		for (int i = 0; i < this.getActivities().size(); i++) {
+			activitiesDocs.append("ACTIVITY" + (i + 1), this.getActivities().get(i).toDocument());
+		}
+		return activitiesDocs;
+
+	}
+	
+	public Document requiredDocuments() {
+		Document requiredDocs = new Document();
+		for (int i = 0; i < this.getRequired().size(); i++) {
+			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i).toDocument());
+		}
+		return requiredDocs;
+
+	}
+	
+	public Document fieldsDocuments() {
+		Document fieldsDocs = new Document();
+		for (int i = 0; i < this.getFields().size(); i++) {
+			fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
+		}
+		return fieldsDocs;
+
 	}
 
 }
