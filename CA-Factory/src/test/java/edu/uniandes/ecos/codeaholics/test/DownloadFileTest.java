@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
@@ -35,8 +36,11 @@ public class DownloadFileTest {
 	Logger logger = LogManager.getLogger(DownloadFileTest.class);
 	String filePath = "";
 
-	private static String DOC_LIST_ROUTE = "/citizens/documents/list";
-	private static String DOC_DOWNLOAD_ROUTE = "/citizens/documents/download";
+	//This is only for testing purposes (so the route is unprotected)
+	private static String DOC_LIST_ROUTE = Routes.AUTH + "/citizens/documents/list";
+	private static String DOC_DOWNLOAD_ROUTE = Routes.AUTH + "/citizens/documents/download";
+	
+	
 	private static final int BUFFER_SIZE = 4096;
 
 	private class DocumentPath {
