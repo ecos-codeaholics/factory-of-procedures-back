@@ -21,9 +21,13 @@ public class FormField {
 	public static final String FILEOPTIONS = "fieldOptions";
 	public static final String FILEVALIDATION = "fieldValidation";
 
+	public enum Type {
+		number, date, text;
+	}
+	
 	@SerializedName("_id")
 	private String _id;
-	private String type;
+	private Type type;
 	private String label;
 	private String helpText;
 	private Boolean required;
@@ -40,11 +44,11 @@ public class FormField {
 		this._id = _id;
 	}
 
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
