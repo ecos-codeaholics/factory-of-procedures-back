@@ -4,9 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.bson.Document;
 
@@ -19,9 +17,6 @@ public class Activity {
 
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
-	public static final String STARTDATE = "startDate";
-	public static final String FINISHDATE = "finishDate";
-	public static final String STATUS = "status";
 	public static final String DEPENDENCY = "dependency";
 	public static final String GENERATED = "generated";
 
@@ -29,9 +24,6 @@ public class Activity {
 	private String _id;
 	private String name;
 	private String description;
-	private Date startDate;
-	private Date finishDate;
-	private String status;
 	private Dependency dependency;
 	private ArrayList<FileDocument> generated;
 
@@ -75,37 +67,10 @@ public class Activity {
 		this.description = description;
 	}
 
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getFinishDate() {
-		return finishDate;
-	}
-
-	public void setFinishDate(Date finishDate) {
-		this.finishDate = finishDate;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public Document toDocument() {
 		Document activity = new Document();
 		activity.append(NAME, this.getName());
 		activity.append(DESCRIPTION, this.getDescription());
-		activity.append(STARTDATE, this.getStartDate());
-		activity.append(FINISHDATE, this.getFinishDate());
-		activity.append(STATUS, this.getStatus());
 		activity.append(DEPENDENCY, this.getDependency().toDocument());
 		activity.append(GENERATED, generatedDocuments());
 

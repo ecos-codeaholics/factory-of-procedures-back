@@ -13,16 +13,12 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
-import org.eclipse.jetty.util.component.FileNoticeLifeCycleListener;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -44,7 +40,6 @@ import edu.uniandes.ecos.codeaholics.persistence.Functionary;
 import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -139,7 +134,7 @@ public class TestsUtil {
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile("functionary");
 
-		citizen.setMayoralty(mayorality);
+		citizen.setMayoralty("Lenguazaque");
 		citizen.setPosition("Secretario Tesoreria");
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
@@ -205,7 +200,7 @@ public class TestsUtil {
 		functionary.setIdentification(1234567890);
 		functionary.setEmail("jvaldes@anapoima.gov");
 		functionary.setUserProfile("functionary");
-		functionary.setMayoralty(mayorality);
+		functionary.setMayoralty("Lenguazaque");
 		functionary.setPosition("Secretario de Gobierno");
 
 		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
@@ -252,8 +247,8 @@ public class TestsUtil {
 
 	public void addProcedureRequest() {
 
-		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedure_request");
+		//MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		//MongoCollection<Document> collection = dbOne.getCollection("procedure_request");
 
 		/*
 		 * private String _id; private String procedureClass; private Long

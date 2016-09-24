@@ -19,7 +19,7 @@ public class Functionary extends Citizen {
 	@SerializedName("_id")
 	private String _id;
 	private String position;
-	private Mayoralty mayoralty;
+	private String mayoralty;
 
 	public String getId() {
 		return _id;
@@ -37,11 +37,11 @@ public class Functionary extends Citizen {
 		this.position = position;
 	}
 
-	public Mayoralty getMayoralty() {
+	public String getMayoralty() {
 		return mayoralty;
 	}
 
-	public void setMayoralty(Mayoralty mayoralty) {
+	public void setMayoralty(String mayoralty) {
 		this.mayoralty = mayoralty;
 	}
 	
@@ -51,7 +51,7 @@ public class Functionary extends Citizen {
 				.append(LASTNAME1, this.getLastName1()).append(LASTNAME2, this.getLastName2())
 				.append(BIRTHDATE, this.getBirthDate()).append(EMAIL, this.getEmail()).append(SALT, this.getSalt())
 				.append(PASSWORD, this.getPassword()).append(POSITION, this.getPosition()).append(PROFILE, this.getUserProfile())
-				.append(MAYORALTY, this.getMayoralty().getName());
+				.append(MAYORALTY, this.getMayoralty());
 							
 		return functionary;
 	}
