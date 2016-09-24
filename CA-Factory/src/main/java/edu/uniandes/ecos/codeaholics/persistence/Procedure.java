@@ -26,7 +26,6 @@ public class Procedure {
 	private ArrayList<Activity> activities;
 	private ArrayList<FileDocument> required;
 	private ArrayList<FormField> fields;
-	
 
 	public String getId() {
 		return _id;
@@ -77,7 +76,7 @@ public class Procedure {
 
 		return procedure;
 	}
-	
+
 	public Document activitiesDocuments() {
 		Document activitiesDocs = new Document();
 		for (int i = 0; i < this.getActivities().size(); i++) {
@@ -86,21 +85,21 @@ public class Procedure {
 		return activitiesDocs;
 
 	}
-	
+
 	public Document requiredDocuments() {
 		Document requiredDocs = new Document();
 		for (int i = 0; i < this.getRequired().size(); i++) {
 			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i).toDocument());
 		}
 		return requiredDocs;
-
+  
 	}
-	
+
 	public Document fieldsDocuments() {
 		Document fieldsDocs = new Document();
-		for (int i = 0; i < this.getFields().size(); i++) {
-			fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
-		}
+		//for (int i = 0; i < this.getFields().size(); i++) {
+		//	fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
+		//}
 		return fieldsDocs;
 
 	}
