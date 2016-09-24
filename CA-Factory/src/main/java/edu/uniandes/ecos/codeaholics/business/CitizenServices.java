@@ -76,6 +76,7 @@ public class CitizenServices {
 
 		Document filter = new Document();
 		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
+		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
@@ -107,13 +108,14 @@ public class CitizenServices {
 		Object response = null;
 
 		try {
-
-			String email = pRequest.params("email");
-			System.out.println(email);
-			Authentication.closeSession(email);
-
-			response = messager.getOkMessage("Proceso Exitoso");
-
+			String email = pRequest.queryParams("email");
+			if(email != null){
+				Authentication.closeSession(email);
+				response = messager.getOkMessage("Proceso Exitoso");
+			}else{
+				pResponse.status(417);
+				response = messager.getNotOkMessage("El correo es necesario");
+			}
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
