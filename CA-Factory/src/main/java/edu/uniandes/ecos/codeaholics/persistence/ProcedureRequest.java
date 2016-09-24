@@ -4,6 +4,8 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import java.util.ArrayList;
+
 import org.bson.Document;
 
 import com.google.gson.annotations.SerializedName;
@@ -17,6 +19,8 @@ public class ProcedureRequest {
 	public static final String FILENUMBER = "fileNumber";
 	public static final String CITIZEN = "citizen";
 	public static final String MAYORALTY = "mayoralty";
+	public static final String PROCEDUREDATA = "procedureData";
+	public static final String DELIVERYDOCS = "deliveryDocs";
 
 	@SerializedName("_id")
 	private String _id;
@@ -24,6 +28,8 @@ public class ProcedureRequest {
 	private Long fileNumber;
 	private Citizen citizen;
 	private Mayoralty mayoralty;
+	private Document procedureData;
+	private ArrayList<String> deliveryDocs;
 
 	public String getId() {
 		return _id;
@@ -65,14 +71,41 @@ public class ProcedureRequest {
 		this.mayoralty = mayoralty;
 	}
 
+	public Document getProcedureData() {
+		return procedureData;
+	}
+
+	public void setProcedureData(Document procedureData) {
+		this.procedureData = procedureData;
+	}
+
+	public ArrayList<String> getDeliveryDocs() {
+		return deliveryDocs;
+	}
+
+	public void setDeliveryDocs(ArrayList<String> deliveryDocs) {
+		this.deliveryDocs = deliveryDocs;
+	}
+
 	public Document toDocument() {
 		Document procedureRequest = new Document();
 		procedureRequest.append(CLASS, this.getProcedureClass());
 		procedureRequest.append(FILENUMBER, this.getFileNumber());
 		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
 		procedureRequest.append(MAYORALTY, this.getMayoralty().toDocument());
+		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
+		procedureRequest.append(DELIVERYDOCS, deliveryDocuments());
 
 		return procedureRequest;
+	}
+	
+	public Document deliveryDocuments() {
+		Document deliveryDocs = new Document();
+		for (int i = 0; i < this.getDeliveryDocs().size(); i++) {
+			deliveryDocs.append("DELIVERYDOC" + (i + 1), this.getDeliveryDocs().get(i));
+		}
+		return deliveryDocs;
+
 	}
 
 }
