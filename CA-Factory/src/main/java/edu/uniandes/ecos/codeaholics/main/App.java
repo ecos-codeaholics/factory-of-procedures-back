@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import edu.uniandes.ecos.codeaholics.business.AuthServices;
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
+import edu.uniandes.ecos.codeaholics.business.FunctionaryServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -107,7 +108,7 @@ public class App {
 		/**
 		 * Routes Mayoralty
 		 */
-		// TODO	
+		 get(Routes.FUNTIONARIES+"procedures/",FunctionaryServices::consultProcedures,GeneralUtil.json());
 
 		/**
 		 * Routes Administrator Mayoralty
@@ -123,7 +124,7 @@ public class App {
 		before(Routes.CITIZENS + "*", Authorization::authorizeCitizen);
 
 		// Control de acceso para Funcionionarios
-		before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
+		//before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
 
 		// Control de acceso para Admin Alcaldia
 		before(Routes.ADMIN + "*", Authorization::authorizeAdmin);
