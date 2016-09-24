@@ -19,7 +19,7 @@ public class Routes {
 	public static final String CITIZENS = "/citizens/";
 
 	// Rutas de ciudadano
-	public static final String FUNTIONARIES = "/funtionaries/";
+	public static final String FUNTIONARIES = "/functionaries/";
 
 	// Rutas de ciudadano
 	public static final String ADMIN = "/admin/";

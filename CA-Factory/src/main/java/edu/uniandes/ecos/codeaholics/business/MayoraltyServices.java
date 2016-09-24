@@ -47,5 +47,46 @@ public class MayoraltyServices {
 		pResponse.type("application/json");
 		return dataset;
 	}
+	
+	/***
+	 * Consulta lista de alcaldias creadas en el sistema
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object getMayoraltyList(Request pRequest, Response pResponse) {
+
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.getAll(MAYORALTY);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+		//ayuda oara probar el servicio
+		if(documents.isEmpty()){
+			Document alcaldia1 = new Document();
+			alcaldia1.put("name", "Girardot");
+			Document alcaldia2 = new Document();
+			alcaldia2.put("name", "Tocancipa");
+			Document alcaldia3 = new Document();
+			alcaldia3.put("name", "Paz de Ariporo");
+			
+			dataset.add(alcaldia1);
+			dataset.add(alcaldia2);
+			dataset.add(alcaldia3);
+		}
+		
+		pResponse.type("application/json");
+		return dataset;
+	}
 
 }

@@ -74,6 +74,7 @@ public final class Authorization {
 		boolean autorizado = false;
 
 		String email = req.queryParams("email");
+		log.info("Correo= "+email);
 		if (email != null && !email.equals("")) {
 			Document session = new Document();
 			session.append("email", email);

@@ -5,6 +5,7 @@
 package edu.uniandes.ecos.codeaholics.persistence;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.bson.Document;
 
@@ -21,6 +22,9 @@ public class ProcedureRequest {
 	public static final String MAYORALTY = "mayoralty";
 	public static final String PROCEDUREDATA = "procedureData";
 	public static final String DELIVERYDOCS = "deliveryDocs";
+	public static final String STARTDATE = "startDate";
+	public static final String FINISHDATE = "finishDate";
+	public static final String STATUS = "status";
 
 	@SerializedName("_id")
 	private String _id;
@@ -30,6 +34,9 @@ public class ProcedureRequest {
 	private Mayoralty mayoralty;
 	private Document procedureData;
 	private ArrayList<String> deliveryDocs;
+	private Date startDate;
+	private Date finishDate;
+	private String status;
 
 	public String getId() {
 		return _id;
@@ -87,6 +94,30 @@ public class ProcedureRequest {
 		this.deliveryDocs = deliveryDocs;
 	}
 
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getFinishDate() {
+		return finishDate;
+	}
+
+	public void setFinishDate(Date finishDate) {
+		this.finishDate = finishDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Document toDocument() {
 		Document procedureRequest = new Document();
 		procedureRequest.append(CLASS, this.getProcedureClass());
@@ -95,6 +126,9 @@ public class ProcedureRequest {
 		procedureRequest.append(MAYORALTY, this.getMayoralty().toDocument());
 		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
 		procedureRequest.append(DELIVERYDOCS, deliveryDocuments());
+		procedureRequest.append(STARTDATE, this.getStartDate());
+		procedureRequest.append(FINISHDATE, this.getFinishDate());
+		procedureRequest.append(STATUS, this.getStatus());
 
 		return procedureRequest;
 	}

@@ -4,6 +4,9 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,6 +15,8 @@ import spark.Response;
 
 public class FunctionaryServices {
 
+	private final static Logger log = LogManager.getLogger(AuthServices.class);
+	
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 
 	/***
@@ -24,7 +29,7 @@ public class FunctionaryServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static String consultProcedures(Request req, Response res) {
-
+		log.info("Sebas");
 		return "success";
 	}
 

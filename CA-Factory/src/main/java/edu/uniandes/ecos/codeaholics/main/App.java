@@ -18,6 +18,8 @@ import java.util.Properties;
 
 import edu.uniandes.ecos.codeaholics.business.AuthServices;
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
+import edu.uniandes.ecos.codeaholics.business.FunctionaryServices;
+import edu.uniandes.ecos.codeaholics.business.MayoraltyServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -97,17 +99,20 @@ public class App {
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
-		// obtener detalles de un ciudadano /CITIZENS/{id} --> template metodo
+		// obtener detalles de unƒ ciudadano /CITIZENS/{id} --> template metodo
 		// GET
 		get(Routes.CITIZENS + ":identification", CitizenServices::getCitizenDetail, GeneralUtil.json());
 
 		// cerrar sesion /SESSIONS/ metodo DELETE {session info json}
-		delete(Routes.SESSIONS + ":email", CitizenServices::closeSession, GeneralUtil.json());
+		delete(Routes.CITIZENS, CitizenServices::closeSession, GeneralUtil.json());
+		
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "mayoralties/", MayoraltyServices::getMayoraltyList, GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty
 		 */
-		// TODO	
+		 get(Routes.FUNTIONARIES+"procedures/",FunctionaryServices::consultProcedures,GeneralUtil.json());
 
 		/**
 		 * Routes Administrator Mayoralty
@@ -123,7 +128,7 @@ public class App {
 		before(Routes.CITIZENS + "*", Authorization::authorizeCitizen);
 
 		// Control de acceso para Funcionionarios
-		before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
+		//before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
 
 		// Control de acceso para Admin Alcaldia
 		before(Routes.ADMIN + "*", Authorization::authorizeAdmin);

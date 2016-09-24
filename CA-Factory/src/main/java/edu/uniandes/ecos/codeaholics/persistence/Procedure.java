@@ -24,7 +24,7 @@ public class Procedure {
 	private String _id;
 	private String name;
 	private ArrayList<Activity> activities;
-	private ArrayList<FileDocument> required;
+	private ArrayList<String> required;
 	private ArrayList<FormField> fields;
 
 	public String getId() {
@@ -51,11 +51,11 @@ public class Procedure {
 		this.activities = activities;
 	}
 
-	public ArrayList<FileDocument> getRequired() {
+	public ArrayList<String> getRequired() {
 		return required;
 	}
 
-	public void setRequired(ArrayList<FileDocument> required) {
+	public void setRequired(ArrayList<String> required) {
 		this.required = required;
 	}
 
@@ -89,7 +89,7 @@ public class Procedure {
 	public Document requiredDocuments() {
 		Document requiredDocs = new Document();
 		for (int i = 0; i < this.getRequired().size(); i++) {
-			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i).toDocument());
+			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i));
 		}
 		return requiredDocs;
   
@@ -97,9 +97,11 @@ public class Procedure {
 
 	public Document fieldsDocuments() {
 		Document fieldsDocs = new Document();
-		//for (int i = 0; i < this.getFields().size(); i++) {
-		//	fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
-		//}
+		if(!this.getFields().isEmpty()){
+			for (int i = 0; i < this.getFields().size(); i++) {
+				fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
+			}
+		}
 		return fieldsDocs;
 
 	}
