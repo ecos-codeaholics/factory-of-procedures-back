@@ -76,15 +76,15 @@ public class MayoraltyServices {
 			Document alcaldia1 = new Document();
 			alcaldia1.put("name", "Girardot");
 			Document alcaldia2 = new Document();
-			alcaldia1.put("name", "Tocancipa");
+			alcaldia2.put("name", "Tocancipa");
 			Document alcaldia3 = new Document();
-			alcaldia1.put("name", "Paz de Ariporo");
+			alcaldia3.put("name", "Paz de Ariporo");
 			
-			documents.add(alcaldia1);
-			documents.add(alcaldia2);
-			documents.add(alcaldia3);
+			dataset.add(alcaldia1);
+			dataset.add(alcaldia2);
+			dataset.add(alcaldia3);
 		}
-
+		
 		pResponse.type("application/json");
 		return dataset;
 	}
