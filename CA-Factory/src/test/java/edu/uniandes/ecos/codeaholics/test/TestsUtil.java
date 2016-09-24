@@ -13,12 +13,16 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.eclipse.jetty.util.component.FileNoticeLifeCycleListener;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -27,9 +31,20 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.main.App;
+import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Dependency;
+import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
+import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
+import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
+import edu.uniandes.ecos.codeaholics.persistence.FileDocument;
+import edu.uniandes.ecos.codeaholics.persistence.FormField;
+import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
 import edu.uniandes.ecos.codeaholics.persistence.Functionary;
 import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
+import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
+import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -99,7 +114,6 @@ public class TestsUtil {
 
 	}
 
-	
 	/**
 	 * @param pName
 	 * @param pLastName1
@@ -107,7 +121,7 @@ public class TestsUtil {
 	 * @param pPwd
 	 */
 	public void addFunctionary(String pName, String pLastName1, String pEmail, String pPwd) {
-		
+
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("functionary");
 
@@ -116,7 +130,7 @@ public class TestsUtil {
 		mayorality.setAddress("CRA 123 45 1");
 		mayorality.setUrl("https://lenguazaque.gov.co");
 		mayorality.setPhone("333555888");
-		
+
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
@@ -124,7 +138,7 @@ public class TestsUtil {
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile("functionary");
-		
+
 		citizen.setMayoralty(mayorality);
 		citizen.setPosition("Secretario Tesoreria");
 
@@ -144,9 +158,129 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];	
+		citizenSalt = hash[0];
 	}
-	
+
+	public static void addProcedure() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+
+		/*
+		 * private String name; private ArrayList<Activity> activities; private
+		 * ArrayList<FileDocument> required; private ArrayList<FormField>
+		 * fields;
+		 */
+
+		Procedure procedure = new Procedure();
+
+		procedure.setName("Certificado de residencia");
+
+		Activity activity = new Activity();
+		activity.setName("Aprobacion");
+		activity.setDescription("Revisar documentacion y aprobar");
+		
+		ArrayList<FileDocument> fileDocs = new ArrayList<FileDocument>();
+		activity.setGenerated(fileDocs);
+		//activity.setStartDate(LocalDate.of(2016, Month.SEPTEMBER, 24));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		activities.add(activity);
+		
+		procedure.setActivities(activities);
+		
+		Dependency dependency = new Dependency();
+		dependency.setName("Secretaria de Gobierno");
+		dependency.setExtension("EXT12345");
+
+		Mayoralty mayorality = new Mayoralty();
+		mayorality.setName("Anapoima");
+		mayorality.setAddress("CRA 123 45 1");
+		mayorality.setUrl("https://anapoima.gov.co");
+		mayorality.setPhone("333555888");
+
+		Functionary functionary = new Functionary();
+		functionary.setName("Juan");
+		functionary.setLastName1("Valdes");
+		functionary.setIdentification(1234567890);
+		functionary.setEmail("jvaldes@anapoima.gov");
+		functionary.setUserProfile("functionary");
+		functionary.setMayoralty(mayorality);
+		functionary.setPosition("Secretario de Gobierno");
+
+		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
+		listOfFunctionaries.add(functionary);
+		dependency.setFunctionaries(listOfFunctionaries);
+
+		activity.setDependency(dependency);
+
+		ArrayList<FileDocument> requiredDocs = new ArrayList<FileDocument>();
+		procedure.setRequired(requiredDocs);
+		
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		
+		FormField field1 = new FormField();
+		field1.setLabel("Cedula");
+		field1.setType(Type.number);
+		field1.setHelpText("Ingrese aqui su cedula");
+		field1.setRequired(true);
+
+		field1.setFieldAttribute(new FieldAttribute());
+		field1.setFieldOptions(new FieldOptions());
+		field1.setFieldValidation(new FieldValidation());
+		
+		FormField field2 = new FormField();
+		field2.setLabel("Direccion");
+		field2.setType(Type.text);
+		field2.setHelpText("Ingrese aqui su direccion");
+		field2.setRequired(true);
+		field2.setFieldAttribute(new FieldAttribute());
+		field2.setFieldOptions(new FieldOptions());
+		field2.setFieldValidation(new FieldValidation());
+		
+		formFields.add(field1);
+		formFields.add(field2);
+
+		// FieldAttribute fattribute = new FieldAttribute();
+		// FieldValidation
+		// FieldOptions
+
+		logger.info("inserting new procedure instance");
+		collection.insertOne(procedure.toDocument());
+
+	}
+
+	public void addProcedureRequest() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedure_request");
+
+		/*
+		 * private String _id; private String procedureClass; private Long
+		 * fileNumber; private Citizen citizen; ok private Mayoralty mayoralty;
+		 * ok private Document procedureData; private ArrayList<String>
+		 * deliveryDocs;
+		 */
+		ProcedureRequest procedure = new ProcedureRequest();
+
+		procedure.setProcedureClass("Certificado de residencia");
+		
+		Mayoralty mayorality = new Mayoralty();
+		mayorality.setName("Anapoima");
+		mayorality.setAddress("CRA 123 45 6");
+		mayorality.setUrl("https://anapoima.gov.co");
+		mayorality.setPhone("333555888");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Juan");
+		citizen.setLastName1("Valdes");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("jvaldes@uniandes");
+		citizen.setPassword("Qwerty");
+		citizen.setUserProfile("citizen");
+
+	}
+
 	/**
 	 * get jetty server full URL
 	 * 
@@ -250,7 +384,9 @@ public class TestsUtil {
 
 	}
 
-	/** Check if the input directory exists, if not then create it
+	/**
+	 * Check if the input directory exists, if not then create it
+	 * 
 	 * @param inputDir
 	 */
 	public static void checkDir(String inputDir) {
@@ -273,22 +409,22 @@ public class TestsUtil {
 			}
 		}
 	}
-	
-	public static void isConnected() throws IOException {
-		
-	    String strUrl = "http://stackoverflow.com/about";
-    
-	    try {
-	        URL url = new URL(strUrl);
-	        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-	        urlConn.connect();
 
-	    } catch (IOException e) {
-	        logger.error("Error creating HTTP connection");
-	        e.printStackTrace();
-	        throw e;
-	    }
+	public static void isConnected() throws IOException {
+
+		String strUrl = "http://stackoverflow.com/about";
+
+		try {
+			URL url = new URL(strUrl);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.connect();
+
+		} catch (IOException e) {
+			logger.error("Error creating HTTP connection");
+			e.printStackTrace();
+			throw e;
+		}
 
 	}
-	
+
 }
