@@ -4,12 +4,8 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -24,13 +20,9 @@ import spark.Response;
 
 public class CitizenServices {
 
-	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
-
-	private final static Logger log = LogManager.getLogger(CitizenServices.class);
 
 	private static String USER_PROFILE = "citizen";
 
@@ -130,6 +122,8 @@ public class CitizenServices {
 		pResponse.type("application/json");
 		return response;
 	}
+	
+	
 
 	/***
 	 * Registra la solicitud de un tramite y toda la infromacion asocida a esa
