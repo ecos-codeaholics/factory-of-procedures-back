@@ -161,40 +161,36 @@ public class TestsUtil {
 		citizenSalt = hash[0];
 	}
 
-	public static void addProcedure() {
+	public static void addProcedure(String pName, String pMayorName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("procedures");
 
-		/*
-		 * private String name; private ArrayList<Activity> activities; private
-		 * ArrayList<FileDocument> required; private ArrayList<FormField>
-		 * fields;
-		 */
+		ArrayList<FileDocument> fileDocs = new ArrayList<FileDocument>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
+		ArrayList<FileDocument> requiredDocs = new ArrayList<FileDocument>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
 
 		Procedure procedure = new Procedure();
-
-		procedure.setName("Certificado de residencia");
+		procedure.setName(pName);
 
 		Activity activity = new Activity();
 		activity.setName("Aprobacion");
 		activity.setDescription("Revisar documentacion y aprobar");
-		
-		ArrayList<FileDocument> fileDocs = new ArrayList<FileDocument>();
 		activity.setGenerated(fileDocs);
-		//activity.setStartDate(LocalDate.of(2016, Month.SEPTEMBER, 24));
-
-		ArrayList<Activity> activities = new ArrayList<Activity>();
+		Date today = new Date();
+		activity.setStartDate(today);
 		activities.add(activity);
-		
+
 		procedure.setActivities(activities);
-		
+
 		Dependency dependency = new Dependency();
 		dependency.setName("Secretaria de Gobierno");
 		dependency.setExtension("EXT12345");
 
 		Mayoralty mayorality = new Mayoralty();
-		mayorality.setName("Anapoima");
+		mayorality.setName(pMayorName);
 		mayorality.setAddress("CRA 123 45 1");
 		mayorality.setUrl("https://anapoima.gov.co");
 		mayorality.setPhone("333555888");
@@ -208,18 +204,13 @@ public class TestsUtil {
 		functionary.setMayoralty(mayorality);
 		functionary.setPosition("Secretario de Gobierno");
 
-		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
 		listOfFunctionaries.add(functionary);
 		dependency.setFunctionaries(listOfFunctionaries);
-
 		activity.setDependency(dependency);
-
-		ArrayList<FileDocument> requiredDocs = new ArrayList<FileDocument>();
 		procedure.setRequired(requiredDocs);
-		
-		ArrayList<FormField> formFields = new ArrayList<FormField>();
-		
+
 		FormField field1 = new FormField();
+
 		field1.setLabel("Cedula");
 		field1.setType(Type.number);
 		field1.setHelpText("Ingrese aqui su cedula");
@@ -228,7 +219,7 @@ public class TestsUtil {
 		field1.setFieldAttribute(new FieldAttribute());
 		field1.setFieldOptions(new FieldOptions());
 		field1.setFieldValidation(new FieldValidation());
-		
+
 		FormField field2 = new FormField();
 		field2.setLabel("Direccion");
 		field2.setType(Type.text);
@@ -237,13 +228,13 @@ public class TestsUtil {
 		field2.setFieldAttribute(new FieldAttribute());
 		field2.setFieldOptions(new FieldOptions());
 		field2.setFieldValidation(new FieldValidation());
-		
+
 		formFields.add(field1);
 		formFields.add(field2);
 
-		// FieldAttribute fattribute = new FieldAttribute();
-		// FieldValidation
-		// FieldOptions
+		//FieldAttribute fattribute = new FieldAttribute();
+		//FieldValidation
+		//FieldOptions
 
 		logger.info("inserting new procedure instance");
 		collection.insertOne(procedure.toDocument());
@@ -264,7 +255,7 @@ public class TestsUtil {
 		ProcedureRequest procedure = new ProcedureRequest();
 
 		procedure.setProcedureClass("Certificado de residencia");
-		
+
 		Mayoralty mayorality = new Mayoralty();
 		mayorality.setName("Anapoima");
 		mayorality.setAddress("CRA 123 45 6");

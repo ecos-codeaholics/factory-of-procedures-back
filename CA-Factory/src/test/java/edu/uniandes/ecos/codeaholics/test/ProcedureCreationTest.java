@@ -27,7 +27,8 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureTest() {
-		TestsUtil.addProcedure();
+		TestsUtil.addProcedure("Certificado de residencia","Anapoima");
+		assertEquals(true, true);
 	}
 
 }

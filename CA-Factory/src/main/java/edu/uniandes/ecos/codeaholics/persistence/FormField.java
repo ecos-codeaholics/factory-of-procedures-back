@@ -25,6 +25,10 @@ public class FormField {
 		number, date, text;
 	}
 	
+	public enum SubType {
+		text, email, password;
+	}
+	
 	@SerializedName("_id")
 	private String _id;
 	private Type type;
