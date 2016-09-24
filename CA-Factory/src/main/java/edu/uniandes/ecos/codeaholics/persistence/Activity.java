@@ -4,8 +4,6 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
-import java.util.ArrayList;
-
 import org.bson.Document;
 
 import com.google.gson.annotations.SerializedName;
@@ -25,7 +23,6 @@ public class Activity {
 	private String name;
 	private String description;
 	private Dependency dependency;
-	private ArrayList<FileDocument> generated;
 
 	public String getId() {
 		return _id;
@@ -51,14 +48,6 @@ public class Activity {
 		this.dependency = dependency;
 	}
 
-	public ArrayList<FileDocument> getGenerated() {
-		return generated;
-	}
-
-	public void setGenerated(ArrayList<FileDocument> generated) {
-		this.generated = generated;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -72,18 +61,9 @@ public class Activity {
 		activity.append(NAME, this.getName());
 		activity.append(DESCRIPTION, this.getDescription());
 		activity.append(DEPENDENCY, this.getDependency().toDocument());
-		activity.append(GENERATED, generatedDocuments());
+		//activity.append(GENERATED, generatedDocuments());
 
 		return activity;
-	}
-	
-	public Document generatedDocuments() {
-		Document generatedDocs = new Document();
-		for (int i = 0; i < this.getGenerated().size(); i++) {
-			generatedDocs.append("GENERATED" + (i + 1), this.getGenerated().get(i).toDocument());
-		}
-		return generatedDocs;
-
 	}
 
 }

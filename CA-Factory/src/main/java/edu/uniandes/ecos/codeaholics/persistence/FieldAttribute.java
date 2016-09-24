@@ -13,14 +13,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class FieldAttribute {
 
-	public static final String SUBTYPE = "subType";
 	public static final String NAME = "name";
 	public static final String PLACEHOLDER = "placeHolder";
 	public static final String REQUIRED = "required";
 
 	@SerializedName("_id")
 	private String _id;
-	private String subType;
 	private String name;
 	private Boolean required;
 	private String placeHolder;
@@ -32,14 +30,6 @@ public class FieldAttribute {
 
 	public void setId(String _id) {
 		this._id = _id;
-	}
-
-	public String getSubType() {
-		return subType;
-	}
-
-	public void setSubType(String subType) {
-		this.subType = subType;
 	}
 
 	public String getName() {
@@ -68,7 +58,6 @@ public class FieldAttribute {
 
 	public Document toDocument() {
 		Document fieldAttribute = new Document();
-		fieldAttribute.append(SUBTYPE, this.getSubType());
 		fieldAttribute.append(NAME, this.getName());
 		fieldAttribute.append(PLACEHOLDER, this.getPlaceHolder());
 		fieldAttribute.append(REQUIRED, this.getRequired());

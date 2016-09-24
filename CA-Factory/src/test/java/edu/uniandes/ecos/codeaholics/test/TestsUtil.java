@@ -33,7 +33,6 @@ import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
 import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
 import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
-import edu.uniandes.ecos.codeaholics.persistence.FileDocument;
 import edu.uniandes.ecos.codeaholics.persistence.FormField;
 import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
 import edu.uniandes.ecos.codeaholics.persistence.Functionary;
@@ -175,8 +174,8 @@ public class TestsUtil {
 		activity.setName("Aprobacion");
 		activity.setDescription("Revisar documentacion y aprobar");
 		
-		ArrayList<FileDocument> fileDocs = new ArrayList<FileDocument>();
-		activity.setGenerated(fileDocs);
+		//ArrayList<FileDocument> fileDocs = new ArrayList<FileDocument>();
+		//activity.setGenerated(fileDocs);
 		//activity.setStartDate(LocalDate.of(2016, Month.SEPTEMBER, 24));
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
@@ -209,7 +208,7 @@ public class TestsUtil {
 
 		activity.setDependency(dependency);
 
-		ArrayList<FileDocument> requiredDocs = new ArrayList<FileDocument>();
+		ArrayList<String> requiredDocs = new ArrayList<String>();
 		procedure.setRequired(requiredDocs);
 		
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
@@ -218,7 +217,6 @@ public class TestsUtil {
 		field1.setLabel("Cedula");
 		field1.setType(Type.number);
 		field1.setHelpText("Ingrese aqui su cedula");
-		field1.setRequired(true);
 
 		field1.setFieldAttribute(new FieldAttribute());
 		field1.setFieldOptions(new FieldOptions());
@@ -228,7 +226,6 @@ public class TestsUtil {
 		field2.setLabel("Direccion");
 		field2.setType(Type.text);
 		field2.setHelpText("Ingrese aqui su direccion");
-		field2.setRequired(true);
 		field2.setFieldAttribute(new FieldAttribute());
 		field2.setFieldOptions(new FieldOptions());
 		field2.setFieldValidation(new FieldValidation());

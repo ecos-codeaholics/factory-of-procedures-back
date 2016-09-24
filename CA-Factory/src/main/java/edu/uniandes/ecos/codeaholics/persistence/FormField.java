@@ -30,7 +30,6 @@ public class FormField {
 	private Type type;
 	private String label;
 	private String helpText;
-	private Boolean required;
 	private FieldAttribute fieldAttribute;
 	private FieldOptions fieldOptions;
 	private FieldValidation fieldValidation;
@@ -68,14 +67,6 @@ public class FormField {
 		this.helpText = helpText;
 	}
 
-	public Boolean getRequired() {
-		return required;
-	}
-
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
 	public FieldAttribute getFieldAttribute() {
 		return fieldAttribute;
 	}
@@ -105,7 +96,6 @@ public class FormField {
 		procedure.append(TYPE, this.getType());
 		procedure.append(LABEL, this.getLabel());
 		procedure.append(HELPTEXT, this.getHelpText());
-		procedure.append(REQUIRED, this.getRequired());
 		procedure.append(FIELDATTRIBUTE, this.getFieldAttribute().toDocument());
 		procedure.append(FILEOPTIONS, this.getFieldOptions().toDocument());
 		procedure.append(FILEVALIDATION, this.getFieldValidation().toDocument());
