@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
@@ -49,7 +50,7 @@ public class UploadFileTest {
 	@BeforeClass
 	public static void beforeClass() {
 		App.main(null);
-		post("/citizens/documents/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
+		post(Routes.AUTH + "/citizens/documents/upload", CitizenServices::uploadDocuments, GeneralUtil.json());
 	}
 
 	@AfterClass
@@ -70,7 +71,7 @@ public class UploadFileTest {
 		String jsonResponse = "";
 		StringBuilder result = new StringBuilder();
 
-		String route = "/citizens/documents/upload";
+		String route = Routes.AUTH + "/citizens/documents/upload";
 		String serverPath = TestsUtil.getServerPath();
 		
 		String attachmentName = "testFile";

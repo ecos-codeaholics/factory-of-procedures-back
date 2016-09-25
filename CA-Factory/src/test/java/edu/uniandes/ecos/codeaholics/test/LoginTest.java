@@ -53,7 +53,7 @@ public class LoginTest {
 		String jsonResponse = "";
 		StringBuilder result = new StringBuilder();
 
-		String route = Routes.AUTH + "login";
+		String route = Routes.AUTH + "login/";
 		String serverPath = TestsUtil.getServerPath();
 
 		try {

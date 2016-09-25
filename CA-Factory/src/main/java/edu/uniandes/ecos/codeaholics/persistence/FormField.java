@@ -97,7 +97,7 @@ public class FormField {
 
 	public Document toDocument() {
 		Document procedure = new Document();
-		procedure.append(TYPE, this.getType());
+		//procedure.append(TYPE, this.getType()); //Need to fix this - gson cannot convert this
 		procedure.append(LABEL, this.getLabel());
 		procedure.append(HELPTEXT, this.getHelpText());
 		procedure.append(FIELDATTRIBUTE, this.getFieldAttribute().toDocument());

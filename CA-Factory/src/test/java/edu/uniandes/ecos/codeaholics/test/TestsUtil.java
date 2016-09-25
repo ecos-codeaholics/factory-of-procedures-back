@@ -162,6 +162,8 @@ public class TestsUtil {
 
 		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<String> reqDocs = new ArrayList<String>();
+		ArrayList<Activity> activities1 = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
 		procedure.setName(pName);
@@ -169,13 +171,14 @@ public class TestsUtil {
 		Activity activity = new Activity();
 		activity.setName("Aprobacion");
 		activity.setDescription("Revisar documentacion y aprobar");
-		
-		ArrayList<Activity> activities1 = new ArrayList<Activity>();
-		
+				
 		activities1.add(activity);
-
 		procedure.setActivities(activities1);
 
+		String reqDoc1 = "Cedula";
+		reqDocs.add(reqDoc1);
+		procedure.setRequired(reqDocs);
+		
 		Dependency dependency = new Dependency();
 		dependency.setName("Secretaria de Gobierno");
 		dependency.setExtension("EXT12345");
@@ -199,9 +202,6 @@ public class TestsUtil {
 		dependency.setFunctionaries(listOfFunctionaries);
 		activity.setDependency(dependency);
 
-		ArrayList<String> requiredDocs = null;
-		procedure.setRequired(requiredDocs);
-
 		FormField field1 = new FormField();
 
 		field1.setLabel("Cedula");
@@ -223,7 +223,11 @@ public class TestsUtil {
 		formFields.add(field1);
 		formFields.add(field2);
 
+		procedure.setFields(formFields);
+		
 		logger.info("inserting new procedure instance");
+		
+		System.out.println( procedure.getFields());
 		collection.insertOne(procedure.toDocument());
 
 	}
