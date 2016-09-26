@@ -55,8 +55,8 @@ public class Procedure {
 		return required;
 	}
 
-	public void setRequired(ArrayList<String> required) {
-		this.required = required;
+	public void setRequired(ArrayList<String> requiredDocs) {
+		this.required = requiredDocs;
 	}
 
 	public ArrayList<FormField> getFields() {
@@ -65,16 +65,6 @@ public class Procedure {
 
 	public void setFields(ArrayList<FormField> fields) {
 		this.fields = fields;
-	}
-
-	public Document toDocument() {
-		Document procedure = new Document();
-		procedure.append(NAME, this.getName());
-		procedure.append(ACTIVITIES, activitiesDocuments());
-		procedure.append(REQUIRED, requiredDocuments());
-		procedure.append(FIELDS, fieldsDocuments());
-
-		return procedure;
 	}
 
 	public Document activitiesDocuments() {
@@ -87,23 +77,34 @@ public class Procedure {
 	}
 
 	public Document requiredDocuments() {
+		System.out.println(this.getRequired().size());
 		Document requiredDocs = new Document();
 		for (int i = 0; i < this.getRequired().size(); i++) {
 			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i));
 		}
 		return requiredDocs;
-  
+
 	}
 
 	public Document fieldsDocuments() {
 		Document fieldsDocs = new Document();
-		if(!this.getFields().isEmpty()){
+		if (!this.getFields().isEmpty()) {
 			for (int i = 0; i < this.getFields().size(); i++) {
 				fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
 			}
 		}
 		return fieldsDocs;
 
+	}
+
+	public Document toDocument() {
+		Document procedure = new Document();
+		procedure.append(NAME, getName());
+		procedure.append(ACTIVITIES, activitiesDocuments());
+		procedure.append(REQUIRED, requiredDocuments());
+		procedure.append(FIELDS, fieldsDocuments());
+
+		return procedure;
 	}
 
 }
