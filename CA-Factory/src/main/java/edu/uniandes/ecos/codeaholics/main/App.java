@@ -108,6 +108,9 @@ public class App {
 		
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "mayoralties/", MayoraltyServices::getMayoraltyList, GeneralUtil.json());
+		
+		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty

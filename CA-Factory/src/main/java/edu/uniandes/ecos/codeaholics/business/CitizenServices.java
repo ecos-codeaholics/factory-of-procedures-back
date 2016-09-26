@@ -26,6 +26,7 @@ public class CitizenServices {
 
 	private static String USER_PROFILE = "citizen";
 
+	private static String PROCEDURES = "procedures";
 	/***
 	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
 	 * 
@@ -158,10 +159,38 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURES);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+		//ayuda para probar el servicio
+		if(documents.isEmpty()){
+			Document procedure = new Document();
+			procedure.put("id", 1);
+			procedure.put("name", "sebas");
+			procedure.put("department", "Caldas");
+			procedure.put("city", "Palestina");
+			procedure.put("status", "ongoing");
+			dataset.add(procedure);
+			procedure.put("id", 2);
+			procedure.put("name", "Jeison");
+			procedure.put("department", "Cundinamarca");
+			procedure.put("city", "Bogota");
+			procedure.put("status", "all");
+			dataset.add(procedure);
+	
+		}
 
-		Object response;
-		response = messager.getOkMessage("Proceso Exitoso");
-		return response;
+		pResponse.type("application/json");
+		return dataset;
 	}
 
 	/***
