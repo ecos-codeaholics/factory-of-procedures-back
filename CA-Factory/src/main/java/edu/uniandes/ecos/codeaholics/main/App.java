@@ -75,19 +75,20 @@ public class App {
 		 * Auth Routes
 		 */
 
-		// crear ciudadano /CITIZENS/ metodo POST {citizen info json}
+		// crear ciudadano /auth/ metodo POST {citizen info json}
 		post(Routes.AUTH, AuthServices::insertCitizen, GeneralUtil.json());
 
-		// reset de clave /CITIZENS/ metodo PUT {info password recovery json,
+		// reset de clave /auth/ metodo PUT {info password recovery json,
 		// {email, id}}
 		put(Routes.AUTH, AuthServices::resetPassword, GeneralUtil.json());
 
-		// cambio de clave /CITIZENS/{id} metodo PUT {info change password json,
+		// Must be in the authorize routes
 		// {old password, new pass}}
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
 		
-		// iniciar sesion /SESSIONS/ metodo POST {info login json}
+		// iniciar sesion /auth/login metodo POST
 		post(Routes.AUTH +"login/", AuthServices::doLogin, GeneralUtil.json());
+		
 		
 		post(Routes.AUTH +"upload/", CitizenServices::uploadDocuments, GeneralUtil.json());
 		

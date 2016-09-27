@@ -159,6 +159,7 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
+		
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURES);
 		for (Document item : documents) {
@@ -171,25 +172,30 @@ public class CitizenServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
+		
+		
 		//ayuda para probar el servicio
 		if(documents.isEmpty()){
-			Document procedure = new Document();
-			procedure.put("id", 1);
-			procedure.put("name", "sebas");
-			procedure.put("department", "Caldas");
-			procedure.put("city", "Palestina");
-			procedure.put("status", "ongoing");
-			dataset.add(procedure);
-			procedure.put("id", 2);
-			procedure.put("name", "Jeison");
-			procedure.put("department", "Cundinamarca");
-			procedure.put("city", "Bogota");
-			procedure.put("status", "all");
-			dataset.add(procedure);
-	
+			Document procedure1 = new Document();
+			procedure1.put("id", 1);
+			procedure1.put("name", "sebas");
+			procedure1.put("department", "Caldas");
+			procedure1.put("city", "Palestina");
+			procedure1.put("status", "finalizado");
+			dataset.add(procedure1);
+			System.out.println(dataset);
+			Document procedure2 = new Document();
+			procedure2.put("id", 2);
+			procedure2.put("name", "Jeison");
+			procedure2.put("department", "Cundinamarca");
+			procedure2.put("city", "Bogota");
+			procedure2.put("status", "en proceso");
+			dataset.add(procedure2);
+			
+			System.out.println(dataset);
 		}
 
-		pResponse.type("application/json");
+		//pResponse.type("application/json");
 		return dataset;
 	}
 
