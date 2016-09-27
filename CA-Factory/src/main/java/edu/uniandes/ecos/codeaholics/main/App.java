@@ -132,7 +132,7 @@ public class App {
 		before(Routes.CITIZENS + "*", Authorization::authorizeCitizen);
 
 		// Control de acceso para Funcionionarios
-		//before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
+		before(Routes.FUNTIONARIES + "*", Authorization::authorizeFuntionary);
 
 		// Control de acceso para Admin Alcaldia
 		before(Routes.ADMIN + "*", Authorization::authorizeAdmin);
