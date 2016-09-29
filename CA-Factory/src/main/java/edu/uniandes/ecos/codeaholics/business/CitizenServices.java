@@ -181,7 +181,7 @@ public class CitizenServices {
 			procedure1.put("name", "sebas");
 			procedure1.put("department", "Caldas");
 			procedure1.put("city", "Palestina");
-			procedure1.put("status", "finalizado");
+			procedure1.put("status", "Finalizado");
 			dataset.add(procedure1);
 			System.out.println(dataset);
 			Document procedure2 = new Document();
@@ -189,7 +189,7 @@ public class CitizenServices {
 			procedure2.put("name", "Jeison");
 			procedure2.put("department", "Cundinamarca");
 			procedure2.put("city", "Bogota");
-			procedure2.put("status", "en proceso");
+			procedure2.put("status", "En proceso");
 			dataset.add(procedure2);
 			
 			System.out.println(dataset);
