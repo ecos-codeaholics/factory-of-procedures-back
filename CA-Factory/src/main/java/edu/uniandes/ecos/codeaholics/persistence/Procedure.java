@@ -24,7 +24,7 @@ public class Procedure {
 	private String _id;
 	private String name;
 	private ArrayList<Activity> activities;
-	private ArrayList<String> required;
+	private ArrayList<RequiredUpload> requiredUpload;
 	private ArrayList<FormField> fields;
 
 	public String getId() {
@@ -51,12 +51,12 @@ public class Procedure {
 		this.activities = activities;
 	}
 
-	public ArrayList<String> getRequired() {
-		return required;
+	public ArrayList<RequiredUpload> getRequired() {
+		return requiredUpload;
 	}
 
-	public void setRequired(ArrayList<String> requiredDocs) {
-		this.required = requiredDocs;
+	public void setRequired(ArrayList<RequiredUpload> reqDocs) {
+		this.requiredUpload = reqDocs;
 	}
 
 	public ArrayList<FormField> getFields() {
@@ -68,29 +68,34 @@ public class Procedure {
 	}
 
 	public Document activitiesDocuments() {
+		System.out.println("size of activities: "+this.getActivities().size());
 		Document activitiesDocs = new Document();
 		for (int i = 0; i < this.getActivities().size(); i++) {
 			activitiesDocs.append("ACTIVITY" + (i + 1), this.getActivities().get(i).toDocument());
+			System.out.println("Activities: "+i+" "+this.getActivities().get(i));
 		}
 		return activitiesDocs;
 
 	}
 
 	public Document requiredDocuments() {
-		System.out.println(this.getRequired().size());
+		System.out.println("size of required: "+this.getRequired().size());
 		Document requiredDocs = new Document();
 		for (int i = 0; i < this.getRequired().size(); i++) {
-			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i));
+			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i).toDocument());
+			System.out.println("Required: "+i+" "+this.getRequired().get(i));
 		}
 		return requiredDocs;
 
 	}
 
 	public Document fieldsDocuments() {
+		System.out.println("size of document: "+this.getFields().size());
 		Document fieldsDocs = new Document();
 		if (!this.getFields().isEmpty()) {
 			for (int i = 0; i < this.getFields().size(); i++) {
 				fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
+				System.out.println("Document: "+i+" "+this.getFields().get(i));
 			}
 		}
 		return fieldsDocs;

@@ -17,12 +17,18 @@ public class Activity {
 	public static final String DESCRIPTION = "description";
 	public static final String DEPENDENCY = "dependency";
 	public static final String GENERATED = "generated";
+	//JLRM
+	public static final String STEP = "step";
+	public static final String FUNCTIONARY = "functionary";
+	
 
 	@SerializedName("_id")
 	private String _id;
 	private String name;
 	private String description;
-	private Dependency dependency;
+	private String dependency;
+	private int step;
+	private String functionary;
 
 	public String getId() {
 		return _id;
@@ -40,11 +46,11 @@ public class Activity {
 		this.name = name;
 	}
 
-	public Dependency getDependency() {
+	public String getDependency() {
 		return dependency;
 	}
 
-	public void setDependency(Dependency dependency) {
+	public void setDependency(String dependency) {
 		this.dependency = dependency;
 	}
 
@@ -55,15 +61,30 @@ public class Activity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public int getStep() {
+		return step;
+	}
 
+	public void setStep(int step) {
+		this.step = step;
+	}
+	public String getFunctionary() {
+		return functionary;
+	}
+
+	public void setFunctionary(String functionary) {
+		this.functionary = functionary;
+	}
 	public Document toDocument() {
 		Document activity = new Document();
+		activity.append(STEP, this.getStep());
 		activity.append(NAME, this.getName());
 		activity.append(DESCRIPTION, this.getDescription());
-		activity.append(DEPENDENCY, this.getDependency().toDocument());
+		activity.append(DEPENDENCY, this.getDependency());
+		activity.append(FUNCTIONARY, this.getFunctionary());
 		//activity.append(GENERATED, generatedDocuments());
 
 		return activity;
 	}
-
 }

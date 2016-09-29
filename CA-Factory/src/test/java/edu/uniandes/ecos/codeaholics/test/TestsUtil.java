@@ -29,16 +29,17 @@ import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
-import edu.uniandes.ecos.codeaholics.persistence.Dependency;
-import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
-import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
-import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
+//import edu.uniandes.ecos.codeaholics.persistence.Dependency;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
 import edu.uniandes.ecos.codeaholics.persistence.FormField;
-import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
+//import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
 import edu.uniandes.ecos.codeaholics.persistence.Functionary;
 import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
+import edu.uniandes.ecos.codeaholics.persistence.RequiredUpload;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -160,74 +161,158 @@ public class TestsUtil {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("procedures");
 
-		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
+//		ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
-		ArrayList<String> reqDocs = new ArrayList<String>();
-		ArrayList<Activity> activities1 = new ArrayList<Activity>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
 		procedure.setName(pName);
 
-		Activity activity = new Activity();
-		activity.setName("Aprobacion");
-		activity.setDescription("Revisar documentacion y aprobar");
-				
-		activities1.add(activity);
-		procedure.setActivities(activities1);
+		//Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("juanvaldez@anapoima");
+		
+		activities.add(activity1);
+		
+		
+		procedure.setActivities(activities);
 
-		String reqDoc1 = "Cedula";
+		//Required
+		RequiredUpload reqDoc1 = new RequiredUpload();
+		
+		reqDoc1.setType("file");
+		reqDoc1.setRequired(true);
+		reqDoc1.setClassName("form-control");
+		
+		reqDoc1.setLabel("Cedula de Ciudadania");
+		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setName("cedulaAtt");
+		
+	
+
 		reqDocs.add(reqDoc1);
+		
+		RequiredUpload reqDoc2 = new RequiredUpload();
+		
+		reqDoc2.setType("file");
+		reqDoc2.setRequired(true);
+		reqDoc2.setClassName("form-control");
+		
+		reqDoc2.setLabel("Recibo");
+		reqDoc2.setDescription("Adjunte su recibo en formato (png, jpeg)");
+		reqDoc2.setName("reciboAtt");
+		
+		reqDocs.add(reqDoc2);
+			
 		procedure.setRequired(reqDocs);
 		
-		Dependency dependency = new Dependency();
-		dependency.setName("Secretaria de Gobierno");
-		dependency.setExtension("EXT12345");
+		
 
-		Mayoralty mayorality = new Mayoralty();
-		mayorality.setName(pMayorName);
-		mayorality.setAddress("CRA 123 45 1");
-		mayorality.setUrl("https://anapoima.gov.co");
-		mayorality.setPhone("333555888");
+//		
+//		Dependency dependency = new Dependency();
+//		dependency.setName("Secretaria de Hacienda");
+//		dependency.setExtension("EXT12345");
+//
+//		Mayoralty mayorality = new Mayoralty();
+//		mayorality.setName(pMayorName);
+//		mayorality.setAddress("CRA 123 45 1");
+//		mayorality.setUrl("https://anapoima.gov.co");
+//		mayorality.setPhone("333555888");
+//
+//		Functionary functionary = new Functionary();
+//		functionary.setName("Juan");
+//		functionary.setLastName1("Valdes");
+//		functionary.setIdentification(1234567890);
+//		functionary.setEmail("jvaldes@anapoima.gov");
+//		functionary.setUserProfile("functionary");
+//		functionary.setMayoralty("Lenguazaque");
+//		functionary.setPosition("Secretario de Gobierno");
+//
+//		listOfFunctionaries.add(functionary);
+//		dependency.setFunctionaries(listOfFunctionaries);
+//		activity.setDependency(dependency);
 
-		Functionary functionary = new Functionary();
-		functionary.setName("Juan");
-		functionary.setLastName1("Valdes");
-		functionary.setIdentification(1234567890);
-		functionary.setEmail("jvaldes@anapoima.gov");
-		functionary.setUserProfile("functionary");
-		functionary.setMayoralty("Lenguazaque");
-		functionary.setPosition("Secretario de Gobierno");
-
-		listOfFunctionaries.add(functionary);
-		dependency.setFunctionaries(listOfFunctionaries);
-		activity.setDependency(dependency);
-
+		//Form
+		
 		FormField field1 = new FormField();
-
-		field1.setLabel("Cedula");
-		field1.setType(Type.number);
-		field1.setHelpText("Ingrese aqui su cedula");
-
-		field1.setFieldAttribute(new FieldAttribute());
-		field1.setFieldOptions(new FieldOptions());
-		field1.setFieldValidation(new FieldValidation());
-
-		FormField field2 = new FormField();
-		field2.setLabel("Direccion");
-		field2.setType(Type.text);
-		field2.setHelpText("Ingrese aqui su direccion");
-		field2.setFieldAttribute(new FieldAttribute());
-		field2.setFieldOptions(new FieldOptions());
-		field2.setFieldValidation(new FieldValidation());
-
+		
+		field1.setType("text");
+		field1.setSubtype("tel");
+		field1.setRequired(true);
+		field1.setLabel("identificacion");
+		field1.setDescription("numero de documento de identidad");
+		field1.setPlaceHolder("123456789");
+		field1.setClassname("form-control");
+		field1.setName("identification");
+		field1.setMaxlenght(11);
+		
 		formFields.add(field1);
+		
+		FormField field2 = new FormField();
+		
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("direccion");
+		field2.setDescription("direccion de residencia");
+		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
+		
 		formFields.add(field2);
-
+		
+		FormField field3 = new FormField();
+		
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("barrio");
+		field3.setDescription("barrio");
+		field3.setPlaceHolder("barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
+		
+		formFields.add(field3);
+		
+		FormField field4 = new FormField();
+		
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("telefono");
+		field4.setDescription("numero telefonico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
+		
+		formFields.add(field4);
+		
+		FormField field5 = new FormField();
+		
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de Solicitud");
+		field5.setDescription("Carta de Solicitud");
+		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
+		
+		formFields.add(field5);
+		
 		procedure.setFields(formFields);
 		
 		logger.info("inserting new procedure instance");
 		
-		System.out.println( procedure.getFields());
+		System.out.println(procedure.getFields());
 		collection.insertOne(procedure.toDocument());
 
 	}

@@ -15,28 +15,46 @@ public class FormField {
 
 	public static final String TYPE = "type";
 	public static final String LABEL = "label";
-	public static final String HELPTEXT = "helpText";
+	public static final String PLACEHOLDER = "placeholder";
 	public static final String REQUIRED = "required";
-	public static final String FIELDATTRIBUTE = "fieldAttribute";
-	public static final String FILEOPTIONS = "fieldOptions";
-	public static final String FILEVALIDATION = "fieldValidation";
-
-	public enum Type {
-		number, date, text;
-	}
+	public static final String FIELDATTRIBUTE = "fieldAttribute"; //no se requiere JRLM
+	public static final String FILEOPTIONS = "fieldOptions"; //no se requiere JRLM
+	public static final String FILEVALIDATION = "fieldValidation"; // no se reuqiere JRLM
 	
-	public enum SubType {
-		text, email, password;
-	}
+	//JLRM
+	public static final String SUBTYPE = "subtype";
+	public static final String DESCRIPTION = "description";
+	public static final String CLASSNAME = "className";
+	public static final String NAME = "name";
+	public static final String MAXLENGHT = "maxlenght";
+	
+	
+	
+//	public enum Type {
+//		text, textarea, date, select;
+//	}
+//	
+//	public enum SubType {
+//		text, email, tel, password;
+//	}
 	
 	@SerializedName("_id")
 	private String _id;
-	private Type type;
+	//private Type type; JLRM
+	private String type;
 	private String label;
-	private String helpText;
+	private String placeHolder;
 	private FieldAttribute fieldAttribute;
 	private FieldOptions fieldOptions;
 	private FieldValidation fieldValidation;
+	//JRLM
+	private boolean required;
+	private String subtype;
+	private String description;
+	private String classname;
+	private String name;
+	private int maxlenght;
+	
 	
 
 	public String getId() {
@@ -47,11 +65,11 @@ public class FormField {
 		this._id = _id;
 	}
 
-	public Type getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -63,12 +81,12 @@ public class FormField {
 		this.label = label;
 	}
 
-	public String getHelpText() {
-		return helpText;
+	public String getPlaceHolder() {
+		return placeHolder;
 	}
 
-	public void setHelpText(String helpText) {
-		this.helpText = helpText;
+	public void setPlaceHolder(String helpText) {
+		this.placeHolder = helpText;
 	}
 
 	public FieldAttribute getFieldAttribute() {
@@ -95,16 +113,78 @@ public class FormField {
 		this.fieldValidation = fieldValidation;
 	}
 
+
+
+	public String getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getClassname() {
+		return classname;
+	}
+
+	public void setClassname(String classname) {
+		this.classname = classname;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getMaxlenght() {
+		return maxlenght;
+	}
+
+	public void setMaxlenght(int maxlenght) {
+		this.maxlenght = maxlenght;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+	
+	
 	public Document toDocument() {
 		Document procedure = new Document();
-		//procedure.append(TYPE, this.getType()); //Need to fix this - gson cannot convert this
+		procedure.append(TYPE, this.getType()); //Need to fix this - gson cannot convert this |JLRM by the moment i let it as String
 		procedure.append(LABEL, this.getLabel());
-		procedure.append(HELPTEXT, this.getHelpText());
-		procedure.append(FIELDATTRIBUTE, this.getFieldAttribute().toDocument());
-		procedure.append(FILEOPTIONS, this.getFieldOptions().toDocument());
-		procedure.append(FILEVALIDATION, this.getFieldValidation().toDocument());
+		procedure.append(PLACEHOLDER, this.getPlaceHolder());
+		//procedure.append(FIELDATTRIBUTE, this.getFieldAttribute().toDocument());
+		//procedure.append(FILEOPTIONS, this.getFieldOptions().toDocument());
+		//procedure.append(FILEVALIDATION, this.getFieldValidation().toDocument());
+		
+		//JLRM 
 
+		procedure.append(REQUIRED, this.isRequired());
+		procedure.append(SUBTYPE, this.getSubtype());
+		procedure.append(DESCRIPTION, this.getDescription());
+		procedure.append(CLASSNAME, this.getClassname());
+		procedure.append(NAME, this.getName());
+		procedure.append(MAXLENGHT, this.getMaxlenght());
+		
+		
 		return procedure;
 	}
+
 
 }

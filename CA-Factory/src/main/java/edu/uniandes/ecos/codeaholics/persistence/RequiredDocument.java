@@ -26,6 +26,7 @@ public class RequiredDocument {
 	public long fileSize;
 	public long timestamp;
 	public long radicado;
+	
 	/**
 	 * @return the tmpName
 	 */
