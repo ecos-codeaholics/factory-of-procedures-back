@@ -74,11 +74,11 @@ public final class Authorization {
 		boolean autorizado = false;
 
 		String email = req.queryParams("email");
-		log.info("Correo= "+email);
+		//log.info("Correo= "+email);
 		if (email != null && !email.equals("")) {
 			Document session = new Document();
 			session.append("email", email);
-			session.append("user-profile", "funtionary");
+			session.append("user-profile", "functionary");
 			ArrayList<Document> documents = DataBaseUtil.find(session, "session");
 			if (documents.size() > 0) {
 				log.info("autorizado!");
