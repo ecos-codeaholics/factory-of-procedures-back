@@ -74,7 +74,6 @@ public class App {
 		/**
 		 * Auth Routes
 		 */
-
 		// crear ciudadano /CITIZENS/ metodo POST {citizen info json}
 		post(Routes.AUTH, AuthServices::insertCitizen, GeneralUtil.json());
 
@@ -95,7 +94,6 @@ public class App {
 		/**
 		 * Citizen Routes
 		 */
-
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
@@ -106,8 +104,11 @@ public class App {
 		// cerrar sesion /SESSIONS/ metodo DELETE {session info json}
 		delete(Routes.CITIZENS, CitizenServices::closeSession, GeneralUtil.json());
 		
-		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		// obtener lista de alcaldias del sistema /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "mayoralties/", MayoraltyServices::getMayoraltyList, GeneralUtil.json());
+		
+		// obtener lista de tramites por alcaldia /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "procedures2/", MayoraltyServices::proceduresByMayoralty, GeneralUtil.json());
 		
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());

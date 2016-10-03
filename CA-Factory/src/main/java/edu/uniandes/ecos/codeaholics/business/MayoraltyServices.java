@@ -35,13 +35,23 @@ public class MayoraltyServices {
 	public static Object proceduresByMayoralty(Request pRequest, Response pResponse) {
 
 		Document filter = new Document();
-		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
+		filter.append("name", pRequest.queryParams("email").toString());
 
-		Document dataset = new Document();
+		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, MAYORALTY);
 		if(documents.size() > 0){
 			Document mayoralty = documents.get(0);
-			dataset = (Document) mayoralty.get("procedures");
+			//dataset = (Document) mayoralty.get("procedures");
+		}
+		//ayuda oara probar el servicio
+		if(documents.isEmpty()){
+			Document procedure1 = new Document();
+			procedure1.put("name", "Pagar predial");
+			Document procedure2 = new Document();
+			procedure2.put("name", "Registrarse en el SISBEN");
+			
+			dataset.add(procedure1);
+			dataset.add(procedure2);
 		}
 		
 		pResponse.type("application/json");
