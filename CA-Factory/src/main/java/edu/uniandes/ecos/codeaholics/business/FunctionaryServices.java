@@ -24,7 +24,7 @@ public class FunctionaryServices {
 	
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 	
-	private static String PROCEDURES = "procedures";
+	private static String PROCEDURESREQUEST = "proceduresRequest";
 
 	/***
 	 * Consulta tramites asignados a un funcionario.
@@ -37,7 +37,7 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURES);
+		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");

@@ -26,7 +26,7 @@ public class CitizenServices {
 
 	private static String USER_PROFILE = "citizen";
 
-	private static String PROCEDURES = "procedures";
+	private static String PROCEDURESREQUEST = "proceduresRequest";
 	/***
 	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
 	 * 
@@ -161,7 +161,7 @@ public class CitizenServices {
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 		
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURES);
+		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
