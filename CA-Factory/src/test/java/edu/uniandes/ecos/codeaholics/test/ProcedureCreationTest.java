@@ -27,7 +27,21 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureTest() {
-		TestsUtil.addProcedure("Certificado de residencia","Anapoima");
+		TestsUtil.addProcedureUno ("Certificado de residencia","Anapoima");
+		TestsUtil.addProcedureDos ("Certificado de residencia","El Rosal");
+		TestsUtil.addProcedureTres ("Auxilio para gastos de sepelio","Anapoima");
+		TestsUtil.addProcedureCuatro ("Auxilio para gastos de sepelio","El Rosal");
+			
+		assertEquals(true, true);
+	}
+	
+	@Test
+	public void createProcedureRequestTest() {
+		TestsUtil.addProcedureRequestUno();
+		TestsUtil.addProcedureRequestDos();
+		TestsUtil.addProcedureRequestTres();
+		TestsUtil.addProcedureRequestCuatro();
+
 		assertEquals(true, true);
 	}
 

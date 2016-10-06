@@ -22,6 +22,7 @@ public class ProcedureRequest {
 	public static final String MAYORALTY = "mayoralty";
 	public static final String PROCEDUREDATA = "procedureData";
 	public static final String DELIVERYDOCS = "deliveryDocs";
+	public static final String STEPS = "steps";
 	public static final String STARTDATE = "startDate";
 	public static final String FINISHDATE = "finishDate";
 	public static final String STATUS = "status";
@@ -31,9 +32,10 @@ public class ProcedureRequest {
 	private String procedureClass;
 	private Long fileNumber;
 	private Citizen citizen;
-	private Mayoralty mayoralty;
+	private String mayoralty;
 	private Document procedureData;
 	private ArrayList<String> deliveryDocs;
+	private Document steps;
 	private Date startDate;
 	private Date finishDate;
 	private String status;
@@ -70,11 +72,11 @@ public class ProcedureRequest {
 		this.citizen = citizen;
 	}
 
-	public Mayoralty getMayoralty() {
+	public String getMayoralty() {
 		return mayoralty;
 	}
 
-	public void setMayoralty(Mayoralty mayoralty) {
+	public void setMayoralty(String mayoralty) {
 		this.mayoralty = mayoralty;
 	}
 
@@ -117,15 +119,24 @@ public class ProcedureRequest {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	public Document getSteps() {
+		return steps;
+	}
+
+	public void setSteps(Document steps) {
+		this.steps = steps;
+	}
 
 	public Document toDocument() {
 		Document procedureRequest = new Document();
 		procedureRequest.append(CLASS, this.getProcedureClass());
 		procedureRequest.append(FILENUMBER, this.getFileNumber());
 		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
-		procedureRequest.append(MAYORALTY, this.getMayoralty().toDocument());
+		procedureRequest.append(MAYORALTY, this.getMayoralty());
 		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
-		procedureRequest.append(DELIVERYDOCS, deliveryDocuments());
+		procedureRequest.append(DELIVERYDOCS, this.getDeliveryDocs());
+		procedureRequest.append(STEPS, this.getSteps());
 		procedureRequest.append(STARTDATE, this.getStartDate());
 		procedureRequest.append(FINISHDATE, this.getFinishDate());
 		procedureRequest.append(STATUS, this.getStatus());
@@ -141,5 +152,6 @@ public class ProcedureRequest {
 		return deliveryDocs;
 
 	}
+
 
 }

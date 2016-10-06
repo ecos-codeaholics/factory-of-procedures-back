@@ -19,10 +19,12 @@ public class Procedure {
 	public static final String ACTIVITIES = "activities";
 	public static final String REQUIRED = "required";
 	public static final String FIELDS = "fields";
+	public static final String MAYORALTY = "mayoralty";
 
 	@SerializedName("_id")
 	private String _id;
 	private String name;
+	private String mayoralty;
 	private ArrayList<Activity> activities;
 	private ArrayList<RequiredUpload> requiredUpload;
 	private ArrayList<FormField> fields;
@@ -102,9 +104,19 @@ public class Procedure {
 
 	}
 
+
+	public String getMayoralty() {
+		return mayoralty;
+	}
+
+	public void setMayoralty(String mayoralty) {
+		this.mayoralty = mayoralty;
+	}
+	
 	public Document toDocument() {
 		Document procedure = new Document();
 		procedure.append(NAME, getName());
+		procedure.append(MAYORALTY, getMayoralty());
 		procedure.append(ACTIVITIES, activitiesDocuments());
 		procedure.append(REQUIRED, requiredDocuments());
 		procedure.append(FIELDS, fieldsDocuments());
