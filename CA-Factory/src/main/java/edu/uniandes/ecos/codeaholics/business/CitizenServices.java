@@ -160,8 +160,16 @@ public class CitizenServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 		
+		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
+		
+		System.out.println("param of the request is: "+ pRequest.queryParams("email"));
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+				
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		//ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
@@ -209,10 +217,31 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
-
-		Object response;
-		response = messager.getOkMessage("Proceso Exitoso");
-		return response;
+		
+		System.out.println(pRequest.params(":id"));
+		System.out.println("param of the query request is: "+ pRequest.queryParams("email"));
+		System.out.println(pRequest.uri());
+		
+		
+		Document procedureFilter = new Document();
+		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+				
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+		
+		//pResponse.type("application/json");
+		return dataset;
 	}
 
 	/***

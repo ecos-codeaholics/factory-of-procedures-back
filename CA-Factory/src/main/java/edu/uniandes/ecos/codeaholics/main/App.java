@@ -113,6 +113,9 @@ public class App {
 		
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
+		
+		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "procedures/edit/"+":id"+"/", CitizenServices::consultProceduresById, GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty

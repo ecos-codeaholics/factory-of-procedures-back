@@ -802,7 +802,7 @@ public class TestsUtil {
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
 			procedureRequest.setProcedureClass("Certificado de Residencia");
-			procedureRequest.setFileNumber(00001L);
+			procedureRequest.setFileNumber(1L);
 			
 			Citizen citizen = new Citizen();
 			citizen.setEmail("campeche1@uniandes");
@@ -852,7 +852,7 @@ public class TestsUtil {
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
 			procedureRequest.setProcedureClass("Certificado de Residencia");
-			procedureRequest.setFileNumber(00002L);
+			procedureRequest.setFileNumber(2L);
 			
 			Citizen citizen = new Citizen();
 			citizen.setEmail("zotero1@uniandes");
@@ -902,7 +902,7 @@ public class TestsUtil {
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
 			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
-			procedureRequest.setFileNumber(00003L);
+			procedureRequest.setFileNumber(3L);
 			
 			Citizen citizen = new Citizen();
 			citizen.setEmail("calarga1@uniandes");
@@ -944,7 +944,7 @@ public class TestsUtil {
 		}
 
 		
-		//ProcedureRequest2
+		//ProcedureRequest4
 		@SuppressWarnings("deprecation")
 		public static <V> void addProcedureRequestCuatro() {
 
@@ -954,7 +954,7 @@ public class TestsUtil {
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
 			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
-			procedureRequest.setFileNumber(00004L);
+			procedureRequest.setFileNumber(4L);
 			
 			Citizen citizen = new Citizen();
 			citizen.setEmail("talero@uniandes");
@@ -980,14 +980,14 @@ public class TestsUtil {
 			deliveryDocs.add("estaEsLARutaAlDoc2");
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "En Proceso");
+			steps.put("aprobacion", "En proceso");
 			procedureRequest.setSteps(new Document(steps));
 			
 			procedureRequest.setDeliveryDocs(deliveryDocs);
 			
 			procedureRequest.setStartDate(new Date("2016/08/06"));
 			procedureRequest.setFinishDate(null);
-			procedureRequest.setStatus("En Proceso");
+			procedureRequest.setStatus("En proceso");
 			
 			logger.info("inserting new procedure request instance");
 						
@@ -995,6 +995,208 @@ public class TestsUtil {
 
 		}
 
+		//ProcedureRequest5
+		@SuppressWarnings("deprecation")
+		public static <V> void addProcedureRequestCinco() {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+			
+			ProcedureRequest procedureRequest = new ProcedureRequest();
+			
+			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setFileNumber(5L);
+			
+			Citizen citizen = new Citizen();
+			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setIdentification(123456);
+			citizen.setName("campeche");
+			citizen.setLastName1("suche");
+						
+			procedureRequest.setCitizen(citizen);
+			procedureRequest.setMayoralty("anapoima");			
+			
+			Map<String, Object> procedureData = new HashMap<>();
+			procedureData.put("identificacion", 123456);
+			procedureData.put("direccion", "calle 1 # 12 -12");
+			procedureData.put("barrio", "barrio Tal");
+			procedureData.put("telefono", 55667733);
+			procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+			
+			procedureRequest.setProcedureData(new Document(procedureData));
+			
+			ArrayList<String> deliveryDocs = new ArrayList<>();
+			deliveryDocs.add("estaEsLARutaAlDoc1");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			
+			Map<String, Object> steps = new HashMap<>();
+			steps.put("aprobacion", "En proceso");
+			procedureRequest.setSteps(new Document(steps));
+			
+			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
+			procedureRequest.setStartDate(new Date("2016/07/14"));
+			procedureRequest.setFinishDate(null);
+			procedureRequest.setStatus("En proceso");
+			
+			logger.info("inserting new procedure request instance");
+						
+			collection.insertOne(procedureRequest.toDocument());
+
+		}
+
+		//ProcedureRequest6
+		@SuppressWarnings("deprecation")
+		public static <V> void addProcedureRequestSeis() {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+			
+			ProcedureRequest procedureRequest = new ProcedureRequest();
+			
+			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setFileNumber(6L);
+			
+			Citizen citizen = new Citizen();
+			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setIdentification(123456);
+			citizen.setName("jorge");
+			citizen.setLastName1("zotero");
+						
+			procedureRequest.setCitizen(citizen);
+			procedureRequest.setMayoralty("anapoima");			
+			
+			Map<String, Object> procedureData = new HashMap<>();
+			procedureData.put("identificacion", 123456);
+			procedureData.put("direccion", "calle 2 # 23 -23");
+			procedureData.put("barrio", "barrio lat");
+			procedureData.put("telefono", 55667733);
+			procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+			
+			procedureRequest.setProcedureData(new Document(procedureData));
+			
+			ArrayList<String> deliveryDocs = new ArrayList<>();
+			deliveryDocs.add("estaEsLARutaAlDoc1");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			
+			Map<String, Object> steps = new HashMap<>();
+			steps.put("aprobacion", "Finalizado");
+			procedureRequest.setSteps(new Document(steps));
+			
+			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
+			procedureRequest.setStartDate(new Date("2016/07/14"));
+			procedureRequest.setFinishDate(new Date("2016/08/14"));
+			procedureRequest.setStatus("Finalizado");
+			
+			logger.info("inserting new procedure request instance");
+						
+			collection.insertOne(procedureRequest.toDocument());
+
+		}
+		
+		//ProcedureRequest7
+		@SuppressWarnings("deprecation")
+		public static <V> void addProcedureRequestSiete() {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+			
+			ProcedureRequest procedureRequest = new ProcedureRequest();
+			
+			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setFileNumber(7L);
+			
+			Citizen citizen = new Citizen();
+			citizen.setEmail("calarga1@uniandes");
+			citizen.setIdentification(123456);
+			citizen.setName("pedro");
+			citizen.setLastName1("calarga");
+						
+			procedureRequest.setCitizen(citizen);
+			procedureRequest.setMayoralty("El Rosal");			
+			
+			Map<String, Object> procedureData = new HashMap<>();
+			procedureData.put("identificacion", 123456);
+			procedureData.put("direccion", "calle 2 # 23 -23");
+			procedureData.put("barrio", "barrio lat");
+			procedureData.put("telefono", 55667733);
+			procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+			
+			procedureRequest.setProcedureData(new Document(procedureData));
+			
+			ArrayList<String> deliveryDocs = new ArrayList<>();
+			deliveryDocs.add("estaEsLARutaAlDoc1");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			
+			Map<String, Object> steps = new HashMap<>();
+			steps.put("aprobacion", "Finalizado");
+			procedureRequest.setSteps(new Document(steps));
+			
+			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
+			procedureRequest.setStartDate(new Date("2016/07/21"));
+			procedureRequest.setFinishDate(new Date("2016/09/21"));
+			procedureRequest.setStatus("Finalizado");
+			
+			logger.info("inserting new procedure request instance");
+						
+			collection.insertOne(procedureRequest.toDocument());
+
+		}
+
+		
+		//ProcedureRequest8
+		@SuppressWarnings("deprecation")
+		public static <V> void addProcedureRequestOcho() {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+			
+			ProcedureRequest procedureRequest = new ProcedureRequest();
+			
+			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setFileNumber(8L);
+			
+			Citizen citizen = new Citizen();
+			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setIdentification(123456);
+			citizen.setName("david");
+			citizen.setLastName1("talero");
+						
+			procedureRequest.setCitizen(citizen);
+			procedureRequest.setMayoralty("El Rosal");			
+			
+			Map<String, Object> procedureData = new HashMap<>();
+			procedureData.put("identificacion", 123456);
+			procedureData.put("direccion", "calle 10 # 10 - 10");
+			procedureData.put("barrio", "barrio lat");
+			procedureData.put("telefono", 55667733);
+			procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+			
+			procedureRequest.setProcedureData(new Document(procedureData));
+			
+			ArrayList<String> deliveryDocs = new ArrayList<>();
+			deliveryDocs.add("estaEsLARutaAlDoc1");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			deliveryDocs.add("estaEsLARutaAlDoc2");
+			
+			Map<String, Object> steps = new HashMap<>();
+			steps.put("aprobacion", "En proceso");
+			procedureRequest.setSteps(new Document(steps));
+			
+			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
+			procedureRequest.setStartDate(new Date("2016/08/06"));
+			procedureRequest.setFinishDate(null);
+			procedureRequest.setStatus("En proceso");
+			
+			logger.info("inserting new procedure request instance");
+						
+			collection.insertOne(procedureRequest.toDocument());
+
+		}
 
 		
 	public void addProcedureRequest() {

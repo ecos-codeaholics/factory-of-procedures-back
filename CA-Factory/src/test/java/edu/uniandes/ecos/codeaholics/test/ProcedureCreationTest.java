@@ -41,6 +41,10 @@ public class ProcedureCreationTest {
 		TestsUtil.addProcedureRequestDos();
 		TestsUtil.addProcedureRequestTres();
 		TestsUtil.addProcedureRequestCuatro();
+		TestsUtil.addProcedureRequestCinco();
+		TestsUtil.addProcedureRequestSeis();
+		TestsUtil.addProcedureRequestSiete();
+		TestsUtil.addProcedureRequestOcho();
 
 		assertEquals(true, true);
 	}
