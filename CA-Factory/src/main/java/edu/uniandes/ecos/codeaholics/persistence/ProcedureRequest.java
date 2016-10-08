@@ -4,7 +4,6 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.bson.Document;
