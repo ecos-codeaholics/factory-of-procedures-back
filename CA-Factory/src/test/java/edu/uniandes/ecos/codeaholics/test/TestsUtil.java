@@ -822,16 +822,18 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
+			
 			procedureRequest.setSteps(new Document(steps));
-			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
-			
+						
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(null);
 			procedureRequest.setStatus("En proceso");
@@ -872,15 +874,17 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+
 			
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(new Date("2016/08/14"));
@@ -922,16 +926,19 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+
 			
 			procedureRequest.setStartDate(new Date("2016/07/21"));
 			procedureRequest.setFinishDate(new Date("2016/09/21"));
@@ -974,17 +981,19 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
-			
+
 			procedureRequest.setStartDate(new Date("2016/08/06"));
 			procedureRequest.setFinishDate(null);
 			procedureRequest.setStatus("En proceso");
@@ -1025,15 +1034,18 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
 			procedureRequest.setSteps(new Document(steps));
-			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+
 			
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(null);
@@ -1075,15 +1087,19 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+
 			
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(new Date("2016/08/14"));
@@ -1125,16 +1141,19 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
 			
 			procedureRequest.setStartDate(new Date("2016/07/21"));
 			procedureRequest.setFinishDate(new Date("2016/09/21"));
@@ -1177,16 +1196,19 @@ public class TestsUtil {
 			
 			procedureRequest.setProcedureData(new Document(procedureData));
 			
-			ArrayList<String> deliveryDocs = new ArrayList<>();
-			deliveryDocs.add("estaEsLARutaAlDoc1");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
-			deliveryDocs.add("estaEsLARutaAlDoc2");
+			Map<String, Object> deliveryDocs = new HashMap<>();
+			deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+			deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+			deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+			
+			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
 			procedureRequest.setSteps(new Document(steps));
 			
-			procedureRequest.setDeliveryDocs(deliveryDocs);
+
 			
 			procedureRequest.setStartDate(new Date("2016/08/06"));
 			procedureRequest.setFinishDate(null);

@@ -34,7 +34,7 @@ public class ProcedureRequest {
 	private Citizen citizen;
 	private String mayoralty;
 	private Document procedureData;
-	private ArrayList<String> deliveryDocs;
+	private Document deliveryDocs;
 	private Document steps;
 	private Date startDate;
 	private Date finishDate;
@@ -88,11 +88,11 @@ public class ProcedureRequest {
 		this.procedureData = procedureData;
 	}
 
-	public ArrayList<String> getDeliveryDocs() {
+	public Document getDeliveryDocs() {
 		return deliveryDocs;
 	}
 
-	public void setDeliveryDocs(ArrayList<String> deliveryDocs) {
+	public void setDeliveryDocs(Document deliveryDocs) {
 		this.deliveryDocs = deliveryDocs;
 	}
 
