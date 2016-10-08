@@ -61,14 +61,14 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		ArrayList<Document> documents = DataBaseUtil.find(user, pProfile);
 
 		if (documents.isEmpty()) {
-			log.info("User Doesn't Exist");
-			throw new WrongUserOrPasswordException("User Doesn't Exist", "101");
+			log.info("Usuario no existe");
+			throw new WrongUserOrPasswordException("Usuario no existe", "101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
 			if (documents2.isEmpty()) {
-				log.info("User Profile Wrong");
-				throw new WrongUserOrPasswordException("Wrong user credentials", "104");
+				log.info("Informacion de usuario equivocada");
+				throw new WrongUserOrPasswordException("Informacion de usuario equivocada", "104");
 			} else {
 
 				String salt = documents.get(0).get("salt").toString();
@@ -87,8 +87,8 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 				} else {
 					token = "{}";
 					authenticated = false;
-					log.info("Wrong password");
-					throw new WrongUserOrPasswordException("Wrong password", "103");
+					log.info("Clave equivocada");
+					throw new WrongUserOrPasswordException("Clave equivocada", "103");
 				}
 			}
 		}
