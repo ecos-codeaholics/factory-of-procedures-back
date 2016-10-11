@@ -28,7 +28,7 @@ public class Mayoralty {
 	private String _id;
 	private String name;
 	private List<Dependency> dependencies;
-	private List<Procedure> procedures;
+	private List<String> procedures;
 	private String address;
 	private String url;
 	private String phone;
@@ -59,11 +59,11 @@ public class Mayoralty {
 		this.dependencies = dependencies;
 	}
 
-	public List<Procedure> getProcedures() {
+	public List<String> getProcedures() {
 		return procedures;
 	}
 
-	public void setProcedures(List<Procedure> procedures) {
+	public void setProcedures(List<String> procedures) {
 		this.procedures = procedures;
 	}
 
@@ -133,7 +133,7 @@ public class Mayoralty {
 	public Document proceduresDocuments() {
 		Document proceduresDocs = new Document();
 		for (int i = 0; i < this.getProcedures().size(); i++) {
-			proceduresDocs.append("PROCEDURE" + (i + 1), this.getProcedures().get(i).toDocument());
+			proceduresDocs.append("PROCEDURE" + (i + 1), this.getProcedures().get(i));
 		}
 		return proceduresDocs;
 

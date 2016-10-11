@@ -18,6 +18,7 @@ public class ProcedureCreationTest {
 	@BeforeClass
 	public static void beforeClass() {
 		App.main(null);
+		TestsUtil.clearAllCollections();
 	}
 
 	@AfterClass
@@ -25,11 +26,17 @@ public class ProcedureCreationTest {
 		Spark.stop();
 	}
 	
+	@Test 
+	public void clearDB () {
+//		TestsUtil.clearAllCollections();		
+//		assertEquals(true, true);
+	}
+	
 	@Test
 	public void createProcedureTest() {
 		TestsUtil.addProcedureUno ("Certificado de residencia","Anapoima");
-		TestsUtil.addProcedureDos ("Certificado de residencia","El Rosal");
-		TestsUtil.addProcedureTres ("Auxilio para gastos de sepelio","Anapoima");
+		TestsUtil.addProcedureDos ("Auxilio para gastos de sepelio","Anapoima");
+		TestsUtil.addProcedureTres ("Certificado de residencia","El Rosal");
 		TestsUtil.addProcedureCuatro ("Auxilio para gastos de sepelio","El Rosal");
 			
 		assertEquals(true, true);
@@ -48,5 +55,39 @@ public class ProcedureCreationTest {
 
 		assertEquals(true, true);
 	}
+	
+	@Test
+	public void createFunctionariesTest() {
+		
+		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima", "12345678");
+		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima", "12345678");
+		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal", "12345678");
+		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal", "12345678");
+		
+		assertEquals(true, true);		
+	}
+	
+	@Test
+	public void createMayoraltiesTest(){
+		
+		TestsUtil.addMayoraltyUno();
+		TestsUtil.addMayoraltyDos();
+		
+		assertEquals(true, true);		
+	}
+	
+	@Test
+	public void createCitizenTest(){
+		
+		TestsUtil.addCitizenUno();
+		TestsUtil.addCitizenDos();
+		TestsUtil.addCitizenTres();
+		TestsUtil.addCitizenCuatro();
+		TestsUtil.addCitizenCinco();
+		
+		assertEquals(true, true);		
+	}
+	
+	
 
 }

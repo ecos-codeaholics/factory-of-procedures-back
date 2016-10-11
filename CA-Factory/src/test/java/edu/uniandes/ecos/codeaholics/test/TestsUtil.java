@@ -32,6 +32,7 @@ import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 //import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
@@ -62,7 +63,7 @@ public class TestsUtil {
 
 	static Logger logger = LogManager.getRootLogger();
 
-	private String citizenSalt;
+	private static String citizenSalt;
 
 	/**
 	 * @return the citizenSalt
@@ -111,41 +112,119 @@ public class TestsUtil {
 		citizenSalt = hash[0];
 
 	}
-
-	/**
-	 * @param pName
-	 * @param pLastName1
-	 * @param pEmail
-	 * @param pPwd
-	 */
-	public void addFunctionary(String pName, String pLastName1, String pEmail, String pPwd) {
-
+	
+	//add citizen
+	public static void clearAllCollections() {
+		
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		collection.drop();
+		
+		
+		collection = dbOne.getCollection("functionary");
+		collection.drop();
+		
+		collection = dbOne.getCollection("mayoralty");
+		collection.drop();	
 
-		Mayoralty mayorality = new Mayoralty();
-		mayorality.setName("Lenguazaque");
-		mayorality.setAddress("CRA 123 45 1");
-		mayorality.setUrl("https://lenguazaque.gov.co");
-		mayorality.setPhone("333555888");
+		collection = dbOne.getCollection("procedures");
+		collection.drop();	
+		
+		collection = dbOne.getCollection("proceduresRequest");
+		collection.drop();
+		
+		collection = dbOne.getCollection("session");
+		collection.drop();
+		
+	}
 
-		Functionary citizen = new Functionary();
-		citizen.setName(pName);
-		citizen.setLastName1(pLastName1);
+	//add citizen
+	public static void addCitizenUno() {
+		
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail(pEmail);
-		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
-
-		citizen.setMayoralty("Lenguazaque");
-		citizen.setPosition("Secretario Tesoreria");
+		citizen.setEmail("andres@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", pEmail);
+		user.append("email", "andres@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+
+		
+	}
+	
+	//add citizen
+	public static void addCitizenDos() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("fabian@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "fabian@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+
+	}
+	
+	//add citizen
+	public static void addCitizenTres() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("jheison@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "jheison@uniandes");
 		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
 
 		if (documents.isEmpty()) {
@@ -159,7 +238,365 @@ public class TestsUtil {
 		citizenSalt = hash[0];
 	}
 	
+	//add citizen
+	public static void addCitizenCuatro() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("david@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "david@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	public static void addCitizenCinco() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Sebastian");
+		citizen.setLastName1("Cardona");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("sebastian@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "sebastian@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
 	
+	//add Alcaldia uno
+	public static void addMayoraltyUno() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
+		
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+		
+
+		Dependency dependencyUno = new Dependency();
+		dependencyUno.setName("Hacienda");
+		
+		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
+		Functionary funcionarioUno = new Functionary();
+		
+		funcionarioUno.setEmail("jvaldez@anapoima");
+		funcionaryUno.add(funcionarioUno);
+		dependencyUno.setFunctionaries(funcionaryUno);
+						
+		Dependency dependencyDos = new Dependency();
+		dependencyDos.setName("Atencion al Ciudadano");
+		
+		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
+		Functionary funcionarioDos = new Functionary();
+		
+		funcionarioDos.setEmail("acalle@anapoima");
+		funcionaryDos.add(funcionarioDos);
+		dependencyDos.setFunctionaries(funcionaryDos);
+		
+		ArrayList<Dependency> dependencies = new ArrayList<>();
+		
+		dependencies.add(dependencyUno);
+		dependencies.add(dependencyDos);
+		
+		mayoralty.setDependencies(dependencies);
+		
+		Procedure procedureUno = new Procedure();
+		procedureUno.setName("Certificado de residencia");
+		procedureUno.setMayoralty("Anapoima");
+		
+		Procedure procedureDos = new Procedure();
+		procedureDos.setName("Certificado de residencia");
+		procedureDos.setMayoralty("Anapoima");
+		
+		ArrayList<String> procedures = new ArrayList<>();
+		procedures.add("Certificado de residencia");
+		procedures.add("Auxilio para gastos de sepelio");
+		
+		mayoralty.setProcedures(procedures);
+		
+		collection.insertOne(mayoralty.toDocument());
+				
+	}
+
+	
+	//add Alcaldia dos
+	public static void addMayoraltyDos() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
+		
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("El Rosal");
+		mayoralty.setAddress("CRA 456 78 1");
+		mayoralty.setUrl("https://elrosal.gov.co");
+		mayoralty.setPhone("99977766");
+		
+		Dependency dependencyUno = new Dependency();
+		dependencyUno.setName("Hacienda");
+		
+		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
+		Functionary funcionarioUno = new Functionary();
+		
+		funcionarioUno.setEmail("jvaldez@elrosal");
+		funcionaryUno.add(funcionarioUno);
+		dependencyUno.setFunctionaries(funcionaryUno);
+						
+		Dependency dependencyDos = new Dependency();
+		dependencyDos.setName("Atencion al Ciudadano");
+		
+		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
+		Functionary funcionarioDos = new Functionary();
+		
+		funcionarioDos.setEmail("acalle@elrosal");
+		funcionaryDos.add(funcionarioDos);
+		dependencyDos.setFunctionaries(funcionaryDos);
+		
+		ArrayList<Dependency> dependencies = new ArrayList<>();
+		
+		dependencies.add(dependencyUno);
+		dependencies.add(dependencyDos);
+		
+		mayoralty.setDependencies(dependencies);
+		
+		Procedure procedureUno = new Procedure();
+		procedureUno.setName("Certificado de residencia");
+		procedureUno.setMayoralty("El Rosal");
+		
+		Procedure procedureDos = new Procedure();
+		procedureDos.setName("Certificado de residencia");
+		procedureDos.setMayoralty("El Rosal");
+		
+		ArrayList<String> procedures = new ArrayList<>();
+		procedures.add("Certificado de residencia");
+		procedures.add("Auxilio para gastos de sepelio");
+		
+		mayoralty.setProcedures(procedures);
+		
+		collection.insertOne(mayoralty.toDocument());
+				
+	}
+
+	
+	/**
+	 * @param pName
+	 * @param pLastName1
+	 * @param pEmail
+	 * @param pPwd
+	 */
+	
+	//funcionario1
+	public static void addFunctionaryUno(String pName, String pLastName1, String pEmail, String pPwd) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collectionC = dbOne.getCollection("citizen");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+		
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+
+		citizen.setMayoralty("Anapoima");
+		citizen.setPosition("Secretario Hacienda");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		collectionC.insertOne(citizen.toDocument());
+		
+		
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+	
+	//funcionario2
+		public static void addFunctionaryDos(String pName, String pLastName1, String pEmail, String pPwd) {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+			Mayoralty mayoralty = new Mayoralty();
+			mayoralty.setName("Anapoima");
+			mayoralty.setAddress("CRA 123 45 1");
+			mayoralty.setUrl("https://anapoima.gov.co");
+			mayoralty.setPhone("333555888");
+
+			Functionary citizen = new Functionary();
+			citizen.setName(pName);
+			citizen.setLastName1(pLastName1);
+			citizen.setIdentification(1234567890);
+			citizen.setEmail(pEmail);
+			citizen.setPassword(pPwd);
+			citizen.setUserProfile("functionary");
+
+			citizen.setMayoralty("Anapoima");
+			citizen.setPosition("Secretario Atencion al Ciudadano");
+
+			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+			citizen.setPassword(hash[1]);
+			citizen.setSalt(hash[0]);
+
+			Document user = new Document();
+			user.append("email", pEmail);
+			ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+			if (documents.isEmpty()) {
+				collection.insertOne(citizen.toDocument());
+			} else {
+				logger.info("user alreadery exists");
+				collection.findOneAndDelete(user);
+				collection.insertOne(citizen.toDocument());
+			}
+
+			citizenSalt = hash[0];
+		}
+	
+		//funcionario2
+		public static void addFunctionaryTres(String pName, String pLastName1, String pEmail, String pPwd) {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+			Mayoralty mayoralty = new Mayoralty();
+			mayoralty.setName("El Rosal");
+			mayoralty.setAddress("CRA 456 78 1");
+			mayoralty.setUrl("https://elrosal.gov.co");
+			mayoralty.setPhone("99977766");
+			
+			Functionary citizen = new Functionary();
+			citizen.setName(pName);
+			citizen.setLastName1(pLastName1);
+			citizen.setIdentification(1234567890);
+			citizen.setEmail(pEmail);
+			citizen.setPassword(pPwd);
+			citizen.setUserProfile("functionary");
+
+			citizen.setMayoralty("El Rosal");
+			citizen.setPosition("Secretario Atencion al Ciudadano");
+
+			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+			citizen.setPassword(hash[1]);
+			citizen.setSalt(hash[0]);
+
+			Document user = new Document();
+			user.append("email", pEmail);
+			ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+			if (documents.isEmpty()) {
+				collection.insertOne(citizen.toDocument());
+			} else {
+				logger.info("user alreadery exists");
+				collection.findOneAndDelete(user);
+				collection.insertOne(citizen.toDocument());
+			}
+
+			citizenSalt = hash[0];
+		}
+
+		//funcionario4
+		public static void addFunctionaryCuatro(String pName, String pLastName1, String pEmail, String pPwd) {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+			Mayoralty mayoralty = new Mayoralty();
+			mayoralty.setName("El Rosal");
+			mayoralty.setAddress("CRA 456 78 1");
+			mayoralty.setUrl("https://elrosal.gov.co");
+			mayoralty.setPhone("99977766");
+
+			Functionary citizen = new Functionary();
+			citizen.setName(pName);
+			citizen.setLastName1(pLastName1);
+			citizen.setIdentification(1234567890);
+			citizen.setEmail(pEmail);
+			citizen.setPassword(pPwd);
+			citizen.setUserProfile("functionary");
+
+			citizen.setMayoralty("El Rosal");
+			citizen.setPosition("Secretario Atencion al Ciudadano");
+
+			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+			citizen.setPassword(hash[1]);
+			citizen.setSalt(hash[0]);
+
+			Document user = new Document();
+			user.append("email", pEmail);
+			ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+			if (documents.isEmpty()) {
+				collection.insertOne(citizen.toDocument());
+			} else {
+				logger.info("user alreadery exists");
+				collection.findOneAndDelete(user);
+				collection.insertOne(citizen.toDocument());
+			}
+
+			citizenSalt = hash[0];
+		}
 
 //Procedure1
 	public static void addProcedureUno(String pName, String pMayorName) {
@@ -183,6 +620,7 @@ public class TestsUtil {
 		activity1.setName("Aprobacion");
 		activity1.setDescription("Revisar documentacion y aprobar");
 		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@anapoima");
 		
 		activities.add(activity1);
 		
@@ -346,7 +784,7 @@ public class TestsUtil {
 			activity1.setName("Aprobacion");
 			activity1.setDescription("Revisar documentacion y aprobar");
 			activity1.setDependency("Atencion al ciudadano");
-			activity1.setFunctionary("juanvaldez@elrosal");
+			activity1.setFunctionary("acalle@anapoima");
 			
 			activities.add(activity1);
 			
@@ -495,9 +933,9 @@ public class TestsUtil {
 			Activity activity1 = new Activity();
 			activity1.setStep(1);
 			activity1.setName("Aprobacion");
-			activity1.setDescription("Secretaria");
-			activity1.setDependency("Atencion al ciudadano");
-			activity1.setFunctionary("valentinaperez@anapoima");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("jvaldez@elrosal");
 			
 			activities.add(activity1);
 			
@@ -671,8 +1109,8 @@ public class TestsUtil {
 			activity1.setStep(1);
 			activity1.setName("Aprobacion");
 			activity1.setDescription("Revisar documentacion y aprobar");
-			activity1.setDependency("Secretaria");
-			activity1.setFunctionary("valentinaperez@elrosal");
+			activity1.setDependency("Secretaria General");
+			activity1.setFunctionary("acalle@elrosal");
 			
 			activities.add(activity1);
 			
@@ -803,10 +1241,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(1L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("campeche1@uniandes");
+			citizen.setEmail("andres@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("campeche");
-			citizen.setLastName1("suche");
+			citizen.setName("andres");
+			citizen.setLastName1("osorio");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("anapoima");			
@@ -855,10 +1293,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(2L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("zotero1@uniandes");
+			citizen.setEmail("andres@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("jorge");
-			citizen.setLastName1("zotero");
+			citizen.setName("andres");
+			citizen.setLastName1("osorio");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("anapoima");			
@@ -907,10 +1345,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(3L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("calarga1@uniandes");
+			citizen.setEmail("fabian@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("pedro");
-			citizen.setLastName1("calarga");
+			citizen.setName("fabian");
+			citizen.setLastName1("hernandez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("El Rosal");			
@@ -962,10 +1400,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(4L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("talero@uniandes");
+			citizen.setEmail("fabian@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("david");
-			citizen.setLastName1("talero");
+			citizen.setName("fabian");
+			citizen.setLastName1("hernandez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("El Rosal");			
@@ -1015,10 +1453,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(5L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setEmail("jheison@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("campeche");
-			citizen.setLastName1("suche");
+			citizen.setName("jheison");
+			citizen.setLastName1("rodriguez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("anapoima");			
@@ -1068,10 +1506,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(6L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setEmail("jheison@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("jorge");
-			citizen.setLastName1("zotero");
+			citizen.setName("jheison");
+			citizen.setLastName1("rodriguez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("anapoima");			
@@ -1122,10 +1560,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(7L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("calarga1@uniandes");
+			citizen.setEmail("david@uniandes");
 			citizen.setIdentification(123456);
-			citizen.setName("pedro");
-			citizen.setLastName1("calarga");
+			citizen.setName("david");
+			citizen.setLastName1("martinez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("El Rosal");			
@@ -1177,10 +1615,10 @@ public class TestsUtil {
 			procedureRequest.setFileNumber(8L);
 			
 			Citizen citizen = new Citizen();
-			citizen.setEmail("jasonlll88@hotmail.com");
+			citizen.setEmail("david@uniandes");
 			citizen.setIdentification(123456);
 			citizen.setName("david");
-			citizen.setLastName1("talero");
+			citizen.setLastName1("martinez");
 						
 			procedureRequest.setCitizen(citizen);
 			procedureRequest.setMayoralty("El Rosal");			
@@ -1219,7 +1657,7 @@ public class TestsUtil {
 		}
 
 		
-	public void addProcedureRequest() {
+	public static void addProcedureRequest() {
 
 		//MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		//MongoCollection<Document> collection = dbOne.getCollection("procedure_request");
