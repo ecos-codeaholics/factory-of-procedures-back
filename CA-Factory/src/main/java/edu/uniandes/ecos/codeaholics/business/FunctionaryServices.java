@@ -87,9 +87,32 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String consultProceduresById(Request req, Response res) {
+	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		return "success";
+		System.out.println(pRequest.params(":id"));
+		System.out.println("param of the query request is: "+ pRequest.queryParams("email"));
+		System.out.println(pRequest.uri());
+		
+		
+		Document procedureFilter = new Document();
+		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
+		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+				
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+		
+		//pResponse.type("application/json");
+		return dataset;
 	}
 
 	/***

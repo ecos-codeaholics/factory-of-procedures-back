@@ -121,9 +121,12 @@ public class App {
 		 * Routes Mayoralty
 		 */
 		// obtener lista de tramites asignados al funcionario /FUNCTIONARIES/ metodo GET
-		
 		get(Routes.FUNTIONARIES+"procedures/",FunctionaryServices::consultProcedures,GeneralUtil.json());
 
+		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
+		get(Routes.FUNTIONARIES + "procedures/edit/"+":id"+"/", FunctionaryServices::consultProceduresById, GeneralUtil.json());
+		
+		
 		/**
 		 * Routes Administrator Mayoralty
 		 */
