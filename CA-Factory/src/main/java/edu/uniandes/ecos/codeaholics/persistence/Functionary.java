@@ -14,12 +14,14 @@ import com.google.gson.annotations.SerializedName;
 public class Functionary extends Citizen {
 
 	public static final String POSITION = "position";
+	public static final String DEPENDENCY = "dependency";
 	public static final String MAYORALTY = "mayoralty";
 
 	@SerializedName("_id")
 	private String _id;
 	private String position;
 	private String mayoralty;
+	private String dependency;
 
 	public String getId() {
 		return _id;
@@ -45,14 +47,25 @@ public class Functionary extends Citizen {
 		this.mayoralty = mayoralty;
 	}
 	
+	public String getDependency() {
+		return dependency;
+	}
+
+	public void setDependency(String dependency) {
+		this.dependency = dependency;
+	}
+	
 	public Document toDocument() {
 		Document functionary = new Document();
 		functionary.append(IDENTIFICATION, this.getIdentification()).append(NAME, this.getName())
 				.append(LASTNAME1, this.getLastName1()).append(LASTNAME2, this.getLastName2())
 				.append(BIRTHDATE, this.getBirthDate()).append(EMAIL, this.getEmail()).append(SALT, this.getSalt())
 				.append(PASSWORD, this.getPassword()).append(POSITION, this.getPosition()).append(PROFILE, this.getUserProfile())
-				.append(MAYORALTY, this.getMayoralty());
+				.append(MAYORALTY, this.getMayoralty())
+				.append(DEPENDENCY, this.getDependency());
 							
 		return functionary;
 	}
+
+
 }

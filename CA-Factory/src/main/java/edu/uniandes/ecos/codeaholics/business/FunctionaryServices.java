@@ -36,8 +36,16 @@ public class FunctionaryServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
+				
+		System.out.println("param of the request is: "+ pRequest.queryParams("email"));
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
+				
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
+		
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		//ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
@@ -48,6 +56,8 @@ public class FunctionaryServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
+		
+		
 		//ayuda para probar el servicio
 		if(documents.isEmpty()){
 			Document procedure = new Document();
@@ -63,7 +73,7 @@ public class FunctionaryServices {
 	
 		}
 
-		pResponse.type("application/json");
+		//pResponse.type("application/json");
 		return dataset;
 
 	}

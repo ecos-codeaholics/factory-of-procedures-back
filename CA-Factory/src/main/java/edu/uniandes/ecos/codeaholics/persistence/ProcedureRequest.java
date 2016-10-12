@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ProcedureRequest {
 
-	public static final String CLASS = "class";
+	public static final String CLASSNAME = "className";
 	public static final String FILENUMBER = "fileNumber";
 	public static final String CITIZEN = "citizen";
 	public static final String MAYORALTY = "mayoralty";
@@ -28,7 +28,7 @@ public class ProcedureRequest {
 
 	@SerializedName("_id")
 	private String _id;
-	private String procedureClass;
+	private String procedureClassName;
 	private Long fileNumber;
 	private Citizen citizen;
 	private String mayoralty;
@@ -47,14 +47,6 @@ public class ProcedureRequest {
 		this._id = _id;
 	}
 	
-	public String getProcedureClass() {
-		return procedureClass;
-	}
-
-	public void setProcedureClass(String procedureClass) {
-		this.procedureClass = procedureClass;
-	}
-
 	public Long getFileNumber() {
 		return fileNumber;
 	}
@@ -129,7 +121,7 @@ public class ProcedureRequest {
 
 	public Document toDocument() {
 		Document procedureRequest = new Document();
-		procedureRequest.append(CLASS, this.getProcedureClass());
+		procedureRequest.append(CLASSNAME, this.getProcedureClassName());
 		procedureRequest.append(FILENUMBER, this.getFileNumber());
 		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
 		procedureRequest.append(MAYORALTY, this.getMayoralty());
@@ -143,6 +135,14 @@ public class ProcedureRequest {
 		return procedureRequest;
 	}
 	
+	public String getProcedureClassName() {
+		return procedureClassName;
+	}
+
+	public void setProcedureClassName(String procedureClassName) {
+		this.procedureClassName = procedureClassName;
+	}
+	
 	public Document deliveryDocuments() {
 		Document deliveryDocs = new Document();
 		for (int i = 0; i < this.getDeliveryDocs().size(); i++) {
@@ -151,6 +151,8 @@ public class ProcedureRequest {
 		return deliveryDocs;
 
 	}
+
+
 
 
 }

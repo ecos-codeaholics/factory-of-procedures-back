@@ -450,7 +450,7 @@ public class TestsUtil {
 		citizen.setUserProfile("functionary");
 
 		citizen.setMayoralty("Anapoima");
-		citizen.setPosition("Secretario Hacienda");
+		citizen.setDependency("Hacienda");
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -494,7 +494,7 @@ public class TestsUtil {
 			citizen.setUserProfile("functionary");
 
 			citizen.setMayoralty("Anapoima");
-			citizen.setPosition("Secretario Atencion al Ciudadano");
+			citizen.setDependency("Atencion al Ciudadano");
 
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
@@ -536,7 +536,7 @@ public class TestsUtil {
 			citizen.setUserProfile("functionary");
 
 			citizen.setMayoralty("El Rosal");
-			citizen.setPosition("Secretario Atencion al Ciudadano");
+			citizen.setDependency("Hacienda");
 
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
@@ -578,7 +578,7 @@ public class TestsUtil {
 			citizen.setUserProfile("functionary");
 
 			citizen.setMayoralty("El Rosal");
-			citizen.setPosition("Secretario Atencion al Ciudadano");
+			citizen.setDependency("Atencion al Ciudadano");;
 
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
@@ -1238,7 +1238,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setProcedureClassName("Certificado de Residencia");
 			procedureRequest.setFileNumber(1L);
 			
 			Citizen citizen = new Citizen();
@@ -1268,6 +1268,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
+			steps.put("functionary", "jvaldez@anapoima");
 			
 			procedureRequest.setSteps(new Document(steps));
 						
@@ -1290,7 +1291,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setProcedureClassName("Certificado de Residencia");
 			procedureRequest.setFileNumber(2L);
 			
 			Citizen citizen = new Citizen();
@@ -1319,6 +1320,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
+			steps.put("functionary", "jvaldez@anapoima");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1342,7 +1344,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
 			procedureRequest.setFileNumber(3L);
 			
 			Citizen citizen = new Citizen();
@@ -1373,6 +1375,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
+			steps.put("functionary", "jvaldez@elrosal");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1397,7 +1400,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
 			procedureRequest.setFileNumber(4L);
 			
 			Citizen citizen = new Citizen();
@@ -1428,6 +1431,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
+			steps.put("functionary", "jvaldez@elrosal");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1450,7 +1454,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setProcedureClassName("Certificado de Residencia");
 			procedureRequest.setFileNumber(5L);
 			
 			Citizen citizen = new Citizen();
@@ -1481,6 +1485,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
+			steps.put("functionary", "jvaldez@anapoima");
 			procedureRequest.setSteps(new Document(steps));
 
 			
@@ -1503,7 +1508,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Certificado de Residencia");
+			procedureRequest.setProcedureClassName("Certificado de Residencia");
 			procedureRequest.setFileNumber(6L);
 			
 			Citizen citizen = new Citizen();
@@ -1534,6 +1539,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
+			steps.put("functionary", "jvaldez@anapoima");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1557,7 +1563,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
 			procedureRequest.setFileNumber(7L);
 			
 			Citizen citizen = new Citizen();
@@ -1588,6 +1594,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "Finalizado");
+			steps.put("functionary", "jvaldez@elrosal");
 			procedureRequest.setSteps(new Document(steps));
 			
 			
@@ -1612,7 +1619,7 @@ public class TestsUtil {
 			
 			ProcedureRequest procedureRequest = new ProcedureRequest();
 			
-			procedureRequest.setProcedureClass("Auxilio para gastos de sepelio");
+			procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
 			procedureRequest.setFileNumber(8L);
 			
 			Citizen citizen = new Citizen();
@@ -1643,6 +1650,7 @@ public class TestsUtil {
 			
 			Map<String, Object> steps = new HashMap<>();
 			steps.put("aprobacion", "En proceso");
+			steps.put("functionary", "jvaldez@elrosal");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1671,7 +1679,7 @@ public class TestsUtil {
 		 */
 		ProcedureRequest procedure = new ProcedureRequest();
 
-		procedure.setProcedureClass("Certificado de residencia");
+		procedure.setProcedureClassName("Certificado de residencia");
 
 		Mayoralty mayorality = new Mayoralty();
 		mayorality.setName("Anapoima");
