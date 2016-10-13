@@ -788,8 +788,7 @@ public class TestsUtil {
 			activity1.setFunctionary("acalle@anapoima");
 			
 			activities.add(activity1);
-			
-			
+						
 			procedure.setActivities(activities);
 
 			//Required
@@ -803,8 +802,6 @@ public class TestsUtil {
 			reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
 			reqDoc1.setName("cedulaAtt");
 			
-		
-
 			reqDocs.add(reqDoc1);
 			
 			RequiredUpload reqDoc2 = new RequiredUpload();
@@ -1267,8 +1264,11 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "En proceso");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");
 			steps.put("functionary", "jvaldez@anapoima");
+			steps.put("aprobacion", "En proceso");
 			
 			procedureRequest.setSteps(new Document(steps));
 						
@@ -1319,12 +1319,14 @@ public class TestsUtil {
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "Finalizado");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");			
 			steps.put("functionary", "jvaldez@anapoima");
+			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
-
-			
+		
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(new Date("2016/08/14"));
 			procedureRequest.setStatus("Finalizado");
@@ -1374,8 +1376,11 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "Finalizado");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");			
 			steps.put("functionary", "jvaldez@elrosal");
+			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1430,8 +1435,12 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "En proceso");
+			steps.put("step", 1);
+			steps.put("dependency", "Hacienda");			
+			steps.put("description", "Revisar documentacion y aprobar");
 			steps.put("functionary", "jvaldez@elrosal");
+			steps.put("aprobacion", "En proceso");
+			
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1484,8 +1493,12 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "En proceso");
+			steps.put("step", 1);
+			steps.put("dependency", "Hacienda");			
+			steps.put("description", "Revisar documentacion y aprobar");
 			steps.put("functionary", "jvaldez@anapoima");
+			steps.put("aprobacion", "En proceso");
+			
 			procedureRequest.setSteps(new Document(steps));
 
 			
@@ -1538,8 +1551,11 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "Finalizado");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");			
 			steps.put("functionary", "jvaldez@anapoima");
+			steps.put("aprobacion", "Finalizado");
 			procedureRequest.setSteps(new Document(steps));
 			
 
@@ -1593,8 +1609,12 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "Finalizado");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");			
 			steps.put("functionary", "jvaldez@elrosal");
+			steps.put("aprobacion", "Finalizado");
+			
 			procedureRequest.setSteps(new Document(steps));
 			
 			
@@ -1649,8 +1669,13 @@ public class TestsUtil {
 			
 			
 			Map<String, Object> steps = new HashMap<>();
-			steps.put("aprobacion", "En proceso");
+			steps.put("step", 1);
+			steps.put("description", "Revisar documentacion y aprobar");
+			steps.put("dependency", "Hacienda");			
 			steps.put("functionary", "jvaldez@elrosal");
+			steps.put("aprobacion", "En proceso");
+			
+			
 			procedureRequest.setSteps(new Document(steps));
 			
 
