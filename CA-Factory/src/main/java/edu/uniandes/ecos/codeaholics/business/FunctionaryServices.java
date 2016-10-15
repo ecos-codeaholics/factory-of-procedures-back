@@ -4,19 +4,18 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import spark.Request;
 import spark.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionaryServices {
 
@@ -124,7 +123,22 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String approveProcedureStep(Request req, Response res) {
+	public static String approveProcedureStep(Request pRequest, Response pResponse) {
+
+		System.out.println(pRequest.params(":stepId"));
+		System.out.println(pRequest.params(":procedureId"));
+		System.out.println("param of the query request is: "+ pRequest.queryParams("email"));
+		System.out.println(pRequest.uri());
+
+		List<Document> procedureFilter = new ArrayList<>();
+		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+		procedureFilter.add(new Document("steps.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
+
+		Document updateAction = new Document("steps.status", "test");
+
+		List<Document> dataset = new ArrayList<>();
+		DataBaseUtil.compositeUpdate(procedureFilter, updateAction, PROCEDURESREQUEST);
+
 
 		return "success";
 	}
