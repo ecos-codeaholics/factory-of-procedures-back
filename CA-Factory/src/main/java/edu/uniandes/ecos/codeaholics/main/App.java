@@ -1,21 +1,5 @@
 package edu.uniandes.ecos.codeaholics.main;
 
-import static spark.Spark.before;
-import static spark.Spark.delete;
-import static spark.Spark.get;
-import static spark.Spark.options;
-import static spark.Spark.port;
-import static spark.Spark.post;
-import static spark.Spark.put;
-import static spark.Spark.secure;
-import static spark.Spark.staticFiles;
-import static spark.Spark.threadPool;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import edu.uniandes.ecos.codeaholics.business.AuthServices;
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.business.FunctionaryServices;
@@ -24,6 +8,13 @@ import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Routes;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import static spark.Spark.*;
 
 /**
  * 
@@ -125,8 +116,10 @@ public class App {
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
 		get(Routes.FUNTIONARIES + "procedures/edit/"+":id"+"/", FunctionaryServices::consultProceduresById, GeneralUtil.json());
-		
-		
+
+		// aprobar un paso del flujo de un trámite /FUNCTIONARIES/ metodo POST.
+		put(Routes.FUNTIONARIES + "procedures/:procedureId/steps/edit/:stepId/", FunctionaryServices::approveProcedureStep, GeneralUtil.json());
+
 		/**
 		 * Routes Administrator Mayoralty
 		 */

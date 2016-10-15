@@ -124,7 +124,7 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String approveProcedure(Request req, Response res) {
+	public static String approveProcedureStep(Request req, Response res) {
 
 		return "success";
 	}
