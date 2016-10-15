@@ -4,18 +4,42 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.Document;
+import com.mongodb.MongoException;
 
-import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
+import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import spark.Request;
 import spark.Response;
 
 public class FunctionaryServices {
-	
+
+	private final static Logger log = LogManager.getLogger(AuthServices.class);
+
+	private static IMessageSvc messager = new ResponseMessage();
+
+	private static Gson GSON = new GsonBuilder().serializeNulls().create();
+
 	private static String PROCEDURESREQUEST = "proceduresRequest";
+
+	private class ProcedureStatus {
+		String status;
+
+		/**
+		 * @return the status
+		 */
+		public String getStatus() {
+			return status;
+		}
+	}
 
 	/***
 	 * Consulta tramites asignados a un funcionario.
@@ -27,16 +51,16 @@ public class FunctionaryServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
-				
-		System.out.println("param of the request is: "+ pRequest.queryParams("email"));
+
+		log.info("Param of the request is: " + pRequest.queryParams("email"));
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
-				
+
 		List<Document> dataset = new ArrayList<>();
-		
+
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
-		//ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
+
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
@@ -47,10 +71,9 @@ public class FunctionaryServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
-		
-		
-		//ayuda para probar el servicio
-		if(documents.isEmpty()){
+
+		// ayuda para probar el servicio
+		if (documents.isEmpty()) {
 			Document procedure = new Document();
 			procedure.put("date", "Girardot");
 			procedure.put("time", "Girardot");
@@ -59,12 +82,11 @@ public class FunctionaryServices {
 			procedure.put("name", "Girardot");
 			procedure.put("state", "Girardot");
 			procedure.put("attached", "Girardot");
-			
+
 			dataset.add(procedure);
-	
+
 		}
 
-		//pResponse.type("application/json");
 		return dataset;
 
 	}
@@ -80,15 +102,14 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		System.out.println(pRequest.params(":id"));
-		System.out.println("param of the query request is: "+ pRequest.queryParams("email"));
-		System.out.println(pRequest.uri());
-		
-		
+		log.info(pRequest.params(":id"));
+		log.info("param of the query request is: " + pRequest.queryParams("email"));
+		log.info(pRequest.uri());
+
 		Document procedureFilter = new Document();
 		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
 		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
-				
+
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
 		for (Document item : documents) {
@@ -101,8 +122,7 @@ public class FunctionaryServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
-		
-		//pResponse.type("application/json");
+
 		return dataset;
 	}
 
@@ -115,9 +135,34 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static String approveProcedureStep(Request req, Response res) {
+	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 
-		return "success";
+		Object response = null;
+
+		log.info(pRequest.params(":procedureId"));
+		log.info(pRequest.params(":stepId"));
+		log.info("param of the request is: " + pRequest.queryParams("email"));
+
+		List<Document> procedureFilter = new ArrayList<>();
+		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+		procedureFilter.add(new Document("steps.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
+
+		ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
+		String newStatus = status.getStatus();
+
+		System.out.println("status: " + newStatus);
+
+		Document replaceValue = new Document("steps.status", newStatus);
+
+		try {
+			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
+		} catch (MongoException e) {
+			System.out.println("Problem writting : " + newStatus);
+		}
+
+		response = messager.getOkMessage(newStatus);
+
+		return response;
+
 	}
-
 }
