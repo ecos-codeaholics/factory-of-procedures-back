@@ -75,13 +75,11 @@ public class App {
 		// Must be in the authorize routes
 		// {old password, new pass}}
 		put(Routes.AUTH + ":identification", AuthServices::changePassword, GeneralUtil.json());
-		
+
 		// iniciar sesion /auth/login metodo POST
-		post(Routes.AUTH +"login/", AuthServices::doLogin, GeneralUtil.json());
-		
-		
-		post(Routes.AUTH +"upload/", CitizenServices::uploadDocuments, GeneralUtil.json());
-		
+		post(Routes.AUTH + "login/", AuthServices::doLogin, GeneralUtil.json());
+
+		post(Routes.AUTH + "upload/", CitizenServices::uploadDocuments, GeneralUtil.json());
 
 		/**
 		 * Citizen Routes
@@ -95,30 +93,39 @@ public class App {
 
 		// cerrar sesion /SESSIONS/ metodo DELETE {session info json}
 		delete(Routes.CITIZENS, CitizenServices::closeSession, GeneralUtil.json());
-		
+
 		// obtener lista de alcaldias del sistema /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "mayoralties/", MayoraltyServices::getMayoraltyList, GeneralUtil.json());
-		
+
 		// obtener lista de tramites por alcaldia /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures2/", MayoraltyServices::proceduresByMayoralty, GeneralUtil.json());
-		
+		get(Routes.CITIZENS + "procedures/" + ":mayoraltyName" + "/", MayoraltyServices::proceduresByMayoralty,
+				GeneralUtil.json());
+
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
-		
+
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/edit/"+":id"+"/", CitizenServices::consultProceduresById, GeneralUtil.json());
+		get(Routes.CITIZENS + "procedures/edit/" + ":id" + "/", CitizenServices::consultProceduresById,
+				GeneralUtil.json());
+
+		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "procedure/", CitizenServices::getProcedure,
+				GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty
 		 */
-		// obtener lista de tramites asignados al funcionario /FUNCTIONARIES/ metodo GET
-		get(Routes.FUNTIONARIES+"procedures/",FunctionaryServices::consultProcedures,GeneralUtil.json());
+		// obtener lista de tramites asignados al funcionario /FUNCTIONARIES/
+		// metodo GET
+		get(Routes.FUNTIONARIES + "procedures/", FunctionaryServices::consultProcedures, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
-		get(Routes.FUNTIONARIES + "procedures/edit/"+":id"+"/", FunctionaryServices::consultProceduresById, GeneralUtil.json());
+		get(Routes.FUNTIONARIES + "procedures/edit/" + ":id" + "/", FunctionaryServices::consultProceduresById,
+				GeneralUtil.json());
 
 		// aprobar un paso del flujo de un trámite /FUNCTIONARIES/ metodo POST.
-		put(Routes.FUNTIONARIES + "procedures/:procedureId/steps/edit/:stepId/", FunctionaryServices::approveProcedureStep, GeneralUtil.json());
+		put(Routes.FUNTIONARIES + "procedures/:procedureId/steps/edit/:stepId/",
+				FunctionaryServices::approveProcedureStep, GeneralUtil.json());
 
 		/**
 		 * Routes Administrator Mayoralty
