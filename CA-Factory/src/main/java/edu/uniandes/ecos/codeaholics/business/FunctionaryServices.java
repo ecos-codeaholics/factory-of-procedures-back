@@ -7,22 +7,13 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.Document;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import spark.Request;
 import spark.Response;
 
 public class FunctionaryServices {
-
-	private final static Logger log = LogManager.getLogger(AuthServices.class);
-	
-	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 	
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 

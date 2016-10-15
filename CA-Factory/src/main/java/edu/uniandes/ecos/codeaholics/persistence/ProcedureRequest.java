@@ -4,6 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.bson.Document;
@@ -21,7 +22,7 @@ public class ProcedureRequest {
 	public static final String MAYORALTY = "mayoralty";
 	public static final String PROCEDUREDATA = "procedureData";
 	public static final String DELIVERYDOCS = "deliveryDocs";
-	public static final String STEPS = "steps";
+	public static final String ACTIVITIES = "activities";
 	public static final String STARTDATE = "startDate";
 	public static final String FINISHDATE = "finishDate";
 	public static final String STATUS = "status";
@@ -34,10 +35,10 @@ public class ProcedureRequest {
 	private String mayoralty;
 	private Document procedureData;
 	private Document deliveryDocs;
-	private Document steps;
 	private Date startDate;
 	private Date finishDate;
 	private String status;
+	private ArrayList<Activity> activities;
 
 	public String getId() {
 		return _id;
@@ -111,28 +112,12 @@ public class ProcedureRequest {
 		this.status = status;
 	}
 	
-	public Document getSteps() {
-		return steps;
+	public ArrayList<Activity> getActivities() {
+		return activities;
 	}
 
-	public void setSteps(Document steps) {
-		this.steps = steps;
-	}
-
-	public Document toDocument() {
-		Document procedureRequest = new Document();
-		procedureRequest.append(CLASSNAME, this.getProcedureClassName());
-		procedureRequest.append(FILENUMBER, this.getFileNumber());
-		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
-		procedureRequest.append(MAYORALTY, this.getMayoralty());
-		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
-		procedureRequest.append(DELIVERYDOCS, this.getDeliveryDocs());
-		procedureRequest.append(STEPS, this.getSteps());
-		procedureRequest.append(STARTDATE, this.getStartDate());
-		procedureRequest.append(FINISHDATE, this.getFinishDate());
-		procedureRequest.append(STATUS, this.getStatus());
-
-		return procedureRequest;
+	public void setActivities(ArrayList<Activity> activities) {
+		this.activities = activities;
 	}
 	
 	public String getProcedureClassName() {
@@ -151,8 +136,31 @@ public class ProcedureRequest {
 		return deliveryDocs;
 
 	}
+	
+	public Document activitiesDocuments() {
+		System.out.println("size of activities: "+this.getActivities().size());
+		Document activitiesDocs = new Document();
+		for (int i = 0; i < this.getActivities().size(); i++) {
+			activitiesDocs.append("ACTIVITY" + (i + 1), this.getActivities().get(i).toDocument());
+			System.out.println("Activities: "+i+" "+this.getActivities().get(i));
+		}
+		return activitiesDocs;
+	}
 
+	public Document toDocument() {
+		Document procedureRequest = new Document();
+		procedureRequest.append(CLASSNAME, this.getProcedureClassName());
+		procedureRequest.append(FILENUMBER, this.getFileNumber());
+		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
+		procedureRequest.append(MAYORALTY, this.getMayoralty());
+		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
+		procedureRequest.append(DELIVERYDOCS, this.getDeliveryDocs());
+		procedureRequest.append(ACTIVITIES, activitiesDocuments());
+		procedureRequest.append(STARTDATE, this.getStartDate());
+		procedureRequest.append(FINISHDATE, this.getFinishDate());
+		procedureRequest.append(STATUS, this.getStatus());
 
-
+		return procedureRequest;
+	}
 
 }

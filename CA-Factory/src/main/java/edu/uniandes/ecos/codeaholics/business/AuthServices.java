@@ -52,8 +52,6 @@ public class AuthServices {
 
 	private static String CITIZEN_USER_PROFILE = "citizen";
 
-	private static String FUNCTIONARY_USER_PROFILE = "functionary";
-
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
 	 * 

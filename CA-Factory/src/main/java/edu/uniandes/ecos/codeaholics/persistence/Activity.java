@@ -29,6 +29,7 @@ public class Activity {
 	private String dependency;
 	private int step;
 	private String functionary;
+	private String aprobacion;
 
 	public String getId() {
 		return _id;
@@ -76,6 +77,15 @@ public class Activity {
 	public void setFunctionary(String functionary) {
 		this.functionary = functionary;
 	}
+	
+	public String getAprobacion() {
+		return aprobacion;
+	}
+
+	public void setAprobacion(String aprobacion) {
+		this.aprobacion = aprobacion;
+	}
+	
 	public Document toDocument() {
 		Document activity = new Document();
 		activity.append(STEP, this.getStep());

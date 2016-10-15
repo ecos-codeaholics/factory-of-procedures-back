@@ -343,14 +343,6 @@ public class TestsUtil {
 		
 		mayoralty.setDependencies(dependencies);
 		
-		Procedure procedureUno = new Procedure();
-		procedureUno.setName("Certificado de residencia");
-		procedureUno.setMayoralty("Anapoima");
-		
-		Procedure procedureDos = new Procedure();
-		procedureDos.setName("Certificado de residencia");
-		procedureDos.setMayoralty("Anapoima");
-		
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Certificado de residencia");
 		procedures.add("Auxilio para gastos de sepelio");
@@ -401,17 +393,9 @@ public class TestsUtil {
 		
 		mayoralty.setDependencies(dependencies);
 		
-		Procedure procedureUno = new Procedure();
-		procedureUno.setName("Certificado de residencia");
-		procedureUno.setMayoralty("El Rosal");
-		
-		Procedure procedureDos = new Procedure();
-		procedureDos.setName("Certificado de residencia");
-		procedureDos.setMayoralty("El Rosal");
-		
 		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Certificado de residencia");
 		procedures.add("Auxilio para gastos de sepelio");
+		procedures.add("Certificado de estratificacion");
 		
 		mayoralty.setProcedures(procedures);
 		
@@ -600,7 +584,7 @@ public class TestsUtil {
 		}
 
 //Procedure1
-	public static void addProcedureUno(String pName, String pMayorName) {
+	public static void addProcedureUno(String pName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("procedures");
@@ -612,7 +596,6 @@ public class TestsUtil {
 
 		Procedure procedure = new Procedure();
 		procedure.setName(pName);
-		procedure.setMayoralty(pMayorName);
 		
 
 		//Activities
@@ -765,7 +748,7 @@ public class TestsUtil {
 	
 	
 	//Procedure2
-		public static void addProcedureDos(String pName, String pMayorName) {
+		public static void addProcedureDos(String pName) {
 
 			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 			MongoCollection<Document> collection = dbOne.getCollection("procedures");
@@ -773,12 +756,12 @@ public class TestsUtil {
 //			ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
 			ArrayList<FormField> formFields = new ArrayList<FormField>();
 			ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
-			ArrayList<Activity> activities = new ArrayList<Activity>();
+			
 
 			Procedure procedure = new Procedure();
 			procedure.setName(pName);
-			procedure.setMayoralty(pMayorName);
-
+			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
 			//Activities
 			Activity activity1 = new Activity();
 			activity1.setStep(1);
@@ -913,7 +896,7 @@ public class TestsUtil {
 
 
 		//Procedure3
-		public static void addProcedureTres(String pName, String pMayorName) {
+		public static void addProcedureTres(String pName) {
 
 			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 			MongoCollection<Document> collection = dbOne.getCollection("procedures");
@@ -925,7 +908,6 @@ public class TestsUtil {
 
 			Procedure procedure = new Procedure();
 			procedure.setName(pName);
-			procedure.setMayoralty(pMayorName);
 
 			//Activities
 			Activity activity1 = new Activity();
@@ -1086,145 +1068,6 @@ public class TestsUtil {
 			collection.insertOne(procedure.toDocument());
 
 		}
-
-		//Procedure4
-		public static void addProcedureCuatro(String pName, String pMayorName) {
-
-			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-			MongoCollection<Document> collection = dbOne.getCollection("procedures");
-
-//			ArrayList<Functionary> listOfFunctionaries = new ArrayList<Functionary>();
-			ArrayList<FormField> formFields = new ArrayList<FormField>();
-			ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
-			ArrayList<Activity> activities = new ArrayList<Activity>();
-
-			Procedure procedure = new Procedure();
-			procedure.setName(pName);
-			procedure.setMayoralty(pMayorName);
-
-			//Activities
-			Activity activity1 = new Activity();
-			activity1.setStep(1);
-			activity1.setName("Aprobacion");
-			activity1.setDescription("Revisar documentacion y aprobar");
-			activity1.setDependency("Secretaria General");
-			activity1.setFunctionary("acalle@elrosal");
-			
-			activities.add(activity1);
-			
-			
-			procedure.setActivities(activities);
-
-			//Required
-			RequiredUpload reqDoc1 = new RequiredUpload();
-			
-			reqDoc1.setType("file");
-			reqDoc1.setRequired(true);
-			reqDoc1.setClassName("form-control");
-			
-			reqDoc1.setLabel("Comprobante de pago");
-			reqDoc1.setDescription("Adjunte su comprobante de pago (png, jpeg)");
-			reqDoc1.setName("cedulaAtt");
-			
-		
-
-			reqDocs.add(reqDoc1);
-			
-			RequiredUpload reqDoc2 = new RequiredUpload();
-			
-			reqDoc2.setType("file");
-			reqDoc2.setRequired(true);
-			reqDoc2.setClassName("form-control");
-			
-			reqDoc2.setLabel("CErtificado de Defuncion");
-			reqDoc2.setDescription("Adjunte su certificado de defuncion en formato (png, jpeg)");
-			reqDoc2.setName("certificadoDefuncionAtt");
-			
-			reqDocs.add(reqDoc2);
-			
-			procedure.setRequired(reqDocs);
-			
-
-			//Form
-			
-			FormField field1 = new FormField();
-			
-			field1.setType("text");
-			field1.setSubtype("tel");
-			field1.setRequired(true);
-			field1.setLabel("identificacion");
-			field1.setDescription("numero de documento de identidad");
-			field1.setPlaceHolder("123456789");
-			field1.setClassname("form-control");
-			field1.setName("identification");
-			field1.setMaxlenght(11);
-			
-			formFields.add(field1);
-			
-			FormField field2 = new FormField();
-			
-			field2.setType("text");
-			field2.setSubtype("text");
-			field2.setRequired(true);
-			field2.setLabel("direccion");
-			field2.setDescription("direccion de residencia");
-			field2.setPlaceHolder("CAlle -- # -- --");
-			field2.setClassname("form-control");
-			field2.setName("direccion");
-			field2.setMaxlenght(100);
-			
-			formFields.add(field2);
-			
-			FormField field3 = new FormField();
-			
-			field3.setType("text");
-			field3.setSubtype("text");
-			field3.setRequired(true);
-			field3.setLabel("barrio");
-			field3.setDescription("barrio");
-			field3.setPlaceHolder("barrio");
-			field3.setClassname("form-control");
-			field3.setName("barrio");
-			field3.setMaxlenght(50);
-			
-			formFields.add(field3);
-			
-			FormField field4 = new FormField();
-			
-			field4.setType("text");
-			field4.setSubtype("tel");
-			field4.setRequired(true);
-			field4.setLabel("telefono");
-			field4.setDescription("numero telefonico de contacto");
-			field4.setPlaceHolder("3-----");
-			field4.setClassname("form-control");
-			field4.setName("telefono");
-			field4.setMaxlenght(10);
-			
-			formFields.add(field4);
-			
-			FormField field5 = new FormField();
-			
-			field5.setType("textarea");
-			field5.setRequired(true);
-			field5.setLabel("Carta de Solicitud");
-			field5.setDescription("Carta de Solicitud");
-			field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
-			field5.setClassname("form-control");
-			field5.setName("carta");
-			field5.setMaxlenght(5000);
-			
-			formFields.add(field5);
-			
-			procedure.setFields(formFields);
-			
-			logger.info("inserting new procedure instance");
-			
-			System.out.println(procedure.getFields());
-			collection.insertOne(procedure.toDocument());
-
-		}
-
 		
 		//ProcedureRequest1
 		@SuppressWarnings("deprecation")
@@ -1245,7 +1088,7 @@ public class TestsUtil {
 			citizen.setLastName1("osorio");
 						
 			procedureRequest.setCitizen(citizen);
-			procedureRequest.setMayoralty("anapoima");			
+			procedureRequest.setMayoralty("anapoima");	
 			
 			Map<String, Object> procedureData = new HashMap<>();
 			procedureData.put("identificacion", 123456);
@@ -1262,16 +1105,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("anapoima");
+			activity1.setAprobacion("En proceso");
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");
-			steps.put("functionary", "jvaldez@anapoima");
-			steps.put("aprobacion", "En proceso");
-			
-			procedureRequest.setSteps(new Document(steps));
-						
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(null);
 			procedureRequest.setStatus("En proceso");
@@ -1318,14 +1163,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");			
-			steps.put("functionary", "jvaldez@anapoima");
-			steps.put("aprobacion", "Finalizado");
-			procedureRequest.setSteps(new Document(steps));
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("jvaldez@anapoima");
+			activity1.setAprobacion("Finalizado");
 			
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 		
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(new Date("2016/08/14"));
@@ -1373,17 +1222,18 @@ public class TestsUtil {
 			deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("jvaldez@elrosal");
+			activity1.setAprobacion("Finalizado");
 			
-			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");			
-			steps.put("functionary", "jvaldez@elrosal");
-			steps.put("aprobacion", "Finalizado");
-			procedureRequest.setSteps(new Document(steps));
-			
-
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			
 			procedureRequest.setStartDate(new Date("2016/07/21"));
 			procedureRequest.setFinishDate(new Date("2016/09/21"));
@@ -1433,16 +1283,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Atencion al ciudadano");
+			activity1.setFunctionary("jvaldez@elrosal");
+			activity1.setAprobacion("En proceso");
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("dependency", "Hacienda");			
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("functionary", "jvaldez@elrosal");
-			steps.put("aprobacion", "En proceso");
-			
-			procedureRequest.setSteps(new Document(steps));
-			
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 
 			procedureRequest.setStartDate(new Date("2016/08/06"));
 			procedureRequest.setFinishDate(null);
@@ -1491,17 +1343,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("jvaldez@anapoima");
+			activity1.setAprobacion("En proceso");
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("dependency", "Hacienda");			
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("functionary", "jvaldez@anapoima");
-			steps.put("aprobacion", "En proceso");
-			
-			procedureRequest.setSteps(new Document(steps));
-
-			
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(null);
 			procedureRequest.setStatus("En proceso");
@@ -1549,17 +1402,17 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
-			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");			
-			steps.put("functionary", "jvaldez@anapoima");
-			steps.put("aprobacion", "Finalizado");
-			procedureRequest.setSteps(new Document(steps));
-			
-
-			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("acalle@anapoima");
+			activity1.setAprobacion("Finalizado");
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			procedureRequest.setStartDate(new Date("2016/07/14"));
 			procedureRequest.setFinishDate(new Date("2016/08/14"));
 			procedureRequest.setStatus("Finalizado");
@@ -1607,17 +1460,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Hacienda");
+			activity1.setFunctionary("jvaldez@elrosal");
+			activity1.setAprobacion("Finalizado");
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");			
-			steps.put("functionary", "jvaldez@elrosal");
-			steps.put("aprobacion", "Finalizado");
-			
-			procedureRequest.setSteps(new Document(steps));
-			
-			
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			
 			procedureRequest.setStartDate(new Date("2016/07/21"));
 			procedureRequest.setFinishDate(new Date("2016/09/21"));
@@ -1667,19 +1521,18 @@ public class TestsUtil {
 			
 			procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
 			
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+			//Activities
+			Activity activity1 = new Activity();
+			activity1.setStep(1);
+			activity1.setName("Aprobacion");
+			activity1.setDescription("Revisar documentacion y aprobar");
+			activity1.setDependency("Atencion al ciudadano");
+			activity1.setFunctionary("acalle@anapoima");
+			activity1.setAprobacion("En proceso");
 			
-			Map<String, Object> steps = new HashMap<>();
-			steps.put("step", 1);
-			steps.put("description", "Revisar documentacion y aprobar");
-			steps.put("dependency", "Hacienda");			
-			steps.put("functionary", "jvaldez@elrosal");
-			steps.put("aprobacion", "En proceso");
-			
-			
-			procedureRequest.setSteps(new Document(steps));
-			
-
-			
+			activities.add(activity1);
+			procedureRequest.setActivities(activities);
 			procedureRequest.setStartDate(new Date("2016/08/06"));
 			procedureRequest.setFinishDate(null);
 			procedureRequest.setStatus("En proceso");

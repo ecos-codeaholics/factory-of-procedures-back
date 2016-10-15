@@ -17,11 +17,6 @@ public class FormField {
 	public static final String LABEL = "label";
 	public static final String PLACEHOLDER = "placeholder";
 	public static final String REQUIRED = "required";
-	public static final String FIELDATTRIBUTE = "fieldAttribute"; //no se requiere JRLM
-	public static final String FILEOPTIONS = "fieldOptions"; //no se requiere JRLM
-	public static final String FILEVALIDATION = "fieldValidation"; // no se reuqiere JRLM
-	
-	//JLRM
 	public static final String SUBTYPE = "subtype";
 	public static final String DESCRIPTION = "description";
 	public static final String CLASSNAME = "className";
@@ -29,25 +24,11 @@ public class FormField {
 	public static final String MAXLENGHT = "maxlenght";
 	
 	
-	
-//	public enum Type {
-//		text, textarea, date, select;
-//	}
-//	
-//	public enum SubType {
-//		text, email, tel, password;
-//	}
-	
 	@SerializedName("_id")
 	private String _id;
-	//private Type type; JLRM
 	private String type;
 	private String label;
 	private String placeHolder;
-	private FieldAttribute fieldAttribute;
-	private FieldOptions fieldOptions;
-	private FieldValidation fieldValidation;
-	//JRLM
 	private boolean required;
 	private String subtype;
 	private String description;
@@ -72,6 +53,14 @@ public class FormField {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public String getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+	}
 
 	public String getLabel() {
 		return label;
@@ -87,40 +76,6 @@ public class FormField {
 
 	public void setPlaceHolder(String helpText) {
 		this.placeHolder = helpText;
-	}
-
-	public FieldAttribute getFieldAttribute() {
-		return fieldAttribute;
-	}
-
-	public void setFieldAttribute(FieldAttribute fieldAttribute) {
-		this.fieldAttribute = fieldAttribute;
-	}
-
-	public FieldOptions getFieldOptions() {
-		return fieldOptions;
-	}
-
-	public void setFieldOptions(FieldOptions fieldOptions) {
-		this.fieldOptions = fieldOptions;
-	}
-
-	public FieldValidation getFieldValidation() {
-		return fieldValidation;
-	}
-
-	public void setFieldValidation(FieldValidation fieldValidation) {
-		this.fieldValidation = fieldValidation;
-	}
-
-
-
-	public String getSubtype() {
-		return subtype;
-	}
-
-	public void setSubtype(String subtype) {
-		this.subtype = subtype;
 	}
 
 	public String getDescription() {
@@ -169,12 +124,6 @@ public class FormField {
 		procedure.append(TYPE, this.getType()); //Need to fix this - gson cannot convert this |JLRM by the moment i let it as String
 		procedure.append(LABEL, this.getLabel());
 		procedure.append(PLACEHOLDER, this.getPlaceHolder());
-		//procedure.append(FIELDATTRIBUTE, this.getFieldAttribute().toDocument());
-		//procedure.append(FILEOPTIONS, this.getFieldOptions().toDocument());
-		//procedure.append(FILEVALIDATION, this.getFieldValidation().toDocument());
-		
-		//JLRM 
-
 		procedure.append(REQUIRED, this.isRequired());
 		procedure.append(SUBTYPE, this.getSubtype());
 		procedure.append(DESCRIPTION, this.getDescription());
@@ -182,9 +131,6 @@ public class FormField {
 		procedure.append(NAME, this.getName());
 		procedure.append(MAXLENGHT, this.getMaxlenght());
 		
-		
 		return procedure;
 	}
-
-
 }
