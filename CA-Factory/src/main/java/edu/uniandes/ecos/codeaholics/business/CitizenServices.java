@@ -4,6 +4,8 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
 import com.google.gson.JsonSyntaxException;
@@ -27,6 +29,33 @@ public class CitizenServices {
 	private static String USER_PROFILE = "citizen";
 
 	private static String PROCEDURESREQUEST = "proceduresRequest";
+
+	private static String PROCEDURES = "procedures";
+
+	/***
+	 * Obtiene el modelo del tramite para ser iniciado.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return lista con json del modelo del tramite
+	 */
+	public static Object getProcedure(Request pRequest, Response pResponse) {
+
+		List<Document> dataset = new ArrayList<>();
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("name", pRequest.queryParams("procedure"));
+		procedureFilter.append("mayoralty", pRequest.queryParams("mayoralty"));
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		for (Document item : documents) {
+			dataset.add(item);
+		}
+		pResponse.type("application/json");
+		return dataset;
+	}
+
 	/***
 	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
 	 * 
@@ -110,10 +139,10 @@ public class CitizenServices {
 
 		try {
 			String email = pRequest.queryParams("email");
-			if(email != null){
+			if (email != null) {
 				Authentication.closeSession(email);
 				response = messager.getOkMessage("Proceso Exitoso");
-			}else{
+			} else {
 				pResponse.status(417);
 				response = messager.getNotOkMessage("El correo es necesario");
 			}
@@ -125,8 +154,6 @@ public class CitizenServices {
 		pResponse.type("application/json");
 		return response;
 	}
-	
-	
 
 	/***
 	 * Registra la solicitud de un tramite y toda la infromacion asocida a esa
@@ -159,17 +186,18 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
-		
+
 		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
-		
-		System.out.println("param of the request is: "+ pRequest.queryParams("email"));
+
+		System.out.println("param of the request is: " + pRequest.queryParams("email"));
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
-				
+
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
-		//ArrayList<Document> documents = DataBaseUtil.getAll(PROCEDURESREQUEST);
+		// ArrayList<Document> documents =
+		// DataBaseUtil.getAll(PROCEDURESREQUEST);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
@@ -180,10 +208,9 @@ public class CitizenServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
-		
-		
-		//ayuda para probar el servicio
-		if(documents.isEmpty()){
+
+		// ayuda para probar el servicio
+		if (documents.isEmpty()) {
 			Document procedure1 = new Document();
 			procedure1.put("id", 1);
 			procedure1.put("name", "sebas");
@@ -199,11 +226,11 @@ public class CitizenServices {
 			procedure2.put("city", "Bogota");
 			procedure2.put("status", "En proceso");
 			dataset.add(procedure2);
-			
+
 			System.out.println(dataset);
 		}
 
-		//pResponse.type("application/json");
+		// pResponse.type("application/json");
 		return dataset;
 	}
 
@@ -217,16 +244,15 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
-		
+
 		System.out.println(pRequest.params(":id"));
-		System.out.println("param of the query request is: "+ pRequest.queryParams("email"));
+		System.out.println("param of the query request is: " + pRequest.queryParams("email"));
 		System.out.println(pRequest.uri());
-		
-		
+
 		Document procedureFilter = new Document();
 		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
 		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
-				
+
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
 		for (Document item : documents) {
@@ -239,8 +265,8 @@ public class CitizenServices {
 			item.remove("schedule");
 			dataset.add(item);
 		}
-		
-		//pResponse.type("application/json");
+
+		// pResponse.type("application/json");
 		return dataset;
 	}
 
