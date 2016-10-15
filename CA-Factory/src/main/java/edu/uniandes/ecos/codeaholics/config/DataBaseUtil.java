@@ -4,15 +4,16 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
-import java.util.ArrayList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by davidMtz on 27/6/16.
@@ -58,7 +59,7 @@ public final class DataBaseUtil {
 		}
 		return results;
 	}
-	
+
 	/***
 	 * Adiciona el Documentos en la coleccion especificada.
 	 * 
@@ -116,6 +117,24 @@ public final class DataBaseUtil {
 		log.info("-----------------------------------");
 		log.info("Successful Updated");
 		log.info("-----------------------------------");
+	}
+
+	/**
+	 * Actualiza un campo a partir de una consulta inclusiva con el operador $and
+	 *
+	 */
+
+	public static void compositeUpdate(List<Document> pFilter, Document pRegister, String pCollection) throws MongoWriteException {
+
+		Document filterOperator = new Document();
+		filterOperator.append("$and", pFilter);
+
+		Document registerOperator = new Document();
+		registerOperator.append("$set", pRegister);
+
+		MongoCollection<Document> collection = db.getCollection(pCollection);
+
+		collection.updateOne(filterOperator, registerOperator);
 	}
 
 }
