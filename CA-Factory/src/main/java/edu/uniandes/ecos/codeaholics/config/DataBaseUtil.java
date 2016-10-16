@@ -152,5 +152,7 @@ public final class DataBaseUtil {
 		MongoCollection<Document> collection = db.getCollection(pCollection);
 
 		collection.updateOne(filterOperator, registerOperator);
+		
 	}
+
 }

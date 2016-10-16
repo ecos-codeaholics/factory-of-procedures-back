@@ -30,6 +30,12 @@ public class FunctionaryServices {
 
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
+	/*
+	 * Class: ProcedureStatus FunctionaryServices.java
+	 * Original Author: @author AOSORIO
+	 * Description: Auxiliary class: catched the procedure status returned in body
+	 * Created: Oct 15, 2016 4:55:28 PM
+	 */
 	private class ProcedureStatus {
 		String status;
 
