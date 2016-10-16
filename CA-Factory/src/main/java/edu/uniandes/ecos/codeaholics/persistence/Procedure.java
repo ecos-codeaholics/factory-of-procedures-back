@@ -68,39 +68,34 @@ public class Procedure {
 		this.fields = fields;
 	}
 
-	public Document activitiesDocuments() {
-		System.out.println("size of activities: "+this.getActivities().size());
-		Document activitiesDocs = new Document();
-		for (int i = 0; i < this.getActivities().size(); i++) {
-			activitiesDocs.append("ACTIVITY" + (i + 1), this.getActivities().get(i).toDocument());
-			System.out.println("Activities: "+i+" "+this.getActivities().get(i));
+	public ArrayList<Document> activitiesDocuments() {
+		ArrayList<Document> activitiesDocs = new ArrayList<Document>();
+		if (!this.getActivities().isEmpty()) {
+			for (int i = 0; i < this.getActivities().size(); i++) {
+				activitiesDocs.add(this.getActivities().get(i).toDocument());
+			}
 		}
 		return activitiesDocs;
-
 	}
 
-	public Document requiredDocuments() {
-		System.out.println("size of required: "+this.getRequired().size());
-		Document requiredDocs = new Document();
-		for (int i = 0; i < this.getRequired().size(); i++) {
-			requiredDocs.append("REQUIRED" + (i + 1), this.getRequired().get(i).toDocument());
-			System.out.println("Required: "+i+" "+this.getRequired().get(i));
+	public ArrayList<Document> requiredDocuments() {
+		ArrayList<Document> requiredDocs = new ArrayList<Document>();
+		if (!this.getRequired().isEmpty()) {
+			for (int i = 0; i < this.getRequired().size(); i++) {
+				requiredDocs.add(this.getRequired().get(i).toDocument());
+			}
 		}
 		return requiredDocs;
-
 	}
 
-	public Document fieldsDocuments() {
-		System.out.println("size of document: "+this.getFields().size());
-		Document fieldsDocs = new Document();
+	public ArrayList<Document> fieldsDocuments() {
+		ArrayList<Document> fieldsDocs = new ArrayList<Document>();
 		if (!this.getFields().isEmpty()) {
 			for (int i = 0; i < this.getFields().size(); i++) {
-				fieldsDocs.append("FIELD" + (i + 1), this.getFields().get(i).toDocument());
-				System.out.println("Document: "+i+" "+this.getFields().get(i));
+				fieldsDocs.add(this.getFields().get(i).toDocument());
 			}
 		}
 		return fieldsDocs;
-
 	}
 	
 	public Document toDocument() {

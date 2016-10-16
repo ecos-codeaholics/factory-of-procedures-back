@@ -61,12 +61,10 @@ public class FunctionaryServices {
 		log.info("Param of the request is: " + pRequest.queryParams("email"));
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
-
+		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
 		List<Document> dataset = new ArrayList<>();
 
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
-
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
@@ -76,21 +74,6 @@ public class FunctionaryServices {
 			item.remove("state");
 			item.remove("schedule");
 			dataset.add(item);
-		}
-
-		// ayuda para probar el servicio
-		if (documents.isEmpty()) {
-			Document procedure = new Document();
-			procedure.put("date", "Girardot");
-			procedure.put("time", "Girardot");
-			procedure.put("fileNumber", "Girardot");
-			procedure.put("id", "Girardot");
-			procedure.put("name", "Girardot");
-			procedure.put("state", "Girardot");
-			procedure.put("attached", "Girardot");
-
-			dataset.add(procedure);
-
 		}
 
 		return dataset;
@@ -113,7 +96,7 @@ public class FunctionaryServices {
 		log.info(pRequest.uri());
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("steps.functionary", pRequest.queryParams("email"));
+		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
 		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
 
 		List<Document> dataset = new ArrayList<>();
@@ -151,14 +134,14 @@ public class FunctionaryServices {
 
 		List<Document> procedureFilter = new ArrayList<>();
 		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
-		procedureFilter.add(new Document("steps.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
+		procedureFilter.add(new Document("activities.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
 
 		ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
 		String newStatus = status.getStatus();
 
 		System.out.println("status: " + newStatus);
 
-		Document replaceValue = new Document("steps.status", newStatus);
+		Document replaceValue = new Document("activities.status", newStatus);
 
 		try {
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);

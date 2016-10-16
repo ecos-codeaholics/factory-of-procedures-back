@@ -128,21 +128,12 @@ public class ProcedureRequest {
 		this.procedureClassName = procedureClassName;
 	}
 	
-	public Document deliveryDocuments() {
-		Document deliveryDocs = new Document();
-		for (int i = 0; i < this.getDeliveryDocs().size(); i++) {
-			deliveryDocs.append("DELIVERYDOC" + (i + 1), this.getDeliveryDocs().get(i));
-		}
-		return deliveryDocs;
-
-	}
-	
-	public Document activitiesDocuments() {
-		System.out.println("size of activities: "+this.getActivities().size());
-		Document activitiesDocs = new Document();
-		for (int i = 0; i < this.getActivities().size(); i++) {
-			activitiesDocs.append("ACTIVITY" + (i + 1), this.getActivities().get(i).toDocument());
-			System.out.println("Activities: "+i+" "+this.getActivities().get(i));
+	public ArrayList<Document> activitiesDocuments() {
+		ArrayList<Document> activitiesDocs = new ArrayList<Document>();
+		if (!this.getActivities().isEmpty()) {
+			for (int i = 0; i < this.getActivities().size(); i++) {
+				activitiesDocs.add(this.getActivities().get(i).toDocument());
+			}
 		}
 		return activitiesDocs;
 	}
