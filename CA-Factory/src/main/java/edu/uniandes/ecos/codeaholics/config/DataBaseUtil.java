@@ -132,6 +132,7 @@ public final class DataBaseUtil {
 			log.info("Successful Updated");
 			log.info("-----------------------------------");
 		} catch (MongoException e) {
+			log.info(e.getMessage());
 			throw e;
 		}
 	}
@@ -151,7 +152,12 @@ public final class DataBaseUtil {
 
 		MongoCollection<Document> collection = db.getCollection(pCollection);
 
+		try {
 		collection.updateOne(filterOperator, registerOperator);
+		} catch (MongoException e) {
+			log.info(e.getMessage());
+			throw e;
+		}
 		
 	}
 
