@@ -4,6 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +40,16 @@ public class MayoraltyServices {
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, MAYORALTY);
-		if(mayoralties.size() > 0){
+		if(!mayoralties.isEmpty()){
 			Document mayoralty = (Document) mayoralties.get(0);
-			//dataset = mayoralty.get("procedures");
+			@SuppressWarnings("unchecked")
+			ArrayList<String> procedures =  (ArrayList<String>) mayoralty.get("procedures");
+			for (String item : procedures) {
+				System.out.println(item);
+				Document procedure = new Document();
+				procedure.append("name", item);
+				dataset.add(procedure);
+			}
 		}
 		
 		pResponse.type("application/json");
