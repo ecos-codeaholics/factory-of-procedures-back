@@ -6,6 +6,9 @@ package edu.uniandes.ecos.codeaholics.business;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,12 +34,12 @@ public class FunctionaryServices {
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
 	/*
-	 * Class: ProcedureStatus FunctionaryServices.java
-	 * Original Author: @author AOSORIO
-	 * Description: Auxiliary class: catched the procedure status returned in body
-	 * Created: Oct 15, 2016 4:55:28 PM
+	 * Class: ProcedureStatus FunctionaryServices.java Original Author: @author
+	 * AOSORIO Description: Auxiliary class: catched the procedure status
+	 * returned in body Created: Oct 15, 2016 4:55:28 PM
 	 */
 	private class ProcedureStatus {
+		
 		String status;
 
 		/**
@@ -45,6 +48,7 @@ public class FunctionaryServices {
 		public String getStatus() {
 			return status;
 		}
+		
 	}
 
 	/***
@@ -147,23 +151,35 @@ public class FunctionaryServices {
 
 		log.info(pRequest.params(":procedureId"));
 		log.info(pRequest.params(":stepId"));
-		log.info("param of the request is: " + pRequest.queryParams("email"));
+		log.info("email of functionary is " + pRequest.queryParams("email"));
 
 		List<Document> procedureFilter = new ArrayList<>();
-		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
-		procedureFilter.add(new Document("steps.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
+		procedureFilter
+				.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+		procedureFilter
+				.add(new Document("steps.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
 
-		ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
-		String newStatus = status.getStatus();
-
-		System.out.println("status: " + newStatus);
-
-		Document replaceValue = new Document("steps.status", newStatus);
-
+		String newStatus = null;
+		
 		try {
+
+			log.info("body: " + pRequest.body() );
+						
+			//JsonParser parser = new JsonParser();
+			//JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+			
+			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);	
+			
+			newStatus = status.getStatus();
+
+			System.out.println("status: " + newStatus);
+
+			Document replaceValue = new Document("steps.status", newStatus);
+
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
-		} catch (MongoException e) {
-			System.out.println("Problem writting : " + newStatus);
+			
+		} catch (Exception e) {
+			System.out.println("Problem writting : " + e.getMessage());
 		}
 
 		response = messager.getOkMessage(newStatus);

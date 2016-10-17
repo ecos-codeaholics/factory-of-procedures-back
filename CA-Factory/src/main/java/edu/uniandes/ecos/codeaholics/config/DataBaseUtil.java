@@ -138,11 +138,13 @@ public final class DataBaseUtil {
 	}
 
 	/**
-	 * Actualiza un campo a partir de una consulta inclusiva con el operador $and
+	 * Actualiza un campo a partir de una consulta inclusiva con el operador
+	 * $and
 	 *
 	 */
 
-	public static void compositeUpdate(List<Document> pFilter, Document pRegister, String pCollection) throws MongoWriteException {
+	public static void compositeUpdate(List<Document> pFilter, Document pRegister, String pCollection)
+			throws MongoWriteException {
 
 		Document filterOperator = new Document();
 		filterOperator.append("$and", pFilter);
@@ -153,12 +155,12 @@ public final class DataBaseUtil {
 		MongoCollection<Document> collection = db.getCollection(pCollection);
 
 		try {
-		collection.updateOne(filterOperator, registerOperator);
+			collection.updateOne(filterOperator, registerOperator);
 		} catch (MongoException e) {
 			log.info(e.getMessage());
 			throw e;
 		}
-		
+
 	}
 
 }

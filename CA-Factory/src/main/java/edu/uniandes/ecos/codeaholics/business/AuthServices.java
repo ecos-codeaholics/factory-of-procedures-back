@@ -66,7 +66,7 @@ public class AuthServices {
 		Object response = null;
 
 		try {
-
+			log.info("login body: " + pRequest.body());
 			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
 
 			if (authenticationMethod.equals("JWT")) {
