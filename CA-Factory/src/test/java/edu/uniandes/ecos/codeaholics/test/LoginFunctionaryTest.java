@@ -72,7 +72,7 @@ public class LoginFunctionaryTest {
 			urlConnection.setRequestProperty("Content-type", "application/json");
 			urlConnection.setRequestMethod("POST");
 
-			String loginData = "{email : \"jvaldez@lenguazaque\", password : \"Qwerty\" , userProfile : \"functionary\"}";
+			String loginData = "{email : \"jvaldez@elrosal\", password : \"12345678\" , userProfile : \"functionary\"}";
 
 			Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
 			writer.write(loginData);
