@@ -133,15 +133,18 @@ public class FunctionaryServices {
 		log.info("param of the request is: " + pRequest.queryParams("email"));
 
 		List<Document> procedureFilter = new ArrayList<>();
-		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
-		procedureFilter.add(new Document("activities.step", new Document("$eq", Integer.parseInt(pRequest.params(":stepId")))));
+		procedureFilter.add(new Document("fileNumber",
+				new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+		procedureFilter.add(new Document("activities",
+				new Document("$elemMatch",
+						new Document("step", Integer.parseInt(pRequest.params(":stepId"))))));
 
 		ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
 		String newStatus = status.getStatus();
 
 		System.out.println("status: " + newStatus);
 
-		Document replaceValue = new Document("activities.status", newStatus);
+		Document replaceValue = new Document("activities.$.status", newStatus);
 
 		try {
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
