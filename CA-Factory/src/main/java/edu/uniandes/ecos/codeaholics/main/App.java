@@ -98,14 +98,14 @@ public class App {
 		get(Routes.CITIZENS + "mayoralties/", MayoraltyServices::getMayoraltyList, GeneralUtil.json());
 
 		// obtener lista de tramites por alcaldia /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/" + ":mayoraltyName" + "/", MayoraltyServices::proceduresByMayoralty,
+		get(Routes.CITIZENS + "procedures/:mayoraltyName/", MayoraltyServices::proceduresByMayoralty,
 				GeneralUtil.json());
 
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/edit/" + ":id" + "/", CitizenServices::consultProceduresById,
+		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById,
 				GeneralUtil.json());
 
 		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
