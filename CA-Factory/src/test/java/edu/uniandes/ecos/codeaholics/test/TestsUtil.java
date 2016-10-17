@@ -4,6 +4,17 @@
 
 package edu.uniandes.ecos.codeaholics.test;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.main.App;
+import edu.uniandes.ecos.codeaholics.persistence.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,37 +24,13 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
-import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
-import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-import edu.uniandes.ecos.codeaholics.main.App;
-import edu.uniandes.ecos.codeaholics.persistence.Activity;
-import edu.uniandes.ecos.codeaholics.persistence.Citizen;
-import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 //import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
-import edu.uniandes.ecos.codeaholics.persistence.FormField;
 //import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
-import edu.uniandes.ecos.codeaholics.persistence.Functionary;
-import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
-import edu.uniandes.ecos.codeaholics.persistence.Procedure;
-import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-import edu.uniandes.ecos.codeaholics.persistence.RequiredUpload;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -597,6 +584,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentacion y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 
@@ -731,6 +719,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentacion y aprobar");
 		activity1.setDependency("Atencion al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
+		activity1.setStatus("Finalizado");
 
 		activities.add(activity1);
 
@@ -877,6 +866,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentacion y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 
@@ -1070,6 +1060,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("anapoima");
 		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1128,6 +1119,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1187,6 +1179,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1247,6 +1240,7 @@ public class TestsUtil {
 		activity1.setDependency("Atencion al ciudadano");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1306,6 +1300,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1364,6 +1359,8 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
+
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
@@ -1422,6 +1419,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1482,6 +1480,7 @@ public class TestsUtil {
 		activity1.setDependency("Atencion al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
