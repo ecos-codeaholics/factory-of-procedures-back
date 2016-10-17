@@ -20,6 +20,7 @@ public class Activity {
 	//JLRM
 	public static final String STEP = "step";
 	public static final String FUNCTIONARY = "functionary";
+	public static final String STATUS = "status";
 	
 
 	@SerializedName("_id")
@@ -30,6 +31,7 @@ public class Activity {
 	private int step;
 	private String functionary;
 	private String aprobacion;
+	private String status;
 
 	public String getId() {
 		return _id;
@@ -85,7 +87,13 @@ public class Activity {
 	public void setAprobacion(String aprobacion) {
 		this.aprobacion = aprobacion;
 	}
-	
+
+	public String getStatus() { return status; }
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Document toDocument() {
 		Document activity = new Document();
 		activity.append(STEP, this.getStep());
@@ -93,6 +101,7 @@ public class Activity {
 		activity.append(DESCRIPTION, this.getDescription());
 		activity.append(DEPENDENCY, this.getDependency());
 		activity.append(FUNCTIONARY, this.getFunctionary());
+		activity.append(STATUS, this.getStatus());
 		//activity.append(GENERATED, generatedDocuments());
 
 		return activity;

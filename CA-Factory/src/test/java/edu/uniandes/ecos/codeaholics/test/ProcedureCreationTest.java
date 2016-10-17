@@ -28,31 +28,20 @@ public class ProcedureCreationTest {
 	
 	@Test 
 	public void clearDB () {
-//		TestsUtil.clearAllCollections();		
-//		assertEquals(true, true);
-	}
-	
-	@Test
-	public void createProcedureTest() {
-		TestsUtil.addProcedureUno ("Certificado de residencia");
-		TestsUtil.addProcedureDos ("Auxilio para gastos de sepelio");
-		TestsUtil.addProcedureTres ("Certificado de estratificacion");
-			
+		TestsUtil.clearAllCollections();		
 		assertEquals(true, true);
 	}
 	
 	@Test
-	public void createProcedureRequestTest() {
-		TestsUtil.addProcedureRequestUno();
-		TestsUtil.addProcedureRequestDos();
-		TestsUtil.addProcedureRequestTres();
-		TestsUtil.addProcedureRequestCuatro();
-		TestsUtil.addProcedureRequestCinco();
-		TestsUtil.addProcedureRequestSeis();
-		TestsUtil.addProcedureRequestSiete();
-		TestsUtil.addProcedureRequestOcho();
-
-		assertEquals(true, true);
+	public void createCitizenTest(){
+		
+		TestsUtil.addCitizenUno();
+		TestsUtil.addCitizenDos();
+		TestsUtil.addCitizenTres();
+		TestsUtil.addCitizenCuatro();
+		TestsUtil.addCitizenCinco();
+		
+		assertEquals(true, true);		
 	}
 	
 	@Test
@@ -67,6 +56,15 @@ public class ProcedureCreationTest {
 	}
 	
 	@Test
+	public void createProcedureTest() {
+		TestsUtil.addProcedureUno ("Certificado de residencia");
+		TestsUtil.addProcedureDos ("Auxilio para gastos de sepelio");
+		TestsUtil.addProcedureTres ("Certificado de estratificacion");
+			
+		assertEquals(true, true);
+	}
+	
+	@Test
 	public void createMayoraltiesTest(){
 		
 		TestsUtil.addMayoraltyUno();
@@ -76,15 +74,17 @@ public class ProcedureCreationTest {
 	}
 	
 	@Test
-	public void createCitizenTest(){
-		
-		TestsUtil.addCitizenUno();
-		TestsUtil.addCitizenDos();
-		TestsUtil.addCitizenTres();
-		TestsUtil.addCitizenCuatro();
-		TestsUtil.addCitizenCinco();
-		
-		assertEquals(true, true);		
+	public void createProcedureRequestTest() {
+		TestsUtil.addProcedureRequestUno();
+		TestsUtil.addProcedureRequestDos();
+		TestsUtil.addProcedureRequestTres();
+		TestsUtil.addProcedureRequestCuatro();
+		TestsUtil.addProcedureRequestCinco();
+		TestsUtil.addProcedureRequestSeis();
+		TestsUtil.addProcedureRequestSiete();
+		TestsUtil.addProcedureRequestOcho();
+
+		assertEquals(true, true);
 	}
 	
 	

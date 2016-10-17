@@ -56,6 +56,16 @@ public class Dependency {
 	public void setFunctionaries(ArrayList<Functionary> functionaries) {
 		this.functionaries = functionaries;
 	}
+	
+	public ArrayList<Document> functionariesDocuments() {
+		ArrayList<Document> functionariesDocs = new ArrayList<Document>();
+		if (!this.getFunctionaries().isEmpty()) {
+			for (int i = 0; i < this.getFunctionaries().size(); i++) {
+				functionariesDocs.add(this.getFunctionaries().get(i).toDocument());
+			}
+		}
+		return functionariesDocs;
+	}
 
 	public Document toDocument() {
 		Document dependency = new Document();
@@ -64,15 +74,6 @@ public class Dependency {
 				  .append(FUNCTIONARIES, functionariesDocuments());
 
 		return dependency;
-	}
-
-	public Document functionariesDocuments() {
-		Document functionariesDocs = new Document();
-		for (int i = 0; i < this.getFunctionaries().size(); i++) {
-			functionariesDocs.append("FUNCTIONARY" + (i + 1), this.getFunctionaries().get(i).toDocument());
-		}
-		return functionariesDocs;
-
 	}
 
 }

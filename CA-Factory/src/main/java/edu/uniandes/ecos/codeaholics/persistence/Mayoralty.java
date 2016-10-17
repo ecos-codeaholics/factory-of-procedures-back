@@ -4,6 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -106,6 +107,28 @@ public class Mayoralty {
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
 	}
+	
+	public ArrayList<Document> dependenciesDocuments() {
+		ArrayList<Document> dependenciesDocs = new ArrayList<Document>();
+		if (!this.getDependencies().isEmpty()) {
+			for (int i = 0; i < this.getDependencies().size(); i++) {
+				dependenciesDocs.add(this.getDependencies().get(i).toDocument());
+			}
+		}
+		return dependenciesDocs;
+
+	}
+	
+	public ArrayList<String> proceduresDocuments() {
+		ArrayList<String> proceduresDocs = new ArrayList<String>();
+		if (!this.getProcedures().isEmpty()) {
+			for (int i = 0; i < this.getProcedures().size(); i++) {
+				proceduresDocs.add(this.getProcedures().get(i));
+			}
+		}
+		return proceduresDocs;
+
+	}
 
 	public Document toDocument() {
 		Document mayoralty = new Document();
@@ -119,24 +142,6 @@ public class Mayoralty {
 				.append(SCHEDULE, this.getSchedule());
 
 		return mayoralty;
-	}
-	
-	public Document dependenciesDocuments() {
-		Document dependenciesDocs = new Document();
-		for (int i = 0; i < this.getDependencies().size(); i++) {
-			dependenciesDocs.append("DEPENDENCY" + (i + 1), this.getDependencies().get(i).toDocument());
-		}
-		return dependenciesDocs;
-
-	}
-	
-	public Document proceduresDocuments() {
-		Document proceduresDocs = new Document();
-		for (int i = 0; i < this.getProcedures().size(); i++) {
-			proceduresDocs.append("PROCEDURE" + (i + 1), this.getProcedures().get(i));
-		}
-		return proceduresDocs;
-
 	}
 
 }

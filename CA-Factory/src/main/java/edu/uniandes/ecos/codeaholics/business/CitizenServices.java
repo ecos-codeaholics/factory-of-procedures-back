@@ -47,7 +47,6 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("name", pRequest.queryParams("procedure"));
-		procedureFilter.append("mayoralty", pRequest.queryParams("mayoralty"));
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
 		for (Document item : documents) {
 			dataset.add(item);
