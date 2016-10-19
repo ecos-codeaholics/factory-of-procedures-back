@@ -25,7 +25,7 @@ public class AuthenticationJWTTest {
 	public void tokenCreationTest() {
 
 		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes.edu", "Qwerty");
+		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "12345678");
 		String citizenSalt = utilities.getCitizenSalt();
 		
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
@@ -33,7 +33,7 @@ public class AuthenticationJWTTest {
 		
 		boolean authenticated = false;
 		try {
-			authenticated = jwtToken.doAuthentication("aosorio@uniandes.edu", "Qwerty", "citizen");
+			authenticated = jwtToken.doAuthentication("aosorio@uniandes", "12345678", "citizen");
 		} catch (WrongUserOrPasswordException e1) {
 			e1.printStackTrace();
 		}
@@ -53,7 +53,7 @@ public class AuthenticationJWTTest {
 				logger.info("Issuer: " + claims.getIssuer());
 				logger.info("Expiration: " + claims.getExpiration());
 
-				assertEquals("aosorio@uniandes.edu", claims.getId());
+				assertEquals("aosorio@uniandes", claims.getId());
 				
 			} catch (Exception e) {
 				e.printStackTrace();

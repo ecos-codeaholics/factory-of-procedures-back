@@ -100,27 +100,45 @@ public class TestsUtil {
 
 	}
 
-	// add citizen
+	/**
+	 * 
+	 */
 	public static void clearAllCollections() {
 
+		logger.info("clearing all existing collections in the default DB");
+
+		ArrayList<String> collections = new ArrayList<String>();
+		collections.add("citizen");
+		collections.add("functionary");
+		collections.add("mayoralty");
+		collections.add("procedures");
+		collections.add("proceduresRequest");
+		collections.add("session");
+
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
-		collection.drop();
+		MongoCollection<Document> collection;
 
-		collection = dbOne.getCollection("functionary");
-		collection.drop();
+		Iterator<String> itrColl = collections.iterator();
 
-		collection = dbOne.getCollection("mayoralty");
-		collection.drop();
+		while (itrColl.hasNext()) {
+			String collectionName = itrColl.next();
+			collection = dbOne.getCollection(collectionName);
+			collection.drop();
+			logger.info("Collection " + collectionName + " dropped");
+		}
 
-		collection = dbOne.getCollection("procedures");
-		collection.drop();
-
-		collection = dbOne.getCollection("proceduresRequest");
-		collection.drop();
-
-		collection = dbOne.getCollection("session");
-		collection.drop();
+		/*
+		 * collection = dbOne.getCollection("functionary"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("mayoralty"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("procedures"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("proceduresRequest");
+		 * collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("session"); collection.drop();
+		 */
 
 	}
 
@@ -1524,7 +1542,7 @@ public class TestsUtil {
 
 		int port = App.JETTY_SERVER_PORT;
 		String server = "http://localhost";
-
+		logger.info("JETTY SERVER PORT: " + port);
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append(server);
 		strBuilder.append(":");
@@ -1552,6 +1570,7 @@ public class TestsUtil {
 			logger.error("%s not empty%n", file);
 		} catch (IOException x) {
 			// File permission problems are caught here.
+			logger.info("removeTestFile> failure");
 			logger.error(x.getMessage());
 		}
 	}
@@ -1608,6 +1627,25 @@ public class TestsUtil {
 			if (value != null) {
 				tmpPath = value;
 				found = true;
+				/*
+				File directoryName = new File(value + "/junittest");
+				if (!directoryName.exists()) {
+					logger.info("creating directory: " + directoryName);
+					boolean result = false;
+					try {
+						directoryName.mkdir();
+						result = true;
+					} catch (SecurityException se) {
+						System.out.println(se.getLocalizedMessage());
+					}
+					if (result) {
+						tmpPath = directoryName.toString();
+						logger.info("LOCALTMP + /junittest created");
+					}
+				} else {
+					tmpPath = directoryName.toString();
+				}
+				*/
 				break;
 			}
 		}
