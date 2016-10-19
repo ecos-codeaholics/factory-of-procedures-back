@@ -20,6 +20,7 @@ public class Procedure {
 	public static final String REQUIRED = "required";
 	public static final String FIELDS = "fields";
 	public static final String MAYORALTY = "mayoralty";
+	public static final String SLUG = "slug";
 
 	@SerializedName("_id")
 	private String _id;
@@ -27,6 +28,7 @@ public class Procedure {
 	private ArrayList<Activity> activities;
 	private ArrayList<RequiredUpload> requiredUpload;
 	private ArrayList<FormField> fields;
+	private String slugProcedure;
 
 	public String getId() {
 		return _id;
@@ -67,6 +69,14 @@ public class Procedure {
 	public void setFields(ArrayList<FormField> fields) {
 		this.fields = fields;
 	}
+	
+	public String getSlugProcedure() {
+		return slugProcedure;
+	}
+
+	public void setSlugProcedure(String slugProcedure) {
+		this.slugProcedure = slugProcedure;
+	}
 
 	public ArrayList<Document> activitiesDocuments() {
 		ArrayList<Document> activitiesDocs = new ArrayList<Document>();
@@ -103,6 +113,7 @@ public class Procedure {
 		procedure.append(NAME, getName());
 		procedure.append(ACTIVITIES, activitiesDocuments());
 		procedure.append(REQUIRED, requiredDocuments());
+		procedure.append(SLUG, this.getName().replace(" ", ""));
 		procedure.append(FIELDS, fieldsDocuments());
 
 		return procedure;
