@@ -4,18 +4,17 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mongodb.MongoException;
-
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import spark.Request;

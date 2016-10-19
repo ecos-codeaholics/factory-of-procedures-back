@@ -150,7 +150,7 @@ public class Mayoralty {
 				.append(URL, this.getUrl())
 				.append(PHONE, this.getPhone())
 				.append(STATE, this.getState())
-				.append(SLUG, this.getName().replace(" ", ""))
+				.append(SLUG, this.getName().replace(" ", "").toLowerCase())
 				.append(SCHEDULE, this.getSchedule());
 
 		return mayoralty;

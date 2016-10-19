@@ -4,7 +4,6 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class MayoraltyServices {
 	public static Object proceduresByMayoralty(Request pRequest, Response pResponse) {
 
 		Document filter = new Document();
-		filter.append("name", pRequest.params(":mayoraltyName").toString());
+		filter.append("slug", pRequest.params(":mayoraltyName").toString());
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, MAYORALTY);
@@ -48,6 +47,7 @@ public class MayoraltyServices {
 				System.out.println(item);
 				Document procedure = new Document();
 				procedure.append("name", item);
+				procedure.append("slug", item.replace(" ", "").toLowerCase());
 				dataset.add(procedure);
 			}
 		}

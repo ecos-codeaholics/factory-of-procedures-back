@@ -4,8 +4,6 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
 import com.google.gson.JsonSyntaxException;
@@ -46,7 +44,7 @@ public class CitizenServices {
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("name", pRequest.queryParams("procedure"));
+		procedureFilter.append("slug", pRequest.queryParams("procedure"));
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
 		for (Document item : documents) {
 			dataset.add(item);

@@ -113,7 +113,7 @@ public class Procedure {
 		procedure.append(NAME, getName());
 		procedure.append(ACTIVITIES, activitiesDocuments());
 		procedure.append(REQUIRED, requiredDocuments());
-		procedure.append(SLUG, this.getName().replace(" ", ""));
+		procedure.append(SLUG, this.getName().replace(" ", "").toLowerCase());
 		procedure.append(FIELDS, fieldsDocuments());
 
 		return procedure;
