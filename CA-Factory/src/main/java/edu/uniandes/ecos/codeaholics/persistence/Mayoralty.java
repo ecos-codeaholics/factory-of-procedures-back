@@ -24,6 +24,7 @@ public class Mayoralty {
 	public static final String PHONE = "phone";
 	public static final String STATE = "state";
 	public static final String SCHEDULE = "schedule";
+	public static final String SLUG = "slug";
 
 	@SerializedName("_id")
 	private String _id;
@@ -35,6 +36,8 @@ public class Mayoralty {
 	private String phone;
 	private String state;
 	private String schedule;
+	private String slugMayoralty;
+	
 
 	public String getId() {
 		return _id;
@@ -108,6 +111,14 @@ public class Mayoralty {
 		this.schedule = schedule;
 	}
 	
+	public String getSlugMayoralty() {
+		return slugMayoralty;
+	}
+
+	public void setSlugMayoralty(String slugMayoralty) {
+		this.slugMayoralty = slugMayoralty;
+	}
+	
 	public ArrayList<Document> dependenciesDocuments() {
 		ArrayList<Document> dependenciesDocs = new ArrayList<Document>();
 		if (!this.getDependencies().isEmpty()) {
@@ -139,9 +150,12 @@ public class Mayoralty {
 				.append(URL, this.getUrl())
 				.append(PHONE, this.getPhone())
 				.append(STATE, this.getState())
+				.append(SLUG, this.getName().replace(" ", ""))
 				.append(SCHEDULE, this.getSchedule());
 
 		return mayoralty;
 	}
+
+	
 
 }

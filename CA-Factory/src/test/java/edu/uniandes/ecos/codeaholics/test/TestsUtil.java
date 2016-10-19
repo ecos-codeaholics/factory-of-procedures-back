@@ -345,7 +345,7 @@ public class TestsUtil {
 
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Certificado de residencia");
-		procedures.add("Auxilio para gastos de sepelio");
+		procedures.add("Auxilio para Gastos Sepelio");
 
 		mayoralty.setProcedures(procedures);
 
@@ -393,7 +393,7 @@ public class TestsUtil {
 		mayoralty.setDependencies(dependencies);
 
 		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Auxilio para gastos de sepelio");
+		procedures.add("Auxilio para Gastos Sepelio");
 		procedures.add("Certificado de estratificacion");
 
 		mayoralty.setProcedures(procedures);
@@ -1161,7 +1161,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
 		procedureRequest.setFileNumber(3L);
 
 		Citizen citizen = new Citizen();
@@ -1221,7 +1221,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
 		procedureRequest.setFileNumber(4L);
 
 		Citizen citizen = new Citizen();
@@ -1400,7 +1400,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
 		procedureRequest.setFileNumber(7L);
 
 		Citizen citizen = new Citizen();
@@ -1461,7 +1461,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Auxilio para gastos de sepelio");
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
 		procedureRequest.setFileNumber(8L);
 
 		Citizen citizen = new Citizen();

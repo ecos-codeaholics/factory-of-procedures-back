@@ -57,9 +57,9 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureTest() {
-		TestsUtil.addProcedureUno ("Certificado de residencia");
-		TestsUtil.addProcedureDos ("Auxilio para gastos de sepelio");
-		TestsUtil.addProcedureTres ("Certificado de estratificacion");
+		TestsUtil.addProcedureUno ("Certificado de Residencia");
+		TestsUtil.addProcedureDos ("Auxilio para Gastos Sepelio");
+		TestsUtil.addProcedureTres ("Certificado de Estratificacion");
 			
 		assertEquals(true, true);
 	}
