@@ -26,11 +26,11 @@ public class ProcedureCreationTest {
 		Spark.stop();
 	}
 	
-	@Test 
-	public void clearDB () {
-		TestsUtil.clearAllCollections();		
-		assertEquals(true, true);
-	}
+	//@Test 
+	//public void clearDB () {
+	//	TestsUtil.clearAllCollections();		
+	//	assertEquals(true, true);
+	//}
 	
 	@Test
 	public void createCitizenTest(){
@@ -86,7 +86,5 @@ public class ProcedureCreationTest {
 
 		assertEquals(true, true);
 	}
-	
-	
 
 }

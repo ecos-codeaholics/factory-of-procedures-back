@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.MongoException;
+import com.mongodb.MongoSocketOpenException;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
@@ -138,7 +140,7 @@ public class DBUpdateTest {
 
 	private static String TEST_COLLECTION = "junittest";
 
-	public void insertMockActivity() {
+	public void insertMockActivity() throws MongoException {
 
 		try {
 
@@ -163,11 +165,12 @@ public class DBUpdateTest {
 
 		} catch (Exception mongoEx) {
 			log.info(mongoEx.getMessage());
-		}
+			throw mongoEx;
+		} 
 
 	}
 
-	public void insertMockProcedure() {
+	public void insertMockProcedure() throws MongoException {
 
 		try {
 
@@ -192,15 +195,25 @@ public class DBUpdateTest {
 
 		} catch (Exception mongoEx) {
 			log.info(mongoEx.getMessage());
+			throw mongoEx;
 		}
 
 	}
 
 	@Test
-	public void simpleUpdateTest() {
+	public void simpleUpdateTest() throws Exception {
 
-		insertMockActivity();
-
+		try {
+			
+			insertMockActivity();
+			
+		} catch (MongoException mongoEx ) {
+			
+			log.info("Failed to connect to DB");
+			fail();
+			
+		}
+			
 		// we will test an uptade field with simple query
 		Document filter = new Document();
 		filter.append("email", "jvaldez@anapoima");
@@ -222,10 +235,19 @@ public class DBUpdateTest {
 	}
 
 	@Test
-	public void compositeUpdateTest() {
+	public void compositeUpdateTest() throws Exception {
 
-		insertMockProcedure();
-
+		try {
+			
+			insertMockProcedure();
+			
+		} catch (MongoException mongoEx ) {
+			
+			log.info("Failed to connect to DB");
+			fail();
+		
+		}
+		
 		List<Document> procedureFilter = new ArrayList<>();
 		procedureFilter.add(new Document("fileNumber", new Document("$eq", Long.parseLong("123456789"))));
 		procedureFilter.add(new Document("activity.step", new Document("$eq", Integer.parseInt("1"))));
