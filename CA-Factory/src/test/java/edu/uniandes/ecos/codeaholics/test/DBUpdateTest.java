@@ -1,5 +1,7 @@
 package edu.uniandes.ecos.codeaholics.test;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +13,9 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.MongoException;
-import com.mongodb.MongoSocketOpenException;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
