@@ -366,13 +366,13 @@ public class AuthServices {
 
 	}
 
-	private static void updatePwdInDB(Document filter, Map<String, Object> valuesToReplace, String profile)
+	private static void updatePwdInDB(Document pFilter, Map<String, Object> pValuesToReplace, String pProfile)
 			throws MongoWriteException {
 
 		try {
 			// send salt and password to the register in the DB
-			Document register = new Document(valuesToReplace);
-			DataBaseUtil.update(filter, register, profile);
+			Document register = new Document(pValuesToReplace);
+			DataBaseUtil.update(pFilter, register, pProfile);
 			
 		} catch (MongoWriteException e) {
 			throw e;

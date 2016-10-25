@@ -42,7 +42,10 @@ public final class DataBaseUtil {
 		log.debug("Saving " + pRegister);
 		log.debug("In Collection " + pCollection);
 		MongoCollection<Document> collection = db.getCollection(pCollection);
+		
+		//TODO: check this ... this will never throw an exception since we always insert documents by _id
 		collection.insertOne(pRegister);
+		
 		log.info("-----------------------------------");
 		log.info("Successful Insert");
 		log.info("-----------------------------------");

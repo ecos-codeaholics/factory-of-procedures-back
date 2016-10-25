@@ -82,7 +82,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 					log.info(pEmail + " authenticated! create token.");
 					token = createJWT(pEmail, TOKEN_ISSUER, pProfile, salt, "Something");
 					authenticated = true;
-					createSession(pEmail, pProfile);
+					createSession(pEmail, pProfile, token.toString(), salt);
 
 				} else {
 					token = "{}";
@@ -148,15 +148,27 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @param pUserProfile
 	 *            perfil del usuario citizen, functionary, etc
 	 */
-	private static void createSession(String pEmail, String pUserProfile) {
+	private static void createSession(String pEmail, String pUserProfile, String pJwtToken, String pSalt) {
 
 		Document session = new Document();
 		session.append("email", pEmail);
 		session.append("user-profile", pUserProfile);
+		session.append("token", pJwtToken);
+		session.append("salt", pSalt);
 		log.info("Creating Session...");
+		
 		try {
-			DataBaseUtil.save(session, "session");
+			
+			Document prevSession = new Document();
+			prevSession.append("email", pEmail);
+			ArrayList<Document> documents = DataBaseUtil.find(prevSession, "session");
 
+			if (documents.isEmpty()) {
+				DataBaseUtil.save(session, "session");
+			} else {
+				log.info("session alreadery exists for: " + pEmail);
+			}
+			
 		} catch (MongoWriteException e) {
 
 			if (e.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {

@@ -91,7 +91,7 @@ public class TestsUtil {
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
 		} else {
-			logger.info("user alreadery exists");
+			logger.info("user alreadery exists: " + pName);
 			collection.findOneAndDelete(user);
 			collection.insertOne(citizen.toDocument());
 		}
@@ -100,6 +100,37 @@ public class TestsUtil {
 
 	}
 
+	/** Create a mock session for a specific user
+	 * @param pEmail
+	 * @param pProfile
+	 * @param pToken
+	 * @param pSalt
+	 */
+	public void addSession(String pEmail, String pProfile, String pToken, String pSalt ) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("session");
+
+		Session session = new Session();
+		session.setEmail(pEmail);
+		session.setUserProfile(pProfile);
+		session.setToken(pToken);
+		session.setSalt(pSalt);
+		
+		Document prevSession = new Document();
+		prevSession.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(prevSession, "session");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(session.toDocument());
+		} else {
+			logger.info("session alreadery exists for: " + pEmail);
+			collection.findOneAndDelete(prevSession);
+			collection.insertOne(session.toDocument());
+		}
+
+	}
+	
 	/**
 	 * 
 	 */
