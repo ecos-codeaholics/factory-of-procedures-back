@@ -105,12 +105,10 @@ public class App {
 		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById,
-				GeneralUtil.json());
+		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById, GeneralUtil.json());
 
 		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedure/", CitizenServices::getProcedure,
-				GeneralUtil.json());
+		get(Routes.CITIZENS + "procedure/", CitizenServices::getProcedure, GeneralUtil.json());
 
 		/**
 		 * Routes Mayoralty
@@ -157,12 +155,10 @@ public class App {
 			if (accessControlRequestHeaders != null) {
 				response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
 			}
-
 			String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
 			if (accessControlRequestMethod != null) {
 				response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
 			}
-
 			return "OK";
 		});
 
@@ -202,5 +198,4 @@ public class App {
 			}
 		}
 	}
-
 }
