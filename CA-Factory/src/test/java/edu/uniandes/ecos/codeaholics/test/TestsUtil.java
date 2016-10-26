@@ -1084,7 +1084,7 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 		// History
 		ArrayList<History> histories = new ArrayList<History>();
-		histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 		procedureRequest.setHistories(histories);
 
 		procedureRequest.setStartDate(new Date("2016/07/14"));
@@ -1153,7 +1153,7 @@ public class TestsUtil {
 
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 				
 		procedureRequest.setStartDate(new Date("2016/07/14"));
@@ -1218,7 +1218,7 @@ public class TestsUtil {
 
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 				
 		procedureRequest.setStartDate(new Date("2016/07/21"));
@@ -1284,7 +1284,7 @@ public class TestsUtil {
 
 		// History
 		ArrayList<History> histories = new ArrayList<History>();
-		histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 		procedureRequest.setHistories(histories);
 
 		procedureRequest.setStartDate(new Date("2016/08/06"));
@@ -1348,7 +1348,7 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(null);
@@ -1411,7 +1411,7 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
@@ -1476,7 +1476,7 @@ public class TestsUtil {
 
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
@@ -1539,7 +1539,7 @@ public class TestsUtil {
 		activities.add(activity1);
 		// History
 				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
 				procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
