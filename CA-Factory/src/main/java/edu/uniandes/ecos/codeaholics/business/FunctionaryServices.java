@@ -153,14 +153,14 @@ public class FunctionaryServices {
 
 			newStatus = status.getStatus();
 
-			System.out.println("status: " + newStatus);
+			log.info("status: " + newStatus);
 
 			Document replaceValue = new Document("activities.$.status", newStatus);
 
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
 
 		} catch (Exception e) {
-			System.out.println("Problem writting : " + e.getMessage());
+			log.info("Problem writting : " + e.getMessage());
 		}
 
 		response = messager.getOkMessage(newStatus);

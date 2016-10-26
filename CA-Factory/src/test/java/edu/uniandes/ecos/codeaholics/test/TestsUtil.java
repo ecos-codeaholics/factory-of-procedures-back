@@ -1082,13 +1082,22 @@ public class TestsUtil {
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
+		// History
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(null);
 		procedureRequest.setStatus("En proceso");
 
 		logger.info("inserting new procedure request instance");
+		try {
 
-		collection.insertOne(procedureRequest.toDocument());
+			collection.insertOne(procedureRequest.toDocument());
+		} catch (Exception e) {
+			logger.info("addProcedureRequestUno " + e.getMessage());
+		}
 
 	}
 
@@ -1142,6 +1151,11 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
+				
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1202,6 +1216,11 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
+				
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1263,6 +1282,11 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
+		// History
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
 		procedureRequest.setStatus("En proceso");
@@ -1322,6 +1346,10 @@ public class TestsUtil {
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(null);
 		procedureRequest.setStatus("En proceso");
@@ -1381,6 +1409,10 @@ public class TestsUtil {
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1442,6 +1474,10 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1501,6 +1537,10 @@ public class TestsUtil {
 		activity1.setStatus("En curso");
 
 		activities.add(activity1);
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(1, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
@@ -1628,24 +1668,16 @@ public class TestsUtil {
 				tmpPath = value;
 				found = true;
 				/*
-				File directoryName = new File(value + "/junittest");
-				if (!directoryName.exists()) {
-					logger.info("creating directory: " + directoryName);
-					boolean result = false;
-					try {
-						directoryName.mkdir();
-						result = true;
-					} catch (SecurityException se) {
-						System.out.println(se.getLocalizedMessage());
-					}
-					if (result) {
-						tmpPath = directoryName.toString();
-						logger.info("LOCALTMP + /junittest created");
-					}
-				} else {
-					tmpPath = directoryName.toString();
-				}
-				*/
+				 * File directoryName = new File(value + "/junittest"); if
+				 * (!directoryName.exists()) {
+				 * logger.info("creating directory: " + directoryName); boolean
+				 * result = false; try { directoryName.mkdir(); result = true; }
+				 * catch (SecurityException se) {
+				 * System.out.println(se.getLocalizedMessage()); } if (result) {
+				 * tmpPath = directoryName.toString();
+				 * logger.info("LOCALTMP + /junittest created"); } } else {
+				 * tmpPath = directoryName.toString(); }
+				 */
 				break;
 			}
 		}

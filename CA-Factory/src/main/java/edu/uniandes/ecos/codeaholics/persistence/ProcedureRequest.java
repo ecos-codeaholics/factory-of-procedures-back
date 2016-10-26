@@ -26,7 +26,8 @@ public class ProcedureRequest {
 	public static final String STARTDATE = "startDate";
 	public static final String FINISHDATE = "finishDate";
 	public static final String STATUS = "status";
-
+	public static final String HISTORIES = "histories";
+	
 	@SerializedName("_id")
 	private String _id;
 	private String procedureClassName;
@@ -39,6 +40,7 @@ public class ProcedureRequest {
 	private Date finishDate;
 	private String status;
 	private ArrayList<Activity> activities;
+	private ArrayList<History> histories;
 
 	public String getId() {
 		return _id;
@@ -138,6 +140,23 @@ public class ProcedureRequest {
 		return activitiesDocs;
 	}
 
+	public ArrayList<History> getHistories() {
+		return histories;
+	}
+
+	public void setHistories(ArrayList<History> histories) {
+		this.histories = histories;
+	}
+	public ArrayList<Document> historiesDocuments(){
+		ArrayList<Document> historiesDoc = new ArrayList<Document>();
+		if (!this.histories.isEmpty()) {
+			for (int i = 0; i < this.histories.size(); i++) {
+				historiesDoc.add(this.histories.get(i).toDocument());
+			}
+		}
+		return historiesDoc;
+	}
+
 	public Document toDocument() {
 		Document procedureRequest = new Document();
 		procedureRequest.append(CLASSNAME, this.getProcedureClassName());
@@ -150,7 +169,8 @@ public class ProcedureRequest {
 		procedureRequest.append(STARTDATE, this.getStartDate());
 		procedureRequest.append(FINISHDATE, this.getFinishDate());
 		procedureRequest.append(STATUS, this.getStatus());
-
+		procedureRequest.append(HISTORIES, this.historiesDocuments());
+		
 		return procedureRequest;
 	}
 
