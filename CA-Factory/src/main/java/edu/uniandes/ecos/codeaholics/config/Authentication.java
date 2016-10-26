@@ -33,14 +33,14 @@ public final class Authentication implements IAuthenticationSvc {
 		ArrayList<Document> documents = DataBaseUtil.find(user, pProfile);
 
 		if (documents.isEmpty()) {
-			log.info("User Doesn't Exist");
-			throw new WrongUserOrPasswordException("User Doesn't Exist", "101");
+			log.info("Usuario no existe");
+			throw new WrongUserOrPasswordException("Usuario no existe", "101");
 		} else {
 			user.append("userProfile", pProfile);
 			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
 			if (documents2.isEmpty()) {
-				log.info("Wrong User Profile or not found");
-				throw new WrongUserOrPasswordException("Wrong User Profile or not found", "102");
+				log.info("Perfil erroneo o no encontrado");
+				throw new WrongUserOrPasswordException("Perfil erroneo o no encontrado", "102");
 			} else {
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
@@ -60,8 +60,8 @@ public final class Authentication implements IAuthenticationSvc {
 				} else {
 					responseObj = "{}";
 					authenticated = false;
-					log.info("Wrong password");
-					throw new WrongUserOrPasswordException("Wrong password", "103");
+					log.info("Clave equivocada");
+					throw new WrongUserOrPasswordException("Clave equivocada", "103");
 				}
 			}
 		}

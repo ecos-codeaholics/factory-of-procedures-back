@@ -6,6 +6,8 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -27,16 +29,18 @@ import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUse
  */
 public class AuthenticationTest {
 
+	Logger logger = LogManager.getLogger(AuthenticationTest.class);
+	
 	@Test
 	public void simpleAuthenticationTest() {
 		
 		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "QWERTY");
+		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "12345678");
 		
 		Authentication auth = new Authentication();
 				
 		try {
-			assertTrue(auth.doAuthentication("aosorio@uniandes", "QWERTY", "citizen"));
+			assertTrue(auth.doAuthentication("aosorio@uniandes", "12345678", "citizen"));
 		} catch (WrongUserOrPasswordException e) {		
 			e.printStackTrace();
 		}

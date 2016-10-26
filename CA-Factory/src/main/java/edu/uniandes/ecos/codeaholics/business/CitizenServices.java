@@ -2,176 +2,55 @@ package edu.uniandes.ecos.codeaholics.business;
 
 //import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-//import javax.management.relation.RelationServiceNotRegisteredException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-//import com.google.gson.reflect.TypeToken;
-
-import com.mongodb.MongoClientException;
-import com.mongodb.MongoWriteException;
-
 import edu.uniandes.ecos.codeaholics.config.Authentication;
-import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
-import edu.uniandes.ecos.codeaholics.config.ChangePwdModelHelper;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
-import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
-import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 //import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
-import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
-import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import spark.Request;
 import spark.Response;
 
 public class CitizenServices {
 
-	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-
-	private static IAuthenticationSvc authenticate = null;
-
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
-	
-	private final static Logger log = LogManager.getLogger(CitizenServices.class);
-
-
-	private static String authenticationMethod = "JWT"; //... JWT, Simple
-
-	
 	private static String USER_PROFILE = "citizen";
 
+	private static String PROCEDURESREQUEST = "proceduresRequest";
+
+	private static String PROCEDURES = "procedures";
+
 	/***
-	 * Verifica las credenciales del ususario y crea la sesion.
+	 * Obtiene el modelo del tramite para ser iniciado.
 	 * 
 	 * @param pRequest
 	 *            request
 	 * @param pResponse
 	 *            response
-	 * @return sesion creada en el sistema
+	 * @return lista con json del modelo del tramite
 	 */
-	public static Object doLogin(Request pRequest, Response pResponse) {
+	public static Object getProcedure(Request pRequest, Response pResponse) {
 
-		Object response = null;
+		List<Document> dataset = new ArrayList<>();
 
-		
-		
-		try {
-
-			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
-
-			if (authenticationMethod.equals("JWT")) {
-				authenticate = new AuthenticationJWT();
-			} else {
-				authenticate = new Authentication();
-			}
-
-			boolean authenticated = authenticate.doAuthentication(data.getEmail(), data.getPassword(), "citizen");
-			if (authenticated) {
-
-				if (authenticationMethod.equals("JWT")) {
-					// 1. process header Autorization : Bearer <token>
-					StringBuilder bStr = new StringBuilder();
-					//bStr.append("Bearer");
-					//bStr.append(" ");
-					bStr.append((String) authenticate.getAnswer());
-					pResponse.header("access-control-expose-headers", "Authorization");
-					pResponse.header("Authorization", bStr.toString());
-					response = messager.getOkMessage("Successful login");
-				} else {
-					response = authenticate.getAnswer();
-				}
-			}
-
-		} catch (WrongUserOrPasswordException e) {
-			pResponse.status(401);
-			response = messager.getNotOkMessage(e.getMessage());
-
-		} catch (JsonSyntaxException e) {
-			pResponse.status(400);
-			response = messager.getNotOkMessage(e.getMessage());
+		Document procedureFilter = new Document();
+		procedureFilter.append("slug", pRequest.queryParams("procedure"));
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		for (Document item : documents) {
+			dataset.add(item);
 		}
-
 		pResponse.type("application/json");
-		return response;
-
-	}
-
-	/***
-	 * Agrega un ciudadano a la base de datos.
-	 * 
-	 * @param pRequest
-	 *            request
-	 * @param pResponse
-	 *            response
-	 * @return mensaje de proceso exitoso
-	 */
-	public static Object insertCitizen(Request pRequest, Response pResponse) {
-
-		Object response = null;
-
-		try {
-
-			Citizen citizen = GSON.fromJson(pRequest.body(), Citizen.class);
-			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
-			citizen.setPassword(hash[1]);
-			citizen.setSalt(hash[0]);
-			citizen.setUserProfile(USER_PROFILE);
-			DataBaseUtil.save(citizen.toDocument(), USER_PROFILE);
-
-			// create array list to send as a parameter to the EmailNotifierSvc
-			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(citizen.getEmail());
-
-			// TODO: replace with new service -
-			// EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
-			// Notification.sendEmail(citizen.getEmail());
-			// Send Email
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
-
-			response = messager.getOkMessage("Successful registration");
-
-		} catch (JsonSyntaxException e) {
-			pResponse.status(400);
-			response = messager.getNotOkMessage(e.getMessage());
-		} catch (AddressException e) {
-			response = messager.getNotOkMessage(e.getMessage()); // change
-																	// message
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			response = messager.getNotOkMessage(e.getMessage()); // change
-																	// message
-			e.printStackTrace();
-		}
-
-		// HEAD
-		// res.status(200);
-		pResponse.type("application/json");
-		// return "success";
-
-		pRequest.body();
-		return response;
-
+		return dataset;
 	}
 
 	/***
@@ -203,10 +82,6 @@ public class CitizenServices {
 
 		}
 
-		//Type type = new TypeToken<List<Document>>() {
-		//}.getType();
-		// String json = GSON.toJson(dataset, type);
-
 		pResponse.type("application/json");
 		return dataset;
 	}
@@ -228,6 +103,7 @@ public class CitizenServices {
 
 		Document filter = new Document();
 		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
+		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
@@ -237,8 +113,8 @@ public class CitizenServices {
 			dataset.add(item);
 		}
 
-		//Type type = new TypeToken<List<Document>>() {
-		//}.getType();
+		// Type type = new TypeToken<List<Document>>() {
+		// }.getType();
 		// String json = GSON.toJson(dataset, type);
 
 		pResponse.type("application/json");
@@ -259,13 +135,14 @@ public class CitizenServices {
 		Object response = null;
 
 		try {
-
-			String email = pRequest.params("email");
-			System.out.println(email);
-			Authentication.closeSession(email);
-
-			response = messager.getOkMessage("Success");
-
+			String email = pRequest.queryParams("email");
+			if (email != null) {
+				Authentication.closeSession(email);
+				response = messager.getOkMessage("Proceso Exitoso");
+			} else {
+				pResponse.status(417);
+				response = messager.getNotOkMessage("El correo es necesario");
+			}
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
@@ -288,10 +165,10 @@ public class CitizenServices {
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
 		// HEAD
-		// return "success method startProcedure";
+		// return "Proceso Exitoso method startProcedure";
 
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 
 	}
@@ -307,9 +184,51 @@ public class CitizenServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
-		Object response;
-		response = messager.getOkMessage("Success");
-		return response;
+		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
+
+		System.out.println("param of the request is: " + pRequest.queryParams("email"));
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		// ArrayList<Document> documents =
+		// DataBaseUtil.getAll(PROCEDURESREQUEST);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+
+		// ayuda para probar el servicio
+		if (documents.isEmpty()) {
+			Document procedure1 = new Document();
+			procedure1.put("id", 1);
+			procedure1.put("name", "sebas");
+			procedure1.put("department", "Caldas");
+			procedure1.put("city", "Palestina");
+			procedure1.put("status", "Finalizado");
+			dataset.add(procedure1);
+			System.out.println(dataset);
+			Document procedure2 = new Document();
+			procedure2.put("id", 2);
+			procedure2.put("name", "Jeison");
+			procedure2.put("department", "Cundinamarca");
+			procedure2.put("city", "Bogota");
+			procedure2.put("status", "En proceso");
+			dataset.add(procedure2);
+
+			System.out.println(dataset);
+		}
+
+		// pResponse.type("application/json");
+		return dataset;
 	}
 
 	/***
@@ -323,9 +242,29 @@ public class CitizenServices {
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		Object response;
-		response = messager.getOkMessage("Success");
-		return response;
+		System.out.println(pRequest.params(":id"));
+		System.out.println("param of the query request is: " + pRequest.queryParams("email"));
+		System.out.println(pRequest.uri());
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		for (Document item : documents) {
+			item.remove("dependencies");
+			item.remove("procedures");
+			item.remove("address");
+			item.remove("url");
+			item.remove("phone");
+			item.remove("state");
+			item.remove("schedule");
+			dataset.add(item);
+		}
+
+		// pResponse.type("application/json");
+		return dataset;
 	}
 
 	/***
@@ -339,7 +278,7 @@ public class CitizenServices {
 	 */
 	public static Object consultProceduresByDate(Request pRequest, Response pResponse) {
 		Object response;
-		response = messager.getOkMessage("Success");
+		response = messager.getOkMessage("Proceso Exitoso");
 		return response;
 	}
 
@@ -357,194 +296,13 @@ public class CitizenServices {
 		try {
 
 			fileManager.uploadDocument(pRequest);
-
-			response = messager.getOkMessage("Success");
+			response = messager.getOkMessage("Proceso Exitoso");
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
 			response = messager.getNotOkMessage(e.getMessage());
 		}
 
-		return response;
-
-	}
-
-	/**
-	 * ENvia un nuevo password aleatorio al email del usuario
-	 * 
-	 * @param pRequest
-	 *            Request
-	 * @param pResponse
-	 * 				Response
-	 * @return	json object con la informacion de exito o falla del mensaje
-	 * @throws WrongUserOrPasswordException 
-	 */
-
-	public static Object resetPassword (Request pRequest, Response pResponse) throws WrongUserOrPasswordException {
-
-		Object response = null;
-
-		try {
-			Citizen data = GSON.fromJson(pRequest.body(), Citizen.class);
-			System.out.println(data.getEmail() + " " + data.getIdentification());
-
-			Document filter = new Document();
-			filter.append("identification", data.getIdentification());
-			filter.append("email", data.getEmail());
-			
-			ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
-			
-			//TODO throw an exception about that email and identification doesn't correspond to a registered user			
-			if (documents.isEmpty()){//throw exception
-				log.info("Identification or Email wrong");
-				throw new WrongUserOrPasswordException("Identification or Email wrong", "400");	
-				}
-			
-			//Create randomize password
-			String newPassword = GeneralUtil.randomPassword();
-
-			System.out.println(newPassword);
-			// create hash
-			String newSalt = null;
-			String[] hash = GeneralUtil.getHash(newPassword, "");
-			String newPasswordHashed = hash[1];
-			newSalt = hash[0];
-
-
-			// send value to change
-			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
-			valuesToReplace.put("password", newPasswordHashed);
-			valuesToReplace.put("salt", newSalt);
-
-			// send salt and password to the register in the DB
-			Document register = new Document(valuesToReplace);
-
-			DataBaseUtil.update(filter, register, USER_PROFILE);
-
-			// create array list to ssend as a parameter to the EmailNotifierSvc
-
-			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(data.getEmail());
-			parametersEmail.add(newPassword);
-
-			// Send Email
-			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
-
-			sendPassword.send(EmailType.CHANGE, parametersEmail);
-			
-			response = messager.getOkMessage("Success");
-
-						
-		} 
-		
-		catch (WrongUserOrPasswordException e) {
-			pResponse.status(400);
-			response = messager.getNotOkMessage(e.getMessage());
-		}
-		
-		catch (MongoClientException M) {
-			// TODO: handle exception
-			System.out.println("Success");
-		} catch (MongoWriteException M) {
-			// TODO: handle exception
-			System.out.println("Mongo Exception");
-
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return response;
-
-	} 
-	
-	
-	public static Object changePassword (Request pRequest, Response pResponse) throws WrongUserOrPasswordException, AddressException, MessagingException {
-		
-		// Atributos
-		
-		Object response = null;
-		
-		try {
-			ChangePwdModelHelper data = GSON.fromJson(pRequest.body(), ChangePwdModelHelper.class);
-			
-			Integer identification = Integer.parseInt(pRequest.params("identification"));
-			String password = data.getPassword();
-			String newPassword = data.getNewpassword();
-			String newPasswordHashed = "";
-			String savedPassword ="";
-			String savedSalt= "";
-			String passwordHashed = "";
-			String newSalt = "";
-			
-			Document filter =  new Document();
-			filter.append("identification", identification);
-						
-			ArrayList<Document> documents = DataBaseUtil.find(filter, "citizen");
-			if (documents.isEmpty()){
-				log.info("User Doesn�t Exists");
-				throw new WrongUserOrPasswordException("User Doesn�t Exists", "400");				
-			}
-			
-			savedPassword = documents.get(0).getString("password");
-			savedSalt = documents.get(0).getString("salt");
-			
-			//create hashed password to validate with the password saved in the DB
-			
-			String[] hash = GeneralUtil.getHash(password, savedSalt);
-			passwordHashed = hash[1];
-
-			if (!passwordHashed.equals(savedPassword)){
-				log.info("Wrong Password");
-				throw new WrongUserOrPasswordException("Wrong Password", "400");
-			}
-			
-			//create hashed NEW password and salt
-			hash = GeneralUtil.getHash(newPassword, "");
-			newPasswordHashed = hash[1];
-			newSalt = hash[0];
-			
-			//organize value to change
-			Map<String, Object> valuesToReplace = new HashMap<String, Object>();
-			valuesToReplace.put("password", newPasswordHashed);
-			valuesToReplace.put("salt", newSalt);
-			
-			//send salt and password to the register in the DB
-			Document register = new Document(valuesToReplace);
-			DataBaseUtil.update(filter, register, "citizen");
-			
-			//create array list to send as a parameter to the EmailNotifierSvc
-			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(documents.get(0).getString("email"));
-			parametersEmail.add(newPassword);
-			
-			//Send Email
-			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
-			sendPassword.send(EmailType.CHANGE, parametersEmail);
-			
-			response = messager.getOkMessage("Success");
-			
-		} 
-		catch (WrongUserOrPasswordException e) {
-			pResponse.status(400);
-			response = messager.getNotOkMessage(e.getMessage());
-		}
-		
-		catch (MongoClientException M) {
-			// TODO: handle exception
-			System.out.println("Success");
-		}
-		catch (MongoWriteException M) {
-			// TODO: handle exception
-			System.out.println("Mongo Exception");
-		}
-
-		
-		
-		pResponse.type("application/json");
 		return response;
 
 	}

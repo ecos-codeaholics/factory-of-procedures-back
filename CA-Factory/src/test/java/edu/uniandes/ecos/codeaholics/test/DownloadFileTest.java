@@ -1,7 +1,6 @@
 package edu.uniandes.ecos.codeaholics.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static spark.Spark.get;
 
 import java.io.BufferedReader;
@@ -27,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
@@ -35,8 +35,9 @@ public class DownloadFileTest {
 	Logger logger = LogManager.getLogger(DownloadFileTest.class);
 	String filePath = "";
 
-	private static String DOC_LIST_ROUTE = "/citizens/documents/list";
-	private static String DOC_DOWNLOAD_ROUTE = "/citizens/documents/download";
+	private static String DOC_LIST_ROUTE = Routes.AUTH + "/citizens/documents/list";
+	private static String DOC_DOWNLOAD_ROUTE = Routes.AUTH + "/citizens/documents/download";
+		
 	private static final int BUFFER_SIZE = 4096;
 
 	private class DocumentPath {
@@ -77,8 +78,11 @@ public class DownloadFileTest {
 		String tmpFilePath = "";
 
 		try {
-			tmpFilePath = TestsUtil.getTmpDir() + "/" + tmpFile;
+			String tmpDirectory = TestsUtil.getTmpDir();
+			logger.info("listTest> Temporary directory is: " + tmpDirectory);
+			tmpFilePath = tmpDirectory + "/" + tmpFile;		
 		} catch (Exception e1) {
+			logger.info("Tmp dir not defined!");
 			tmpFilePath = tmpFile;
 			e1.printStackTrace();
 		}
@@ -155,13 +159,18 @@ public class DownloadFileTest {
 		String saveDir = "";
 
 		try {
-			tmpFilePath = TestsUtil.getTmpDir() + File.separator + tmpFile;
-			saveDir = TestsUtil.getTmpDir() + File.separator + "downloads";
+			String tmpDirectory = TestsUtil.getTmpDir();
+			logger.info("downloadTest> Temporary directory is: " + tmpDirectory);
+			tmpFilePath = tmpDirectory + File.separator + tmpFile;
+			saveDir = TestsUtil.getTmpDir() + File.separator + "downloads";		
 			TestsUtil.checkDir(saveDir);
-
+			logger.info("downloadTest> will save files under: " + saveDir);
+			
 		} catch (Exception e1) {
 			tmpFilePath = tmpFile;
+			logger.info("downloadTest> Problem setting the working directory " + e1.getMessage());
 			e1.printStackTrace();
+			//fail();
 		}
 
 		TestsUtil.createTestFile(tmpFilePath);
@@ -231,7 +240,7 @@ public class DownloadFileTest {
 				logger.info("No file to download. Server replied HTTP code: " + httpResult);
 			}
 		} catch (IOException e) {
-
+			logger.info("downloadTest> fails " + e.getLocalizedMessage());
 			e.printStackTrace();
 		}
 

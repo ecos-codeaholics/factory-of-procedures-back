@@ -1,7 +1,3 @@
-/** Copyright or License
- *
- */
-
 package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
@@ -14,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
@@ -27,7 +24,7 @@ import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
-public class LoginTest {
+public class LoginFunctionaryTest {
 
 	Logger logger = LogManager.getRootLogger();
 
@@ -40,13 +37,17 @@ public class LoginTest {
 	public static void afterClass() {
 		Spark.stop();
 	}
-
+	
 	@Test
-	public void loginTest() {
+	public void loginFunctionaryTest() {
+		
 		logger.info("Running loging test");
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Jean", "Valjean", "jvaljean@uniandes", "12345678");
+		
+		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima", "12345678");
+		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima", "12345678");
+		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal", "12345678");
+		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal", "12345678");
 
 		int httpResult = 0;
 		String httpMessage = "";
@@ -71,7 +72,7 @@ public class LoginTest {
 			urlConnection.setRequestProperty("Content-type", "application/json");
 			urlConnection.setRequestMethod("POST");
 
-			String loginData = "{email : \"jvaljean@uniandes\", password : \"12345678\" , userProfile : \"citizen\"}";
+			String loginData = "{email : \"jvaldez@elrosal\", password : \"12345678\" , userProfile : \"functionary\"}";
 
 			Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
 			writer.write(loginData);
@@ -108,5 +109,6 @@ public class LoginTest {
 		}
 
 	}
+	
 
 }

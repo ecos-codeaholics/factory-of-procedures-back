@@ -4,6 +4,17 @@
 
 package edu.uniandes.ecos.codeaholics.test;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.main.App;
+import edu.uniandes.ecos.codeaholics.persistence.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,21 +24,13 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
-import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
-import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-import edu.uniandes.ecos.codeaholics.main.App;
-import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+//import edu.uniandes.ecos.codeaholics.persistence.Dependency;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
+//import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
+//import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
@@ -47,7 +50,7 @@ public class TestsUtil {
 
 	static Logger logger = LogManager.getRootLogger();
 
-	private String citizenSalt;
+	private static String citizenSalt;
 
 	/**
 	 * @return the citizenSalt
@@ -88,12 +91,1476 @@ public class TestsUtil {
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
 		} else {
+			logger.info("user alreadery exists: " + pName);
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+
+	}
+
+	/** Create a mock session for a specific user
+	 * @param pEmail
+	 * @param pProfile
+	 * @param pToken
+	 * @param pSalt
+	 */
+	public void addSession(String pEmail, String pProfile, String pToken, String pSalt ) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("session");
+
+		Session session = new Session();
+		session.setEmail(pEmail);
+		session.setUserProfile(pProfile);
+		session.setToken(pToken);
+		session.setSalt(pSalt);
+		
+		Document prevSession = new Document();
+		prevSession.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(prevSession, "session");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(session.toDocument());
+		} else {
+			logger.info("session alreadery exists for: " + pEmail);
+			collection.findOneAndDelete(prevSession);
+			collection.insertOne(session.toDocument());
+		}
+
+	}
+	
+	/**
+	 * 
+	 */
+	public static void clearAllCollections() {
+
+		logger.info("clearing all existing collections in the default DB");
+
+		ArrayList<String> collections = new ArrayList<String>();
+		collections.add("citizen");
+		collections.add("functionary");
+		collections.add("mayoralty");
+		collections.add("procedures");
+		collections.add("proceduresRequest");
+		collections.add("session");
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection;
+
+		Iterator<String> itrColl = collections.iterator();
+
+		while (itrColl.hasNext()) {
+			String collectionName = itrColl.next();
+			collection = dbOne.getCollection(collectionName);
+			collection.drop();
+			logger.info("Collection " + collectionName + " dropped");
+		}
+
+		/*
+		 * collection = dbOne.getCollection("functionary"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("mayoralty"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("procedures"); collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("proceduresRequest");
+		 * collection.drop();
+		 * 
+		 * collection = dbOne.getCollection("session"); collection.drop();
+		 */
+
+	}
+
+	// add citizen
+	public static void addCitizenUno() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("andres@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "andres@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
 			logger.info("user alreadery exists");
 			collection.findOneAndDelete(user);
 			collection.insertOne(citizen.toDocument());
 		}
 
 		citizenSalt = hash[0];
+
+	}
+
+	// add citizen
+	public static void addCitizenDos() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("fabian@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "fabian@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+
+	}
+
+	// add citizen
+	public static void addCitizenTres() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("jheison@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "jheison@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// add citizen
+	public static void addCitizenCuatro() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("david@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "david@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	public static void addCitizenCinco() {
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Sebastian");
+		citizen.setLastName1("Cardona");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("sebastian@uniandes");
+		citizen.setPassword("12345678");
+		citizen.setUserProfile("citizen");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", "sebastian@uniandes");
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// add Alcaldia uno
+	public static void addMayoraltyUno() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+
+		Dependency dependencyUno = new Dependency();
+		dependencyUno.setName("Hacienda");
+
+		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
+		Functionary funcionarioUno = new Functionary();
+
+		funcionarioUno.setEmail("jvaldez@anapoima");
+		funcionaryUno.add(funcionarioUno);
+		dependencyUno.setFunctionaries(funcionaryUno);
+
+		Dependency dependencyDos = new Dependency();
+		dependencyDos.setName("Atencion al Ciudadano");
+
+		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
+		Functionary funcionarioDos = new Functionary();
+
+		funcionarioDos.setEmail("acalle@anapoima");
+		funcionaryDos.add(funcionarioDos);
+		dependencyDos.setFunctionaries(funcionaryDos);
+
+		ArrayList<Dependency> dependencies = new ArrayList<>();
+
+		dependencies.add(dependencyUno);
+		dependencies.add(dependencyDos);
+
+		mayoralty.setDependencies(dependencies);
+
+		ArrayList<String> procedures = new ArrayList<>();
+		procedures.add("Certificado de residencia");
+		procedures.add("Auxilio para Gastos Sepelio");
+
+		mayoralty.setProcedures(procedures);
+
+		collection.insertOne(mayoralty.toDocument());
+
+	}
+
+	// add Alcaldia dos
+	public static void addMayoraltyDos() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("El Rosal");
+		mayoralty.setAddress("CRA 456 78 1");
+		mayoralty.setUrl("https://elrosal.gov.co");
+		mayoralty.setPhone("99977766");
+
+		Dependency dependencyUno = new Dependency();
+		dependencyUno.setName("Hacienda");
+
+		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
+		Functionary funcionarioUno = new Functionary();
+
+		funcionarioUno.setEmail("jvaldez@elrosal");
+		funcionaryUno.add(funcionarioUno);
+		dependencyUno.setFunctionaries(funcionaryUno);
+
+		Dependency dependencyDos = new Dependency();
+		dependencyDos.setName("Atencion al Ciudadano");
+
+		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
+		Functionary funcionarioDos = new Functionary();
+
+		funcionarioDos.setEmail("acalle@elrosal");
+		funcionaryDos.add(funcionarioDos);
+		dependencyDos.setFunctionaries(funcionaryDos);
+
+		ArrayList<Dependency> dependencies = new ArrayList<>();
+
+		dependencies.add(dependencyUno);
+		dependencies.add(dependencyDos);
+
+		mayoralty.setDependencies(dependencies);
+
+		ArrayList<String> procedures = new ArrayList<>();
+		procedures.add("Auxilio para Gastos Sepelio");
+		procedures.add("Certificado de estratificacion");
+
+		mayoralty.setProcedures(procedures);
+
+		collection.insertOne(mayoralty.toDocument());
+
+	}
+
+	/**
+	 * @param pName
+	 * @param pLastName1
+	 * @param pEmail
+	 * @param pPwd
+	 */
+
+	// funcionario1
+	public static void addFunctionaryUno(String pName, String pLastName1, String pEmail, String pPwd) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collectionC = dbOne.getCollection("citizen");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+
+		citizen.setMayoralty("Anapoima");
+		citizen.setDependency("Hacienda");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		collectionC.insertOne(citizen.toDocument());
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// funcionario2
+	public static void addFunctionaryDos(String pName, String pLastName1, String pEmail, String pPwd) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+
+		citizen.setMayoralty("Anapoima");
+		citizen.setDependency("Atencion al Ciudadano");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// funcionario2
+	public static void addFunctionaryTres(String pName, String pLastName1, String pEmail, String pPwd) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("El Rosal");
+		mayoralty.setAddress("CRA 456 78 1");
+		mayoralty.setUrl("https://elrosal.gov.co");
+		mayoralty.setPhone("99977766");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+
+		citizen.setMayoralty("El Rosal");
+		citizen.setDependency("Hacienda");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// funcionario4
+	public static void addFunctionaryCuatro(String pName, String pLastName1, String pEmail, String pPwd) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("El Rosal");
+		mayoralty.setAddress("CRA 456 78 1");
+		mayoralty.setUrl("https://elrosal.gov.co");
+		mayoralty.setPhone("99977766");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile("functionary");
+
+		citizen.setMayoralty("El Rosal");
+		citizen.setDependency("Atencion al Ciudadano");
+		;
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+
+		citizenSalt = hash[0];
+	}
+
+	// Procedure1
+	public static void addProcedureUno(String pName) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+
+		// ArrayList<Functionary> listOfFunctionaries = new
+		// ArrayList<Functionary>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+
+		Procedure procedure = new Procedure();
+		procedure.setName(pName);
+
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+
+		procedure.setActivities(activities);
+
+		// Required
+		RequiredUpload reqDoc1 = new RequiredUpload();
+
+		reqDoc1.setType("file");
+		reqDoc1.setRequired(true);
+		reqDoc1.setClassName("form-control");
+
+		reqDoc1.setLabel("Cedula de Ciudadania");
+		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setName("cedulaAtt");
+
+		reqDocs.add(reqDoc1);
+
+		RequiredUpload reqDoc2 = new RequiredUpload();
+
+		reqDoc2.setType("file");
+		reqDoc2.setRequired(true);
+		reqDoc2.setClassName("form-control");
+
+		reqDoc2.setLabel("Recibo");
+		reqDoc2.setDescription("Adjunte su recibo en formato (png, jpeg)");
+		reqDoc2.setName("reciboAtt");
+
+		reqDocs.add(reqDoc2);
+
+		procedure.setRequired(reqDocs);
+
+		// Form
+
+		FormField field1 = new FormField();
+
+		field1.setType("text");
+		field1.setSubtype("tel");
+		field1.setRequired(true);
+		field1.setLabel("identificacion");
+		field1.setDescription("numero de documento de identidad");
+		field1.setPlaceHolder("123456789");
+		field1.setClassname("form-control");
+		field1.setName("identification");
+		field1.setMaxlenght(11);
+
+		formFields.add(field1);
+
+		FormField field2 = new FormField();
+
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("direccion");
+		field2.setDescription("direccion de residencia");
+		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
+
+		formFields.add(field2);
+
+		FormField field3 = new FormField();
+
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("barrio");
+		field3.setDescription("barrio");
+		field3.setPlaceHolder("barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
+
+		formFields.add(field3);
+
+		FormField field4 = new FormField();
+
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("telefono");
+		field4.setDescription("numero telefonico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
+
+		formFields.add(field4);
+
+		FormField field5 = new FormField();
+
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de Solicitud");
+		field5.setDescription("Carta de Solicitud");
+		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
+
+		formFields.add(field5);
+
+		procedure.setFields(formFields);
+
+		logger.info("inserting new procedure instance");
+
+		System.out.println(procedure.getFields());
+		collection.insertOne(procedure.toDocument());
+
+	}
+
+	// Procedure2
+	public static void addProcedureDos(String pName) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+
+		// ArrayList<Functionary> listOfFunctionaries = new
+		// ArrayList<Functionary>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+
+		Procedure procedure = new Procedure();
+		procedure.setName(pName);
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Atencion al ciudadano");
+		activity1.setFunctionary("acalle@anapoima");
+		activity1.setStatus("Finalizado");
+
+		activities.add(activity1);
+
+		procedure.setActivities(activities);
+
+		// Required
+		RequiredUpload reqDoc1 = new RequiredUpload();
+
+		reqDoc1.setType("file");
+		reqDoc1.setRequired(true);
+		reqDoc1.setClassName("form-control");
+
+		reqDoc1.setLabel("Cedula de Ciudadania");
+		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setName("cedulaAtt");
+
+		reqDocs.add(reqDoc1);
+
+		RequiredUpload reqDoc2 = new RequiredUpload();
+
+		reqDoc2.setType("file");
+		reqDoc2.setRequired(true);
+		reqDoc2.setClassName("form-control");
+
+		reqDoc2.setLabel("Certificado Sisben");
+		reqDoc2.setDescription("Adjunte su recibo en formato (png, jpeg)");
+		reqDoc2.setName("sisbenAtt");
+
+		reqDocs.add(reqDoc2);
+
+		RequiredUpload reqDoc3 = new RequiredUpload();
+
+		reqDoc3.setType("file");
+		reqDoc3.setRequired(true);
+		reqDoc3.setClassName("form-control");
+
+		reqDoc3.setLabel("Certificado Presidente de la junta");
+		reqDoc3.setDescription("Adjunte su recibo en formato (png, jpeg)");
+		reqDoc3.setName("juntaAtt");
+
+		reqDocs.add(reqDoc3);
+
+		procedure.setRequired(reqDocs);
+
+		// Form
+
+		FormField field1 = new FormField();
+
+		field1.setType("text");
+		field1.setSubtype("tel");
+		field1.setRequired(true);
+		field1.setLabel("identificacion");
+		field1.setDescription("numero de documento de identidad");
+		field1.setPlaceHolder("123456789");
+		field1.setClassname("form-control");
+		field1.setName("identification");
+		field1.setMaxlenght(11);
+
+		formFields.add(field1);
+
+		FormField field2 = new FormField();
+
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("direccion");
+		field2.setDescription("direccion de residencia");
+		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
+
+		formFields.add(field2);
+
+		FormField field3 = new FormField();
+
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("barrio");
+		field3.setDescription("barrio");
+		field3.setPlaceHolder("barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
+
+		formFields.add(field3);
+
+		FormField field4 = new FormField();
+
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("telefono");
+		field4.setDescription("numero telefonico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
+
+		formFields.add(field4);
+
+		FormField field5 = new FormField();
+
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de Solicitud");
+		field5.setDescription("Carta de Solicitud");
+		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
+
+		formFields.add(field5);
+
+		procedure.setFields(formFields);
+
+		logger.info("inserting new procedure instance");
+
+		System.out.println(procedure.getFields());
+		collection.insertOne(procedure.toDocument());
+
+	}
+
+	// Procedure3
+	public static void addProcedureTres(String pName) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+
+		// ArrayList<Functionary> listOfFunctionaries = new
+		// ArrayList<Functionary>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+
+		Procedure procedure = new Procedure();
+		procedure.setName(pName);
+
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+
+		procedure.setActivities(activities);
+
+		// Required
+		RequiredUpload reqDoc1 = new RequiredUpload();
+
+		reqDoc1.setType("file");
+		reqDoc1.setRequired(true);
+		reqDoc1.setClassName("form-control");
+
+		reqDoc1.setLabel("Cedula de Ciudadania del solicitante");
+		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setName("cedulaAtt");
+
+		reqDocs.add(reqDoc1);
+
+		RequiredUpload reqDoc2 = new RequiredUpload();
+
+		reqDoc2.setType("file");
+		reqDoc2.setRequired(true);
+		reqDoc2.setClassName("form-control");
+
+		reqDoc2.setLabel("Comprobante de Pago");
+		reqDoc2.setDescription("Adjunte su comprobante (png, jpeg)");
+		reqDoc2.setName("facturaAtt");
+
+		reqDocs.add(reqDoc2);
+
+		RequiredUpload reqDoc3 = new RequiredUpload();
+
+		reqDoc3.setType("file");
+		reqDoc3.setRequired(true);
+		reqDoc3.setClassName("form-control");
+
+		reqDoc3.setLabel("Cedula del fallecido");
+		reqDoc3.setDescription("Adjunte la cedula del fallecido (png, jpeg)");
+		reqDoc3.setName("cedulaFallecidoAtt");
+
+		reqDocs.add(reqDoc3);
+
+		RequiredUpload reqDoc4 = new RequiredUpload();
+
+		reqDoc4.setType("file");
+		reqDoc4.setRequired(true);
+		reqDoc4.setClassName("form-control");
+
+		reqDoc4.setLabel("Certificado de defuncion");
+		reqDoc4.setDescription("Adjunte el certificado de defuncion (png, jpeg)");
+		reqDoc4.setName("defuncionAtt");
+
+		reqDocs.add(reqDoc4);
+
+		RequiredUpload reqDoc5 = new RequiredUpload();
+
+		reqDoc5.setType("file");
+		reqDoc5.setRequired(true);
+		reqDoc5.setClassName("form-control");
+
+		reqDoc5.setLabel("Certificado de cuenta bancaria");
+		reqDoc5.setDescription("Adjunte el certificado de la cuenta bancaria (png, jpeg)");
+		reqDoc5.setName("cuentaAtt");
+
+		reqDocs.add(reqDoc5);
+
+		procedure.setRequired(reqDocs);
+
+		// Form
+
+		FormField field1 = new FormField();
+
+		field1.setType("text");
+		field1.setSubtype("tel");
+		field1.setRequired(true);
+		field1.setLabel("identificacion");
+		field1.setDescription("numero de documento de identidad");
+		field1.setPlaceHolder("123456789");
+		field1.setClassname("form-control");
+		field1.setName("identification");
+		field1.setMaxlenght(11);
+
+		formFields.add(field1);
+
+		FormField field2 = new FormField();
+
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("direccion");
+		field2.setDescription("direccion de residencia");
+		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
+
+		formFields.add(field2);
+
+		FormField field3 = new FormField();
+
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("barrio");
+		field3.setDescription("barrio");
+		field3.setPlaceHolder("barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
+
+		formFields.add(field3);
+
+		FormField field4 = new FormField();
+
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("telefono");
+		field4.setDescription("numero telefonico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
+
+		formFields.add(field4);
+
+		FormField field5 = new FormField();
+
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de Solicitud");
+		field5.setDescription("Carta de Solicitud");
+		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
+
+		formFields.add(field5);
+
+		procedure.setFields(formFields);
+
+		logger.info("inserting new procedure instance");
+
+		System.out.println(procedure.getFields());
+		collection.insertOne(procedure.toDocument());
+
+	}
+
+	// ProcedureRequest1
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestUno() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Certificado de Residencia");
+		procedureRequest.setFileNumber(1L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("andres@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("andres");
+		citizen.setLastName1("osorio");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 1 # 12 -12");
+		procedureData.put("barrio", "barrio Tal");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("anapoima");
+		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+		procedureRequest.setStartDate(new Date("2016/07/14"));
+		procedureRequest.setFinishDate(null);
+		procedureRequest.setStatus("En proceso");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest2
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestDos() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Certificado de Residencia");
+		procedureRequest.setFileNumber(2L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("andres@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("andres");
+		citizen.setLastName1("osorio");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+
+		procedureRequest.setStartDate(new Date("2016/07/14"));
+		procedureRequest.setFinishDate(new Date("2016/08/14"));
+		procedureRequest.setStatus("Finalizado");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest3
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestTres() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
+		procedureRequest.setFileNumber(3L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("fabian@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("fabian");
+		citizen.setLastName1("hernandez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("El Rosal");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+
+		procedureRequest.setStartDate(new Date("2016/07/21"));
+		procedureRequest.setFinishDate(new Date("2016/09/21"));
+		procedureRequest.setStatus("Finalizado");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest4
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestCuatro() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
+		procedureRequest.setFileNumber(4L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("fabian@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("fabian");
+		citizen.setLastName1("hernandez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("El Rosal");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Atencion al ciudadano");
+		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+
+		procedureRequest.setStartDate(new Date("2016/08/06"));
+		procedureRequest.setFinishDate(null);
+		procedureRequest.setStatus("En proceso");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest5
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestCinco() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Certificado de Residencia");
+		procedureRequest.setFileNumber(5L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("jheison@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("jheison");
+		citizen.setLastName1("rodriguez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 1 # 12 -12");
+		procedureData.put("barrio", "barrio Tal");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+		procedureRequest.setStartDate(new Date("2016/07/14"));
+		procedureRequest.setFinishDate(null);
+		procedureRequest.setStatus("En proceso");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest6
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestSeis() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Certificado de Residencia");
+		procedureRequest.setFileNumber(6L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("jheison@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("jheison");
+		citizen.setLastName1("rodriguez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("acalle@anapoima");
+		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+		procedureRequest.setStartDate(new Date("2016/07/14"));
+		procedureRequest.setFinishDate(new Date("2016/08/14"));
+		procedureRequest.setStatus("Finalizado");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest7
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestSiete() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
+		procedureRequest.setFileNumber(7L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("david@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("david");
+		citizen.setLastName1("martinez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("El Rosal");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Hacienda");
+		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setAprobacion("Finalizado");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+
+		procedureRequest.setStartDate(new Date("2016/07/21"));
+		procedureRequest.setFinishDate(new Date("2016/09/21"));
+		procedureRequest.setStatus("Finalizado");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	// ProcedureRequest8
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestOcho() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
+		procedureRequest.setFileNumber(8L);
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("david@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("david");
+		citizen.setLastName1("martinez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("El Rosal");
+
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Atencion al ciudadano");
+		activity1.setFunctionary("acalle@anapoima");
+		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		procedureRequest.setActivities(activities);
+		procedureRequest.setStartDate(new Date("2016/08/06"));
+		procedureRequest.setFinishDate(null);
+		procedureRequest.setStatus("En proceso");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+	public static void addProcedureRequest() {
+		ProcedureRequest procedure = new ProcedureRequest();
+
+		procedure.setProcedureClassName("Certificado de residencia");
+
+		Mayoralty mayorality = new Mayoralty();
+		mayorality.setName("Anapoima");
+		mayorality.setAddress("CRA 123 45 6");
+		mayorality.setUrl("https://anapoima.gov.co");
+		mayorality.setPhone("333555888");
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Juan");
+		citizen.setLastName1("Valdes");
+		citizen.setIdentification(1234567890);
+		citizen.setEmail("jvaldes@uniandes");
+		citizen.setPassword("Qwerty");
+		citizen.setUserProfile("citizen");
 
 	}
 
@@ -106,7 +1573,7 @@ public class TestsUtil {
 
 		int port = App.JETTY_SERVER_PORT;
 		String server = "http://localhost";
-
+		logger.info("JETTY SERVER PORT: " + port);
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append(server);
 		strBuilder.append(":");
@@ -134,6 +1601,7 @@ public class TestsUtil {
 			logger.error("%s not empty%n", file);
 		} catch (IOException x) {
 			// File permission problems are caught here.
+			logger.info("removeTestFile> failure");
 			logger.error(x.getMessage());
 		}
 	}
@@ -190,6 +1658,25 @@ public class TestsUtil {
 			if (value != null) {
 				tmpPath = value;
 				found = true;
+				/*
+				File directoryName = new File(value + "/junittest");
+				if (!directoryName.exists()) {
+					logger.info("creating directory: " + directoryName);
+					boolean result = false;
+					try {
+						directoryName.mkdir();
+						result = true;
+					} catch (SecurityException se) {
+						System.out.println(se.getLocalizedMessage());
+					}
+					if (result) {
+						tmpPath = directoryName.toString();
+						logger.info("LOCALTMP + /junittest created");
+					}
+				} else {
+					tmpPath = directoryName.toString();
+				}
+				*/
 				break;
 			}
 		}
@@ -200,7 +1687,9 @@ public class TestsUtil {
 
 	}
 
-	/** Check if the input directory exists, if not then create it
+	/**
+	 * Check if the input directory exists, if not then create it
+	 * 
 	 * @param inputDir
 	 */
 	public static void checkDir(String inputDir) {
@@ -223,22 +1712,22 @@ public class TestsUtil {
 			}
 		}
 	}
-	
-	public static void isConnected() throws IOException {
-		
-	    String strUrl = "http://stackoverflow.com/about";
-    
-	    try {
-	        URL url = new URL(strUrl);
-	        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-	        urlConn.connect();
 
-	    } catch (IOException e) {
-	        logger.error("Error creating HTTP connection");
-	        e.printStackTrace();
-	        throw e;
-	    }
+	public static void isConnected() throws IOException {
+
+		String strUrl = "http://stackoverflow.com/about";
+
+		try {
+			URL url = new URL(strUrl);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.connect();
+
+		} catch (IOException e) {
+			logger.error("Error creating HTTP connection");
+			e.printStackTrace();
+			throw e;
+		}
 
 	}
-	
+
 }
