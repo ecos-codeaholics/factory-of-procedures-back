@@ -133,10 +133,6 @@ public class AuthServices {
 			ArrayList<String> parametersEmail = new ArrayList<>();
 			parametersEmail.add(citizen.getEmail());
 
-			// TODO: replace with new service -
-			// EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
-			// Notification.sendEmail(citizen.getEmail());
-			// Send Email
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
 

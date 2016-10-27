@@ -64,6 +64,8 @@ public class AuthenticationJWTTest {
 			// Verify and decode
 			try {
 
+				logger.info("JWT is signed? " + Jwts.parser().isSigned(token));
+				
 				Claims claims = Jwts.parser().setSigningKey(citizenSalt).parseClaimsJws(token).getBody();
 
 				logger.info("ID: " + claims.getId());

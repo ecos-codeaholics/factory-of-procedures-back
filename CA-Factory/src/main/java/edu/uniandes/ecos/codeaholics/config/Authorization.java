@@ -40,28 +40,22 @@ public final class Authorization {
 	 *            request
 	 * @param pResponse
 	 *            response
-	 * @return resultado de la verificación
+	 * @return resultado de la verificacion
 	 */
 	public static String authorizeCitizen(Request pRequest, Response pResponse) {
 
 		boolean isAutorized = false;
-
-		String email = pRequest.queryParams("email");
-
-		if (email != null && !email.equals("")) {
+		String token = pRequest.params("Authorization");
+		log.info("body: " + pRequest.body());
+		log.info("received token: " + token);
+		
+		if (token != null && !token.equals("")) {
 
 			try {
 
 				Document session = new Document();
-				session.append("email", email);
+				session.append("token", token);
 				session.append("user-profile", "citizen");
-
-				// Check against token if authentication method is JWT
-				if (authenticationMethod.equals("JWT")) {
-
-					String token = pRequest.queryParams("");
-					session.append("token", token);
-				}
 
 				isAutorized = findSession(session);
 
