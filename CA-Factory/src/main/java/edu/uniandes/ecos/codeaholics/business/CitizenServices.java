@@ -1,9 +1,7 @@
 package edu.uniandes.ecos.codeaholics.business;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bson.Document;
@@ -170,21 +168,21 @@ public class CitizenServices {
 
 		Object response = null;
 		ProcedureRequest procedureRequest = new ProcedureRequest();
-		Procedure procedure = new Procedure();
-		Citizen citizen = new Citizen();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		
+		Procedure procedure = new Procedure();
 		procedureRequest.setProcedureClassName(procedure.getName());
 		procedureRequest.setActivities(procedure.getActivities());
+		
+		Citizen citizen = new Citizen();
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("anapoima");
 
-		Map<String, Object> procedureData = new HashMap<>();
-		procedureData.put("identificacion", 123456);
-		procedureRequest.setProcedureData(new Document(procedureData));
+		Document procedureData = new Document();
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
-		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		Document deliveryDocs = new Document();
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 		
 		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 		response = messager.getOkMessage("Registro Exitoso");

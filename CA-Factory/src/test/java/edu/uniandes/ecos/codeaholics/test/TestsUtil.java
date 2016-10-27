@@ -4,17 +4,6 @@
 
 package edu.uniandes.ecos.codeaholics.test;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
-import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
-import edu.uniandes.ecos.codeaholics.main.App;
-import edu.uniandes.ecos.codeaholics.persistence.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,7 +13,31 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.main.App;
+import edu.uniandes.ecos.codeaholics.persistence.Activity;
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Dependency;
+import edu.uniandes.ecos.codeaholics.persistence.FormField;
+import edu.uniandes.ecos.codeaholics.persistence.Functionary;
+import edu.uniandes.ecos.codeaholics.persistence.History;
+import edu.uniandes.ecos.codeaholics.persistence.Mayoralty;
+import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
+import edu.uniandes.ecos.codeaholics.persistence.RequiredUpload;
 
 //import edu.uniandes.ecos.codeaholics.persistence.Dependency;
 //import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
@@ -1054,20 +1067,20 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("anapoima");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 1 # 12 -12");
 		procedureData.put("barrio", "barrio Tal");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1122,20 +1135,20 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("anapoima");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1187,21 +1200,21 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
 		Activity activity1 = new Activity();
@@ -1252,21 +1265,21 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 10 # 10 - 10");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1318,20 +1331,20 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("anapoima");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 1 # 12 -12");
 		procedureData.put("barrio", "barrio Tal");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1381,20 +1394,20 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("anapoima");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1444,21 +1457,21 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -1509,21 +1522,21 @@ public class TestsUtil {
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
-		Map<String, Object> procedureData = new HashMap<>();
+		Document procedureData = new Document();
 		procedureData.put("identificacion", 123456);
 		procedureData.put("direccion", "calle 10 # 10 - 10");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
 
-		procedureRequest.setProcedureData(new Document(procedureData));
+		procedureRequest.setProcedureData(procedureData);
 
-		Map<String, Object> deliveryDocs = new HashMap<>();
+		Document deliveryDocs = new Document();
 		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
 		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
 		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
 
-		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
