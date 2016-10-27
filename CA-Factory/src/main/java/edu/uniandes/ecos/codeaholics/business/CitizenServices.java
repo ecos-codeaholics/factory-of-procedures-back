@@ -1,8 +1,10 @@
 package edu.uniandes.ecos.codeaholics.business;
 
-//import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bson.Document;
 
@@ -13,8 +15,10 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
-//import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import spark.Request;
 import spark.Response;
 
@@ -164,11 +168,32 @@ public class CitizenServices {
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
-		// HEAD
-		// return "Proceso Exitoso method startProcedure";
+		Object response = null;
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+		Procedure procedure = new Procedure();
+		Citizen citizen = new Citizen();
+		procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		procedureRequest.setProcedureClassName(procedure.getName());
+		procedureRequest.setActivities(procedure.getActivities());
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
 
-		Object response;
-		response = messager.getOkMessage("Proceso Exitoso");
+		Map<String, Object> procedureData = new HashMap<>();
+		procedureData.put("identificacion", 123456);
+		procedureRequest.setProcedureData(new Document(procedureData));
+
+		Map<String, Object> deliveryDocs = new HashMap<>();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		procedureRequest.setDeliveryDocs(new Document(deliveryDocs));
+		
+		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+		response = messager.getOkMessage("Registro Exitoso");
+		// HEAD
+		// res.status(200);
+		pResponse.type("application/json");
+		// return "Proceso Exitoso";
+
+		pRequest.body();
 		return response;
 
 	}

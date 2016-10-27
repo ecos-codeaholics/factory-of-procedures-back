@@ -31,7 +31,7 @@ public class ProcedureRequest {
 	@SerializedName("_id")
 	private String _id;
 	private String procedureClassName;
-	private Long fileNumber;
+	private String fileNumber;
 	private Citizen citizen;
 	private String mayoralty;
 	private Document procedureData;
@@ -50,11 +50,11 @@ public class ProcedureRequest {
 		this._id = _id;
 	}
 	
-	public Long getFileNumber() {
+	public String getFileNumber() {
 		return fileNumber;
 	}
 
-	public void setFileNumber(Long fileNumber) {
+	public void setFileNumber(String fileNumber) {
 		this.fileNumber = fileNumber;
 	}
 

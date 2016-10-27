@@ -1043,7 +1043,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber(1L);
+		procedureRequest.setFileNumber("1");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("andres@uniandes");
@@ -1111,7 +1111,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber(2L);
+		procedureRequest.setFileNumber("2");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("andres@uniandes");
@@ -1176,7 +1176,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber(3L);
+		procedureRequest.setFileNumber("3");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("fabian@uniandes");
@@ -1241,7 +1241,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber(4L);
+		procedureRequest.setFileNumber("4");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("fabian@uniandes");
@@ -1307,7 +1307,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber(5L);
+		procedureRequest.setFileNumber("5");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jheison@uniandes");
@@ -1370,7 +1370,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber(6L);
+		procedureRequest.setFileNumber("6");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jheison@uniandes");
@@ -1433,7 +1433,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber(7L);
+		procedureRequest.setFileNumber("7");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("david@uniandes");
@@ -1498,7 +1498,7 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber(8L);
+		procedureRequest.setFileNumber("8");
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("david@uniandes");
