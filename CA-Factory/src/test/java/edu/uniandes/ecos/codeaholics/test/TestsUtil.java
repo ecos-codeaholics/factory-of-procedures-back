@@ -359,6 +359,7 @@ public class TestsUtil {
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Certificado de residencia");
 		procedures.add("Auxilio para Gastos Sepelio");
+		procedures.add("Solicitud De Contratacion Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -408,6 +409,7 @@ public class TestsUtil {
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Auxilio para Gastos Sepelio");
 		procedures.add("Certificado de estratificacion");
+		procedures.add("Solicitud De Contratacion Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -1046,6 +1048,126 @@ public class TestsUtil {
 
 	}
 
+	// Procedure
+	// SCC
+		public static void addProcedureCuatro(String pName) {
+
+			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+			MongoCollection<Document> collection = dbOne.getCollection("procedures");
+
+			// ArrayList<Functionary> listOfFunctionaries = new
+			// ArrayList<Functionary>();
+			ArrayList<FormField> formFields = new ArrayList<FormField>();
+			ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+			ArrayList<Activity> activities = new ArrayList<Activity>();
+
+			Procedure procedure = new Procedure();
+			procedure.setName(pName);
+
+			// Activities
+			activities.add(new Activity("CDP","Certificado de disponibilidad Presupuestal","Jefe de presupuesto",1,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Elaboracion Contrato","Realización del contrato","Coordinador de deportes ",2,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Aprobacion juridica","Aprobación de propuesta","Juridico",3,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Firma Alcalde","Firma del alcalde y Documento de supervisor del contrato","Alcalde",4,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadania",5,"","Pendiente"));
+			activities.add(new Activity("RP","Responsabilidad presupuestal","Jefe de presupuesto",6,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadania",7,"","Pendiente"));
+			activities.add(new Activity("Informe supervisión","Informe de supervisión del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Orden de pago","Solicitud de orden de pago y comprobante de egreso","Tesoreria",9,"jvaldez@elrosal","Pendiente"));
+
+			procedure.setActivities(activities);
+
+			// Required
+	
+			reqDocs.add(new RequiredUpload("file", true, "Cedula de Ciudadania del solicitante", "Adjunte su cedula en formato (png, jpeg)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social", "Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de función publica", "Adjunte su hoja de vida de función publica (pdf)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria", "Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales", "Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control", "cedulaAtt"));
+			procedure.setRequired(reqDocs);
+
+			// Form
+
+			FormField field1 = new FormField();
+
+			field1.setType("text");
+			field1.setSubtype("tel");
+			field1.setRequired(true);
+			field1.setLabel("identificacion");
+			field1.setDescription("numero de documento de identidad");
+			field1.setPlaceHolder("123456789");
+			field1.setClassname("form-control");
+			field1.setName("identification");
+			field1.setMaxlenght(11);
+
+			formFields.add(field1);
+
+			FormField field2 = new FormField();
+
+			field2.setType("text");
+			field2.setSubtype("text");
+			field2.setRequired(true);
+			field2.setLabel("direccion");
+			field2.setDescription("direccion de residencia");
+			field2.setPlaceHolder("CAlle -- # -- --");
+			field2.setClassname("form-control");
+			field2.setName("direccion");
+			field2.setMaxlenght(100);
+
+			formFields.add(field2);
+
+			FormField field3 = new FormField();
+
+			field3.setType("text");
+			field3.setSubtype("text");
+			field3.setRequired(true);
+			field3.setLabel("barrio");
+			field3.setDescription("barrio");
+			field3.setPlaceHolder("barrio");
+			field3.setClassname("form-control");
+			field3.setName("barrio");
+			field3.setMaxlenght(50);
+
+			formFields.add(field3);
+
+			FormField field4 = new FormField();
+
+			field4.setType("text");
+			field4.setSubtype("tel");
+			field4.setRequired(true);
+			field4.setLabel("telefono");
+			field4.setDescription("numero telefonico de contacto");
+			field4.setPlaceHolder("3-----");
+			field4.setClassname("form-control");
+			field4.setName("telefono");
+			field4.setMaxlenght(10);
+
+			formFields.add(field4);
+
+			FormField field5 = new FormField();
+
+			field5.setType("textarea");
+			field5.setRequired(true);
+			field5.setLabel("Carta de Solicitud");
+			field5.setDescription("Carta de Solicitud");
+			field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+			field5.setClassname("form-control");
+			field5.setName("carta");
+			field5.setMaxlenght(5000);
+
+			formFields.add(field5);
+
+			procedure.setFields(formFields);
+
+			logger.info("inserting new procedure instance");
+
+			System.out.println(procedure.getFields());
+			collection.insertOne(procedure.toDocument());
+
+		}
+
 	// ProcedureRequest1
 	@SuppressWarnings("deprecation")
 	public static <V> void addProcedureRequestUno() {
@@ -1518,6 +1640,72 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("david");
 		citizen.setLastName1("martinez");
+
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("El Rosal");
+
+		Document procedureData = new Document();
+		procedureData.put("identificacion", 123456);
+		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("barrio", "barrio lat");
+		procedureData.put("telefono", 55667733);
+		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+
+		procedureRequest.setProcedureData(procedureData);
+
+		Document deliveryDocs = new Document();
+		deliveryDocs.put("Doc1", "estaEsLARutaAlDoc1");
+		deliveryDocs.put("Doc2", "estaEsLARutaAlDoc2");
+		deliveryDocs.put("Doc3", "estaEsLARutaAlDoc3");
+
+		procedureRequest.setDeliveryDocs(deliveryDocs);
+
+		ArrayList<Activity> activities = new ArrayList<Activity>();
+		// Activities
+		Activity activity1 = new Activity();
+		activity1.setStep(1);
+		activity1.setName("Aprobacion");
+		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setDependency("Atencion al ciudadano");
+		activity1.setFunctionary("acalle@anapoima");
+		activity1.setAprobacion("En proceso");
+		activity1.setStatus("En curso");
+
+		activities.add(activity1);
+		// History
+				ArrayList<History> histories = new ArrayList<History>();
+				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+				procedureRequest.setHistories(histories);
+		procedureRequest.setActivities(activities);
+		procedureRequest.setStartDate(new Date("2016/08/06"));
+		procedureRequest.setFinishDate(null);
+		procedureRequest.setStatus("En proceso");
+
+		logger.info("inserting new procedure request instance");
+
+		collection.insertOne(procedureRequest.toDocument());
+
+	}
+
+
+	// ProcedureRequest9
+	//SCC
+	@SuppressWarnings("deprecation")
+	public static <V> void addProcedureRequestNueve() {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		procedureRequest.setProcedureClassName("Solicitud De Contratacion Monitor Deportes");
+		procedureRequest.setFileNumber("9");
+
+		Citizen citizen = new Citizen();
+		citizen.setEmail("sebastian@uniandes");
+		citizen.setIdentification(123456);
+		citizen.setName("Sebastian");
+		citizen.setLastName1("Cardona");
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");

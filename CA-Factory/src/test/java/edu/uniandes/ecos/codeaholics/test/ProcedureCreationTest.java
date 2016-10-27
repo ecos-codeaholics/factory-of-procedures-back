@@ -60,7 +60,8 @@ public class ProcedureCreationTest {
 		TestsUtil.addProcedureUno ("Certificado de Residencia");
 		TestsUtil.addProcedureDos ("Auxilio para Gastos Sepelio");
 		TestsUtil.addProcedureTres ("Certificado de Estratificacion");
-			
+		//SCC
+		TestsUtil.addProcedureCuatro ("Solicitud De Contratacion Monitor Deportes");	
 		assertEquals(true, true);
 	}
 	
@@ -83,6 +84,9 @@ public class ProcedureCreationTest {
 		TestsUtil.addProcedureRequestSeis();
 		TestsUtil.addProcedureRequestSiete();
 		TestsUtil.addProcedureRequestOcho();
+		
+		//SCC
+		//TestsUtil.addProcedureRequestNueve();
 
 		assertEquals(true, true);
 	}
