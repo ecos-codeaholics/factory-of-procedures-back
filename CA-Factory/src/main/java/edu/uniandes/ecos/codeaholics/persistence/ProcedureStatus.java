@@ -45,7 +45,7 @@ public class ProcedureStatus {
 			status = "Finalizado";
 			break;
 		case "Aprobar":
-			status = "En curso";
+			status = "En proceso";
 			break;
 		case "Rechazar":
 			status = "Finalizado";
@@ -57,4 +57,22 @@ public class ProcedureStatus {
 		return status;
 	}
 
+	public String getStatusActivity(){
+		String status = "";
+		switch (this.status) {
+		case "Anular":
+			status = "Finalizado";
+			break;
+		case "Aprobar":
+			status = "En curso";
+			break;
+		case "Rechazar":
+			status = "Finalizado";
+			break;
+		default:
+			status= this.status;
+			break;
+		}
+		return status;
+	}
 }
