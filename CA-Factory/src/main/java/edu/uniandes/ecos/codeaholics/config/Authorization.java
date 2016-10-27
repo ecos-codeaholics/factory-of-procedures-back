@@ -46,49 +46,48 @@ public final class Authorization {
 
 		boolean isAutorized = false;
 
-		String email = pRequest.queryParams("email");
+		String auth = pRequest.headers("Authorization");
+		if (auth != null ) {
 
-		if (email != null && !email.equals("")) {
+				try {
 
-			try {
+					Document session = new Document();
+					session.append("user-profile", "citizen");
 
-				Document session = new Document();
-				session.append("email", email);
-				session.append("user-profile", "citizen");
+					// Check against token if authentication method is JWT
+					if (authenticationMethod.equals("JWT")) {
 
-				// Check against token if authentication method is JWT
-				if (authenticationMethod.equals("JWT")) {
+						String token = pRequest.headers("Authorization").split(" ")[1];
+						session.append("token", token);
+					}
 
-					String token = pRequest.queryParams("");
-					session.append("token", token);
+					isAutorized = findSession(session);
+
+				} catch (NotMatchingTokenException authEx) {
+					log.info(authEx.getMessage());
+					isAutorized = false;
+
+				} catch( ExpiredTokenException authEx ) {
+
+					log.info(authEx.getMessage());
+					isAutorized = false;
+
+				} catch (FunctionalityAuthorizationException authEx) {
+
+					log.info(authEx.getMessage());
+					isAutorized = false;
 				}
 
-				isAutorized = findSession(session);
-
-			} catch (NotMatchingTokenException authEx) {
-				log.info(authEx.getMessage());
-				isAutorized = false;
-
-			} catch( ExpiredTokenException authEx ) {
-				
-				log.info(authEx.getMessage());
-				isAutorized = false;
-				
-			} catch (FunctionalityAuthorizationException authEx) {
-
-				log.info(authEx.getMessage());
-				isAutorized = false;
+			if (!isAutorized) {
+				halt(401, "No eres bienvenido aqui");
+				return "No hay autorizacion";
 			}
 
+			return "Proceso de autorizacion Exitoso";
+
 		}
 
-		if (!isAutorized) {
-			halt(401, "No eres bienvenido aqui");
-			return "No hay autorizacion";
-		}
-
-		return "Proceso de autorizacion Exitoso";
-
+		return "";
 	}
 
 	private static void checkTokenValidity(String pToken, String pSalt) throws ExpiredJwtException, ExpiredTokenException {
