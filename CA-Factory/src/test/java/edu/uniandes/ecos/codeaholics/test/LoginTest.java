@@ -23,6 +23,8 @@ import org.junit.Test;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import edu.uniandes.ecos.codeaholics.config.Authentication;
+import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
 import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
@@ -106,7 +108,11 @@ public class LoginTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
+		Authentication.closeSession("jvaljean@uniandes");
+		
+		utilities.removeCitizen("jvaljean@uniandes");
+		
 	}
 
 }

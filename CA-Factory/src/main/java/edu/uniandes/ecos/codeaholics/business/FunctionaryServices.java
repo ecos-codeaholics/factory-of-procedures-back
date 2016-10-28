@@ -4,7 +4,11 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import edu.uniandes.ecos.codeaholics.persistence.History;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,31 +26,13 @@ import spark.Response;
 
 public class FunctionaryServices {
 
-	private final static Logger log = LogManager.getLogger(AuthServices.class);
+	private final static Logger log = LogManager.getLogger(FunctionaryServices.class);
 
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 
 	private static String PROCEDURESREQUEST = "proceduresRequest";
-
-	/*
-	 * Class: ProcedureStatus FunctionaryServices.java Original Author: @author
-	 * AOSORIO Description: Auxiliary class: catched the procedure status
-	 * returned in body Created: Oct 15, 2016 4:55:28 PM
-	 */
-	private class ProcedureStatus {
-
-		String status;
-
-		/**
-		 * @return the status
-		 */
-		public String getStatus() {
-			return status;
-		}
-
-	}
 
 	/***
 	 * Consulta tramites asignados a un funcionario.
@@ -98,8 +84,8 @@ public class FunctionaryServices {
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
-		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
-
+		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
 		for (Document item : documents) {
@@ -125,45 +111,46 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
+	@SuppressWarnings("deprecation")
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
-
+		
+		log.info("Cambiando estado a tramite: " + pRequest.body());
 		Object response = null;
-
-		log.info(pRequest.params(":procedureId"));
-		log.info(pRequest.params(":stepId"));
-		log.info("email of functionary is " + pRequest.queryParams("email"));
-
-		String newStatus = null;
-
-		List<Document> procedureFilter = new ArrayList<>();
+		java.util.Date utilDate = new java.util.Date(); //fecha actual
+		  long lnMilisegundos = utilDate.getTime();
+		  java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
+		  
+		List<Document> procedureFilter = new ArrayList<Document>();
 		try {
+			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
+			ArrayList<Document> procedureRequest = DataBaseUtil.find(
+					new Document().append("fileNumber", pRequest.params(":procedureId")),
+					PROCEDURESREQUEST);
+			Document procedure = (Document) procedureRequest.get(0);
+			ArrayList<Document> histories = (ArrayList<Document>) procedure.get("histories");
 
+			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")),
+					sqlDate.toString(), 
+					pRequest.queryParams("email"),
+					status.getStatusHistory(), pRequest.queryParams("comment")).toDocument());
+			
 			procedureFilter.add(
-					new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+					new Document("fileNumber", new Document("$eq", pRequest.params(":procedureId"))));
 			procedureFilter.add(new Document("activities",
 					new Document("$elemMatch", new Document("step", Integer.parseInt(pRequest.params(":stepId"))))));
-
-			log.info("body: " + pRequest.body());
-
-			// JsonParser parser = new JsonParser();
-			// JsonObject json =
-			// parser.parse(pRequest.body()).getAsJsonObject();
-
-			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
-
-			newStatus = status.getStatus();
-
-			System.out.println("status: " + newStatus);
-
-			Document replaceValue = new Document("activities.$.status", newStatus);
+		
+			Document replaceValue = new Document("activities.$.status", status.getStatusActivity());
 
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
+			DataBaseUtil.compositeUpdate(procedureFilter, new Document("status", status.getStatusProcedure()), PROCEDURESREQUEST);
+			DataBaseUtil.compositeUpdate(procedureFilter, new Document("histories", histories), PROCEDURESREQUEST);
 
+			response = messager.getOkMessage(status.getStatusProcedure());
 		} catch (Exception e) {
-			System.out.println("Problem writting : " + e.getMessage());
+			log.info("Problem writting : " + e.getMessage());
 		}
 
-		response = messager.getOkMessage(newStatus);
+		
 
 		return response;
 

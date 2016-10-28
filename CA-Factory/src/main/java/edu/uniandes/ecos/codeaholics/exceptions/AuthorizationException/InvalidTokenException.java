@@ -6,7 +6,7 @@ package edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException;
 /**
  * Package: edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException
  *
- * Class: NotMatchingTokenException NotMatchingTokenException.java
+ * Class: InvalidTokenException InvalidTokenException.java
  * 
  * Original Author: @author AOSORIO
  * 
@@ -17,7 +17,7 @@ package edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException;
  * Created: Oct 25, 2016 9:52:24 AM
  * 
  */
-public class NotMatchingTokenException extends Exception {
+public class InvalidTokenException extends Exception {
 	
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class NotMatchingTokenException extends Exception {
 	 * @param message
 	 * @param errorCode
 	 */
-	public NotMatchingTokenException(String message, String errorCode){
+	public InvalidTokenException(String message, String errorCode){
 		super(message);
 		this.errorCode=errorCode;
 	}
