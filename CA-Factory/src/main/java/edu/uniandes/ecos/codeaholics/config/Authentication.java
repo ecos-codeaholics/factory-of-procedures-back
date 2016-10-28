@@ -90,7 +90,7 @@ public final class Authentication implements IAuthenticationSvc {
 		session.append("user-profile", pUserProfile);
 		log.info("Creating Session...");
 		try {
-			DataBaseUtil.save(session, "session");
+			DataBaseUtil.save(session, Constants.SESSION_COLLECTION);
 
 		} catch (MongoWriteException e) {
 
@@ -111,7 +111,7 @@ public final class Authentication implements IAuthenticationSvc {
 		Document session = new Document();
 		session.append("email", pEmail);
 		log.info("Closing Session...");
-		DataBaseUtil.delete(session, "session");
+		DataBaseUtil.delete(session, Constants.SESSION_COLLECTION);
 	}
 
 }

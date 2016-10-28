@@ -291,11 +291,24 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 
-		//----
-		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
-		//
+		String token = pRequest.headers("Authorization").split(" ")[1];
 		
+		String email;
+		
+		try {
+			email = Authorization.getTokenClaim( token, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";	
+		}
+		
+		
+		procedureFilter.append("citizen.email", email);
+		
+		//---
 		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		//procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+		
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 

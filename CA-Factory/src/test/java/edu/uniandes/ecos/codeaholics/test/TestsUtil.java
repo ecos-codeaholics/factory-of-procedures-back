@@ -24,6 +24,7 @@ import org.bson.Document;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -84,7 +85,7 @@ public class TestsUtil {
 	public void addCitizen(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName(pName);
@@ -100,7 +101,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -114,6 +115,18 @@ public class TestsUtil {
 
 	}
 
+	/** Cleanup DB of Test users
+	 * @param pEmail
+	 */
+	public void removeCitizen(String pEmail) {
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		logger.info("Removing user with email ... " + pEmail);
+		DataBaseUtil.delete(user, Constants.CITIZEN_COLLECTION);
+		
+	}
+	
 	/** Create a mock session for a specific user
 	 * @param pEmail
 	 * @param pProfile
@@ -123,7 +136,7 @@ public class TestsUtil {
 	public void addSession(String pEmail, String pProfile, String pToken, String pSalt ) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("session");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.SESSION_COLLECTION);
 
 		Session session = new Session();
 		session.setEmail(pEmail);
@@ -133,7 +146,7 @@ public class TestsUtil {
 		
 		Document prevSession = new Document();
 		prevSession.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(prevSession, "session");
+		ArrayList<Document> documents = DataBaseUtil.find(prevSession, Constants.SESSION_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(session.toDocument());
@@ -158,7 +171,7 @@ public class TestsUtil {
 		collections.add("mayoralty");
 		collections.add("procedures");
 		collections.add("proceduresRequest");
-		collections.add("session");
+		collections.add(Constants.SESSION_COLLECTION);
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection;
@@ -182,7 +195,7 @@ public class TestsUtil {
 		 * collection = dbOne.getCollection("proceduresRequest");
 		 * collection.drop();
 		 * 
-		 * collection = dbOne.getCollection("session"); collection.drop();
+		 * collection = dbOne.getCollection(Constants.SESSION_COLLECTION); collection.drop();
 		 */
 
 	}
@@ -191,7 +204,7 @@ public class TestsUtil {
 	public static void addCitizenUno() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("Andres");
@@ -207,7 +220,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", "andres@uniandes");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -224,7 +237,7 @@ public class TestsUtil {
 	// add citizen
 	public static void addCitizenDos() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("Fabian");
@@ -240,7 +253,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", "fabian@uniandes");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -257,7 +270,7 @@ public class TestsUtil {
 	// add citizen
 	public static void addCitizenTres() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("Jheison");
@@ -273,7 +286,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", "jheison@uniandes");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());

@@ -10,9 +10,9 @@ package edu.uniandes.ecos.codeaholics.config;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: The purpose of this class is to maintain all constants parameters in one place
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: use final predicate
  *
  * Created: Oct 28, 2016 9:23:03 AM
  * 
@@ -20,5 +20,12 @@ package edu.uniandes.ecos.codeaholics.config;
 public class Constants {
 	
 	public static final String SESSION_COLLECTION = "session";
+	
+	public static final String CITIZEN_COLLECTION = "citizen";
+
+	public static final String PROCEDURESREQUEST_COLLECTION = "proceduresRequest";
+
+	public static final String PROCEDURES_COLLECTION = "procedures";
+
 
 }

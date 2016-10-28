@@ -25,6 +25,7 @@ import com.google.gson.JsonParser;
 
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.ExpiredTokenException;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.FunctionalityAuthorizationException;
@@ -38,8 +39,8 @@ public class AuthenticationJWTTest {
 
 	Logger logger = LogManager.getLogger(AuthenticationJWTTest.class);
 
-	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
-	public static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
+	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
+	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
 
 	private final static String USER_EMAIL = "dbernal@uniandes";
 	private final static String USER_PWD = "12345678";
@@ -59,7 +60,7 @@ public class AuthenticationJWTTest {
 
 		boolean authenticated = false;
 		try {
-			authenticated = jwtToken.doAuthentication(USER_EMAIL, USER_PWD, "citizen");
+			authenticated = jwtToken.doAuthentication(USER_EMAIL, USER_PWD, Constants.CITIZEN_COLLECTION);
 		} catch (WrongUserOrPasswordException e1) {
 			e1.printStackTrace();
 		}
@@ -95,6 +96,8 @@ public class AuthenticationJWTTest {
 		}
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
+		
+		utilities.removeCitizen(USER_EMAIL);
 
 	}
 
@@ -109,7 +112,7 @@ public class AuthenticationJWTTest {
 		boolean authenticated = false;
 
 		try {
-			authenticated = jwtToken.doAuthentication(USER_EMAIL, USER_PWD, "citizen");
+			authenticated = jwtToken.doAuthentication(USER_EMAIL, USER_PWD, Constants.CITIZEN_COLLECTION);
 		} catch (WrongUserOrPasswordException e1) {
 			e1.printStackTrace();
 		}
@@ -145,7 +148,9 @@ public class AuthenticationJWTTest {
 		assertTrue(isAutorized);
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-
+		
+		utilities.removeCitizen(USER_EMAIL);
+		
 	}
 
 	@Test
@@ -191,7 +196,10 @@ public class AuthenticationJWTTest {
 		}
 
 		assertFalse(isAutorized);
+		
 		AuthenticationJWT.closeSession("emily@uniandes");
+		
+		utilities.removeCitizen("emily@uniandes");
 
 	}
 

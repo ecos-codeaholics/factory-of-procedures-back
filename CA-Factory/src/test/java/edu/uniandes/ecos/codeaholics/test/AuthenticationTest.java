@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 
 /**
@@ -40,10 +41,14 @@ public class AuthenticationTest {
 		Authentication auth = new Authentication();
 				
 		try {
-			assertTrue(auth.doAuthentication("aosorio@uniandes", "12345678", "citizen"));
+			assertTrue(auth.doAuthentication("aosorio@uniandes", "12345678", Constants.CITIZEN_COLLECTION));
 		} catch (WrongUserOrPasswordException e) {		
 			e.printStackTrace();
 		}
+		
+		Authentication.closeSession("aosorio@uniandes");
+		
+		utilities.removeCitizen("aosorio@uniandes");
 		
 	}
 

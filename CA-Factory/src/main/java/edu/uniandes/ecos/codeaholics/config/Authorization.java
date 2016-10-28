@@ -97,6 +97,10 @@ public final class Authorization {
 
 				log.info(authEx.getMessage());
 				isAutorized = false;
+			} catch (Exception ex ) {
+				
+				log.info("Something went wrong!");
+				ex.getMessage();
 			}
 
 			if (!isAutorized) {
@@ -106,6 +110,8 @@ public final class Authorization {
 
 		}
 
+		log.info("Termina proceso de autorizacion con exito");
+		
 		return "Proceso de autorizacion realizado";
 
 	}
@@ -185,14 +191,18 @@ public final class Authorization {
 					String storedSalt = session.getString("salt");
 
 					checkTokenValidity(pSession.getString("token"), storedSalt);
-
-					log.info("Usuario tiene sesion valida");
 					isAuthorized = true;
 
 				} catch (ExpiredTokenException ex) {
 					log.info(ex.getMessage());
 					throw ex;
+				} catch ( Exception ex ) {
+					log.info("Something went wrong!");
+					ex.getMessage();
 				}
+				
+				log.info("Usuario tiene sesion valida");
+				
 			}
 
 		} else {
