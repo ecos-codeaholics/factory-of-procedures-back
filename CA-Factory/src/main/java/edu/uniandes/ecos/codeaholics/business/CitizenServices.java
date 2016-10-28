@@ -1,8 +1,8 @@
 package edu.uniandes.ecos.codeaholics.business;
 
-//import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,9 +16,14 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
-//import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
+
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
+import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
+
 import spark.Request;
 import spark.Response;
 
@@ -170,8 +175,36 @@ public class CitizenServices {
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
-		Object response;
-		response = messager.getOkMessage("Proceso Exitoso");
+		//Object response;
+		//response = messager.getOkMessage("Proceso Exitoso");
+
+		Object response = null;
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+		procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		
+		Procedure procedure = new Procedure();
+		procedureRequest.setProcedureClassName(procedure.getName());
+		procedureRequest.setActivities(procedure.getActivities());
+		
+		Citizen citizen = new Citizen();
+		procedureRequest.setCitizen(citizen);
+		procedureRequest.setMayoralty("anapoima");
+
+		Document procedureData = new Document();
+		procedureRequest.setProcedureData(procedureData);
+
+		Document deliveryDocs = new Document();
+		procedureRequest.setDeliveryDocs(deliveryDocs);
+		
+		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+		response = messager.getOkMessage("Registro Exitoso");
+		// HEAD
+		// res.status(200);
+		pResponse.type("application/json");
+		// return "Proceso Exitoso";
+
+		pRequest.body();
+
 		return response;
 
 	}
@@ -256,9 +289,15 @@ public class CitizenServices {
 		log.info("param of the query request is: " + pRequest.queryParams("email"));
 		log.info(pRequest.uri());
 
-		Document procedureFilter = new Document();		
-	
-		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		Document procedureFilter = new Document();
+
+		//----
+		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
+		//
+		
+		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		procedureFilter.append("fileNumber", pRequest.params(":id"));
+
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
@@ -271,6 +310,7 @@ public class CitizenServices {
 			item.remove("state");
 			item.remove("schedule");
 			dataset.add(item);
+			System.out.println("Lo encontro");
 		}
 
 		return dataset;

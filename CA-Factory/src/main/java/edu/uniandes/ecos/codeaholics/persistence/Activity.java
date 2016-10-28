@@ -17,11 +17,10 @@ public class Activity {
 	public static final String DESCRIPTION = "description";
 	public static final String DEPENDENCY = "dependency";
 	public static final String GENERATED = "generated";
-	//JLRM
+	// JLRM
 	public static final String STEP = "step";
 	public static final String FUNCTIONARY = "functionary";
 	public static final String STATUS = "status";
-	
 
 	@SerializedName("_id")
 	private String _id;
@@ -32,6 +31,19 @@ public class Activity {
 	private String functionary;
 	private String aprobacion;
 	private String status;
+
+	public Activity(String name, String description, String dependency, int step, String functionary, 
+			String status) {
+		this.name = name;
+		this.description = description;
+		this.dependency = dependency;
+		this.step = step;
+		this.functionary = functionary;
+		this.status = status;
+	}
+	public Activity() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public String getId() {
 		return _id;
@@ -64,7 +76,7 @@ public class Activity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public int getStep() {
 		return step;
 	}
@@ -72,6 +84,7 @@ public class Activity {
 	public void setStep(int step) {
 		this.step = step;
 	}
+
 	public String getFunctionary() {
 		return functionary;
 	}
@@ -79,7 +92,7 @@ public class Activity {
 	public void setFunctionary(String functionary) {
 		this.functionary = functionary;
 	}
-	
+
 	public String getAprobacion() {
 		return aprobacion;
 	}
@@ -88,7 +101,9 @@ public class Activity {
 		this.aprobacion = aprobacion;
 	}
 
-	public String getStatus() { return status; }
+	public String getStatus() {
+		return status;
+	}
 
 	public void setStatus(String status) {
 		this.status = status;
@@ -102,7 +117,7 @@ public class Activity {
 		activity.append(DEPENDENCY, this.getDependency());
 		activity.append(FUNCTIONARY, this.getFunctionary());
 		activity.append(STATUS, this.getStatus());
-		//activity.append(GENERATED, generatedDocuments());
+		// activity.append(GENERATED, generatedDocuments());
 
 		return activity;
 	}

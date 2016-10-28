@@ -47,6 +47,19 @@ public class RequiredUpload {
 //	}
 //	
 	
+	
+	public RequiredUpload(String type, boolean required, String label, String description, String className,
+			String name) {
+		this.type = type;
+		this.required = required;
+		this.label = label;
+		this.description = description;
+		this.className = className;
+		this.name = name;
+	}
+	public RequiredUpload() {
+		// TODO Auto-generated constructor stub
+	}
 	public String getType() {
 		return type;
 	}
