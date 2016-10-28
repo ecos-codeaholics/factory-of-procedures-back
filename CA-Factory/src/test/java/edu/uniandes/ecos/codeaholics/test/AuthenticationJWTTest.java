@@ -8,19 +8,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Base64;
 import java.util.Date;
 
-import org.junit.Test;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.junit.Test;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.ExpiredTokenException;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.FunctionalityAuthorizationException;
-import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.NotMatchingTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
@@ -32,7 +39,7 @@ public class AuthenticationJWTTest {
 	Logger logger = LogManager.getLogger(AuthenticationJWTTest.class);
 
 	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
-	public static final String TOKEN_ISSUER = "codeaholics";
+	public static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
 
 	private final static String USER_EMAIL = "dbernal@uniandes";
 	private final static String USER_PWD = "12345678";
@@ -65,13 +72,15 @@ public class AuthenticationJWTTest {
 			try {
 
 				logger.info("JWT is signed? " + Jwts.parser().isSigned(token));
-				
+
 				Claims claims = Jwts.parser().setSigningKey(citizenSalt).parseClaimsJws(token).getBody();
 
 				logger.info("ID: " + claims.getId());
 				logger.info("Subject: " + claims.getSubject());
 				logger.info("Issuer: " + claims.getIssuer());
 				logger.info("Expiration: " + claims.getExpiration());
+
+				decode(token);
 
 				assertEquals(USER_EMAIL, claims.getId());
 
@@ -86,7 +95,7 @@ public class AuthenticationJWTTest {
 		}
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
+
 	}
 
 	@Test
@@ -123,10 +132,6 @@ public class AuthenticationJWTTest {
 
 			isAutorized = Authorization.findSession(session);
 
-		} catch (NotMatchingTokenException authEx) {
-			logger.info(authEx.getMessage());
-			isAutorized = false;
-
 		} catch (ExpiredTokenException authEx) {
 
 			logger.info(authEx.getMessage());
@@ -138,9 +143,9 @@ public class AuthenticationJWTTest {
 			isAutorized = false;
 		}
 		assertTrue(isAutorized);
-		
+
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
+
 	}
 
 	@Test
@@ -151,7 +156,7 @@ public class AuthenticationJWTTest {
 		utilities.addCitizen("Emily", "Nurse", "emily@uniandes", "12345678");
 		String citizenSalt = utilities.getCitizenSalt();
 		logger.info(citizenSalt);
-		
+
 		String expToken = createExpiredJWT("emily@uniandes", citizenSalt);
 		logger.info(expToken);
 
@@ -184,7 +189,7 @@ public class AuthenticationJWTTest {
 			logger.info(ex.getMessage());
 			isAutorized = false;
 		}
-		
+
 		assertFalse(isAutorized);
 		AuthenticationJWT.closeSession("emily@uniandes");
 
@@ -197,7 +202,7 @@ public class AuthenticationJWTTest {
 
 		long nowMillis = System.currentTimeMillis();
 		Date now = new Date(nowMillis);
-		long expMillis = nowMillis - TOKEN_LIFETIME; 
+		long expMillis = nowMillis - TOKEN_LIFETIME;
 		Date exp = new Date(expMillis);
 
 		logger.info(pSalt);
@@ -213,6 +218,33 @@ public class AuthenticationJWTTest {
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
+	}
+
+	private void decode(String jwt) {
+
+		String[] jwtElements = jwt.split("\\.");
+
+		ByteArrayInputStream inStream = new ByteArrayInputStream(Base64.getDecoder().decode(jwtElements[0]));
+
+		BufferedReader streamReader = new BufferedReader(new InputStreamReader(inStream));
+		StringBuilder responseStrBuilder = new StringBuilder();
+		String inputStr;
+
+		try {
+			while ((inputStr = streamReader.readLine()) != null)
+				responseStrBuilder.append(inputStr);
+
+			JsonParser parser = new JsonParser();
+			JsonObject json = parser.parse(responseStrBuilder.toString()).getAsJsonObject();
+
+			if (json.getAsJsonObject().has("alg")) {
+				logger.info("token header algo: " + json.getAsJsonObject().get("alg"));
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

@@ -14,6 +14,7 @@ import org.bson.Document;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
 
+import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.SessionAlreadyExistsException;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -38,11 +39,14 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	// Atributos
 	private final static Logger log = LogManager.getLogger(AuthenticationJWT.class);
 
-	private Object token;
+	private static Object token;
 
-	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
-	public static final String TOKEN_ISSUER = "codeaholics";
+	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
 
+	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
+
+	private static final String TOKEN_SUBJECT = "A subject";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -53,47 +57,59 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	@Override
 	public boolean doAuthentication(String pEmail, String pPwd, String pProfile) throws WrongUserOrPasswordException {
 
-		boolean authenticated = false;
+		boolean isAuthenticated = false;
 		log.info("Verifying user data...");
 		Document user = new Document();
 		user.append("email", pEmail);
 
 		ArrayList<Document> documents = DataBaseUtil.find(user, pProfile);
 
+		// 1. check if user exists in the DB
 		if (documents.isEmpty()) {
+
 			log.info("Usuario no existe");
 			throw new WrongUserOrPasswordException("El usuario que ingresaste no existe", "101");
 		} else {
-			user.append("userProfile", pProfile);
-			ArrayList<Document> documents2 = DataBaseUtil.find(user, pProfile);
-			if (documents2.isEmpty()) {
-				log.info("Informacion de usuario equivocada");
-				throw new WrongUserOrPasswordException("Informacion de usuario equivocada", "104");
-			} else {
+
+			// 2. Create new session
+			try {
 
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
-
+				user.append("userProfile", pProfile);
 				user.append("password", hash[1]);
 
-				ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
+				ValidateUser(user, pProfile);
 
-				if (results.size() > 0) {
-					log.info(pEmail + " authenticated! create token.");
-					token = createJWT(pEmail, TOKEN_ISSUER, pProfile, salt, "Something");
-					authenticated = true;
-					createSession(pEmail, pProfile, token.toString(), salt);
+				log.info(pEmail + " has passwd checked. go ahead and create session with token.");
 
-				} else {
-					token = "{}";
-					authenticated = false;
-					log.info("Clave equivocada");
-					throw new WrongUserOrPasswordException("La clave que ingresaste es incorrecta", "103");
-				}
+				createSession(pEmail, pProfile, salt);
+
+				log.info("New session created with token: " + token.toString());
+
+				isAuthenticated = true;
+
+			} catch (WrongUserOrPasswordException valEx) {
+
+				token = "{}";
+				log.info("Clave equivocada");
+				isAuthenticated = false;
+				throw valEx;
 			}
+
 		}
 
-		return authenticated;
+		return isAuthenticated;
+
+	}
+
+	private void ValidateUser(Document user, String pProfile) throws WrongUserOrPasswordException {
+
+		ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
+
+		if (results.isEmpty()) {
+			throw new WrongUserOrPasswordException("La clave que ingresaste es incorrecta", "103");
+		}
 
 	}
 
@@ -114,7 +130,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @param ttlMillis
 	 * @return
 	 */
-	private String createJWT(String pId, String pIssuer, String pProfile, String pSalt, String pSubject) {
+	private static String createJWT(String pId, String pProfile, String pSalt) {
 
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -129,8 +145,8 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
-		builder.setSubject(pSubject);
-		builder.setIssuer(pIssuer);
+		builder.setSubject(TOKEN_SUBJECT);
+		builder.setIssuer(TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
 		builder.setAudience(pProfile);
@@ -148,27 +164,29 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @param pUserProfile
 	 *            perfil del usuario citizen, functionary, etc
 	 */
-	private static void createSession(String pEmail, String pUserProfile, String pJwtToken, String pSalt) {
+	private static void createSession(String pEmail, String pProfile, String pSalt) {
+
+		token = createJWT(pEmail, pProfile, pSalt);
 
 		Document session = new Document();
 		session.append("email", pEmail);
-		session.append("user-profile", pUserProfile);
-		session.append("token", pJwtToken);
+		session.append("user-profile", pProfile);
+		session.append("token", token);
 		session.append("salt", pSalt);
 		log.info("Creating Session...");
-		
-		try {
-			
-			Document prevSession = new Document();
-			prevSession.append("email", pEmail);
-			ArrayList<Document> documents = DataBaseUtil.find(prevSession, "session");
 
-			if (documents.isEmpty()) {
-				DataBaseUtil.save(session, "session");
-			} else {
-				log.info("session alreadery exists for: " + pEmail);
-			}
-			
+		try {
+
+			hasSession(pEmail);
+
+			DataBaseUtil.save(session, Constants.SESSION_COLLECTION);
+
+		} catch (SessionAlreadyExistsException ssEx) {
+
+			log.info(ssEx.getMessage() + " : " + pEmail);
+			closeSession(pEmail);
+			DataBaseUtil.save(session, Constants.SESSION_COLLECTION);
+
 		} catch (MongoWriteException e) {
 
 			if (e.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {
@@ -188,7 +206,19 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		Document session = new Document();
 		session.append("email", pEmail);
 		log.info("Closing Session...");
-		DataBaseUtil.delete(session, "session");
+		DataBaseUtil.delete(session, Constants.SESSION_COLLECTION);
+	}
+
+	public static void hasSession(String pEmail) throws SessionAlreadyExistsException {
+
+		Document prevSession = new Document();
+		prevSession.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(prevSession, Constants.SESSION_COLLECTION);
+
+		if (!documents.isEmpty()) {
+			throw new SessionAlreadyExistsException("Session for this user already exists", "105");
+		}
+
 	}
 
 }
