@@ -47,7 +47,7 @@ public final class DataBaseUtil {
 		collection.insertOne(pRegister);
 		
 		log.info("-----------------------------------");
-		log.info("Successful Insert");
+		log.info("Successful Insert@" + pCollection);
 		log.info("-----------------------------------");
 
 	}
@@ -98,7 +98,7 @@ public final class DataBaseUtil {
 		}
 
 		log.info("-----------------------------------");
-		log.info("Getting Procedures...");
+		log.info("Getting " + pCollection + " ...");
 		log.info("-----------------------------------");
 
 		return results;
