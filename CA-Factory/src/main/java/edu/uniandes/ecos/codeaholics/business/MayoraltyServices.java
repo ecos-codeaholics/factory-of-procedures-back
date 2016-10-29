@@ -7,6 +7,8 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
@@ -23,6 +25,8 @@ public class MayoraltyServices {
 	
 	private static String MAYORALTY = "mayoralty";
 
+	private final static Logger log = LogManager.getLogger(MayoraltyServices.class);
+	
 	/***
 	 * Consulta lista de tramites por alcaldia.
 	 * 
@@ -44,7 +48,7 @@ public class MayoraltyServices {
 			@SuppressWarnings("unchecked")
 			ArrayList<String> procedures =  (ArrayList<String>) mayoralty.get("procedures");
 			for (String item : procedures) {
-				System.out.println(item);
+				log.info(item);
 				Document procedure = new Document();
 				procedure.append("name", item);
 				procedure.append("slug", item.replace(" ", "").toLowerCase());

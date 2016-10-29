@@ -14,9 +14,11 @@ import org.bson.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
 import edu.uniandes.ecos.codeaholics.persistence.History;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
@@ -46,7 +48,23 @@ public class FunctionaryServices {
 		log.info("Param of the request is: " + pRequest.queryParams("email"));
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
+
+		// .
+		String token = pRequest.headers("Authorization").split(" ")[1];
+
+		String email;
+
+		try {
+			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}
+
+		procedureFilter.append("activities.functionary", email);
+
+		// ..
+
 		List<Document> dataset = new ArrayList<>();
 
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
@@ -61,6 +79,8 @@ public class FunctionaryServices {
 			dataset.add(item);
 		}
 
+		log.info("Consult procedures done");
+		
 		return dataset;
 
 	}
@@ -81,8 +101,24 @@ public class FunctionaryServices {
 		log.info(pRequest.uri());
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
-		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+
+		// .
+
+		String token = pRequest.headers("Authorization").split(" ")[1];
+
+		String email;
+
+		try {
+			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}
+
+		procedureFilter.append("activities.functionary", email);
+
+		// ..
+
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
@@ -97,6 +133,8 @@ public class FunctionaryServices {
 			dataset.add(item);
 		}
 
+		log.info("Consult procedures by id done");
+		
 		return dataset;
 	}
 
@@ -110,37 +148,40 @@ public class FunctionaryServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
-		
+
 		log.info("Cambiando estado a tramite: " + pRequest.body());
+		
 		Object response = null;
-		java.util.Date utilDate = new java.util.Date(); //fecha actual
-		  long lnMilisegundos = utilDate.getTime();
-		  java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
-		  
+		java.util.Date utilDate = new java.util.Date(); // fecha actual
+		long lnMilisegundos = utilDate.getTime();
+		java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
+
 		List<Document> procedureFilter = new ArrayList<Document>();
+		
 		try {
+			
+			log.info("Body: " + pRequest.body());
 			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
-			ArrayList<Document> procedureRequest = DataBaseUtil.find(
-					new Document().append("fileNumber", pRequest.params(":procedureId")),
-					PROCEDURESREQUEST);
+			
+			ArrayList<Document> procedureRequest = DataBaseUtil
+					.find(new Document().append("fileNumber", pRequest.params(":procedureId")), PROCEDURESREQUEST);
 			Document procedure = (Document) procedureRequest.get(0);
 			@SuppressWarnings("unchecked")
 			ArrayList<Document> histories = (ArrayList<Document>) procedure.get("histories");
 
-			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")),
-					sqlDate.toString(), 
-					pRequest.queryParams("email"),
-					status.getStatusHistory(), pRequest.queryParams("comment")).toDocument());
-			
-			procedureFilter.add(
-					new Document("fileNumber", new Document("$eq", pRequest.params(":procedureId"))));
+			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(),
+					pRequest.queryParams("email"), status.getStatusHistory(), pRequest.queryParams("comment"))
+							.toDocument());
+
+			procedureFilter.add(new Document("fileNumber", new Document("$eq", pRequest.params(":procedureId"))));
 			procedureFilter.add(new Document("activities",
 					new Document("$elemMatch", new Document("step", Integer.parseInt(pRequest.params(":stepId"))))));
-		
+
 			Document replaceValue = new Document("activities.$.status", status.getStatusActivity());
 
 			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
-			DataBaseUtil.compositeUpdate(procedureFilter, new Document("status", status.getStatusProcedure()), PROCEDURESREQUEST);
+			DataBaseUtil.compositeUpdate(procedureFilter, new Document("status", status.getStatusProcedure()),
+					PROCEDURESREQUEST);
 			DataBaseUtil.compositeUpdate(procedureFilter, new Document("histories", histories), PROCEDURESREQUEST);
 
 			response = messager.getOkMessage(status.getStatusProcedure());
@@ -148,8 +189,8 @@ public class FunctionaryServices {
 			log.info("Problem writting : " + e.getMessage());
 		}
 
+		log.info("Procedure status updated done");
 		
-
 		return response;
 
 	}

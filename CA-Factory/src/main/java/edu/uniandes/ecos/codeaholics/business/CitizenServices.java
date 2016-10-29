@@ -61,13 +61,23 @@ public class CitizenServices {
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.queryParams("procedure"));
+		procedureFilter.append("slug", pRequest.params(":name"));
+				
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		
+		if( documents.isEmpty()) {
+			log.info("No data found for " + pRequest.params(":name") );
+		}
+		
 		for (Document item : documents) {
 			dataset.add(item);
 		}
+		
+		log.info("getProcedure done");
+		
 		pResponse.type("application/json");
 		return dataset;
+	
 	}
 
 	/***
@@ -287,7 +297,9 @@ public class CitizenServices {
 			procedure1.put("city", "Palestina");
 			procedure1.put("status", "Finalizado");
 			dataset.add(procedure1);
-			System.out.println(dataset);
+			
+			log.info(dataset);
+			
 			Document procedure2 = new Document();
 			procedure2.put("id", 2);
 			procedure2.put("name", "Jeison");
@@ -296,7 +308,7 @@ public class CitizenServices {
 			procedure2.put("status", "En proceso");
 			dataset.add(procedure2);
 
-			System.out.println(dataset);
+			log.info(dataset);
 		}
 
 		return dataset;
@@ -350,7 +362,9 @@ public class CitizenServices {
 			item.remove("state");
 			item.remove("schedule");
 			dataset.add(item);
-			System.out.println("Lo encontro");
+			
+			log.info("Lo encontro");
+			
 		}
 
 		return dataset;
