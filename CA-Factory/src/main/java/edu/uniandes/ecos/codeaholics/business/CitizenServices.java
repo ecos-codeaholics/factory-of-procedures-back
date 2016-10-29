@@ -159,24 +159,31 @@ public class CitizenServices {
 	 * solicitud.
 	 * 
 	 * @param pRequest
-	 *            request
+	 *            request (mayoralty name and procedure name are send inside the route adn the citizen's email is send as a parameter)
 	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
+		System.out.println("Enter to the startProcedure method");
+		System.out.println(pRequest.body());
+		System.out.println(pRequest.params(":mayoraltyName"));
+		System.out.println(pRequest.params(":procedureName"));
+		System.out.println("param of the query request is: " + pRequest.queryParams("email"));
+		System.out.println(pRequest.uri());
 
 		Object response = null;
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
 		
 		Procedure procedure = new Procedure();
+		//procedureRequest.setProcedureClassName(procedure.getName());
 		procedureRequest.setProcedureClassName(procedure.getName());
 		procedureRequest.setActivities(procedure.getActivities());
 		
 		Citizen citizen = new Citizen();
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty(pRequest.params(":mayoraltyName"));
 
 		Document procedureData = new Document();
 		procedureRequest.setProcedureData(procedureData);
