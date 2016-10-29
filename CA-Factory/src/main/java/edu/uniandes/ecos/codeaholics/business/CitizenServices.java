@@ -297,7 +297,7 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("citizen.email", pRequest.queryParams("email"));
-		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);

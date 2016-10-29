@@ -169,7 +169,7 @@ public class ProcedureRequest {
 		procedureRequest.append(STARTDATE, this.getStartDate());
 		procedureRequest.append(FINISHDATE, this.getFinishDate());
 		procedureRequest.append(STATUS, this.getStatus());
-		//procedureRequest.append(HISTORIES, this.historiesDocuments());
+		procedureRequest.append(HISTORIES, historiesDocuments());
 		
 		return procedureRequest;
 	}
