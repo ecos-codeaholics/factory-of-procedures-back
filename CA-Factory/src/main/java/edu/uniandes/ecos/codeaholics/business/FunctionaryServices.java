@@ -4,11 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
-import edu.uniandes.ecos.codeaholics.persistence.History;
-import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +17,8 @@ import com.google.gson.GsonBuilder;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.persistence.History;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
 import spark.Response;
 
@@ -84,8 +82,8 @@ public class FunctionaryServices {
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("activities.functionary", pRequest.queryParams("email"));
-		procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
-
+		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
+		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
 		for (Document item : documents) {
@@ -111,7 +109,6 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	@SuppressWarnings("deprecation")
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 		
 		log.info("Cambiando estado a tramite: " + pRequest.body());
@@ -124,9 +121,10 @@ public class FunctionaryServices {
 		try {
 			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
 			ArrayList<Document> procedureRequest = DataBaseUtil.find(
-					new Document().append("fileNumber", Long.parseLong(pRequest.params(":procedureId"))),
+					new Document().append("fileNumber", pRequest.params(":procedureId")),
 					PROCEDURESREQUEST);
 			Document procedure = (Document) procedureRequest.get(0);
+			@SuppressWarnings("unchecked")
 			ArrayList<Document> histories = (ArrayList<Document>) procedure.get("histories");
 
 			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")),
@@ -135,7 +133,7 @@ public class FunctionaryServices {
 					status.getStatusHistory(), pRequest.queryParams("comment")).toDocument());
 			
 			procedureFilter.add(
-					new Document("fileNumber", new Document("$eq", Long.parseLong(pRequest.params(":procedureId")))));
+					new Document("fileNumber", new Document("$eq", pRequest.params(":procedureId"))));
 			procedureFilter.add(new Document("activities",
 					new Document("$elemMatch", new Document("step", Integer.parseInt(pRequest.params(":stepId"))))));
 		

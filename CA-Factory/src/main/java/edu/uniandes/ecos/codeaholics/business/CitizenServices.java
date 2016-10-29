@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.bson.Document;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -21,12 +23,14 @@ import spark.Request;
 import spark.Response;
 
 public class CitizenServices {
-
+	
+	private static Gson GSON = new GsonBuilder().serializeNulls().create();
+	
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
-	private static String USER_PROFILE = "citizen";
+	private static String CITIZEN = "citizen";
 
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
@@ -67,7 +71,7 @@ public class CitizenServices {
 	public static Object getCitizenList(Request pRequest, Response pResponse) {
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(USER_PROFILE);
+		ArrayList<Document> documents = DataBaseUtil.getAll(CITIZEN);
 		String fullName = "";
 		for (Document item : documents) {
 			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
@@ -108,7 +112,7 @@ public class CitizenServices {
 		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
+		ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN);
 		for (Document item : documents) {
 			item.remove("password");
 			item.remove("salt");
@@ -173,16 +177,23 @@ public class CitizenServices {
 		System.out.println(pRequest.uri());
 
 		Object response = null;
+		
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
 		
-		Procedure procedure = new Procedure();
-		//procedureRequest.setProcedureClassName(procedure.getName());
+		Document procedureFilter = new Document();
+		procedureFilter.append("slug", pRequest.queryParams("procedure"));
+		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		Procedure procedure = GSON.fromJson(procedures.get(0).toJson(), Procedure.class);
 		procedureRequest.setProcedureClassName(procedure.getName());
 		procedureRequest.setActivities(procedure.getActivities());
 		
-		Citizen citizen = new Citizen();
+		Document citizenFilter = new Document();
+		citizenFilter.append("name", pRequest.queryParams("citezen"));
+		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, PROCEDURES);
+		Citizen citizen = GSON.fromJson(citezens.get(0).toJson(), Citizen.class);
 		procedureRequest.setCitizen(citizen);
+		String mayoralty= "";
 		procedureRequest.setMayoralty(pRequest.params(":mayoraltyName"));
 
 		Document procedureData = new Document();
@@ -291,6 +302,7 @@ public class CitizenServices {
 			item.remove("state");
 			item.remove("schedule");
 			dataset.add(item);
+			System.out.println("Lo encontro");
 		}
 
 		// pResponse.type("application/json");
