@@ -109,7 +109,13 @@ public class App {
 
 		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedure/", CitizenServices::getProcedure, GeneralUtil.json());
+		
+		// iniciar tramite /CITIZENS/ metodo POST {procedureData info json}
+		post(Routes.CITIZENS + "procedure/", CitizenServices::startProcedure, GeneralUtil.json());
 
+		//crear tramite iniciado por el ciudadano /CITIZENS/ metodo POST
+		post(Routes.CITIZENS + "procedure/iniciar/:mayoraltyName/:procedureName/", CitizenServices::startProcedure, GeneralUtil.json());
+		
 		/**
 		 * Routes Mayoralty
 		 */

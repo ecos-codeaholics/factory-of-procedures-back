@@ -4,11 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
-import edu.uniandes.ecos.codeaholics.persistence.History;
-import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +17,8 @@ import com.google.gson.GsonBuilder;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.persistence.History;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
 import spark.Response;
 
@@ -111,7 +109,6 @@ public class FunctionaryServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	@SuppressWarnings("deprecation")
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 		
 		log.info("Cambiando estado a tramite: " + pRequest.body());
@@ -127,6 +124,7 @@ public class FunctionaryServices {
 					new Document().append("fileNumber", pRequest.params(":procedureId")),
 					PROCEDURESREQUEST);
 			Document procedure = (Document) procedureRequest.get(0);
+			@SuppressWarnings("unchecked")
 			ArrayList<Document> histories = (ArrayList<Document>) procedure.get("histories");
 
 			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")),

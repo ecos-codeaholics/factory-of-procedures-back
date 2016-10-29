@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -28,7 +30,9 @@ import spark.Request;
 import spark.Response;
 
 public class CitizenServices {
-
+	
+	private static Gson GSON = new GsonBuilder().serializeNulls().create();
+	
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
@@ -36,6 +40,8 @@ public class CitizenServices {
 	private final static Logger log = LogManager.getLogger(CitizenServices.class);
 	
 	private static String USER_PROFILE = "citizen";
+
+	private static String CITIZEN = "citizen";
 
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
@@ -76,7 +82,7 @@ public class CitizenServices {
 	public static Object getCitizenList(Request pRequest, Response pResponse) {
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(USER_PROFILE);
+		ArrayList<Document> documents = DataBaseUtil.getAll(CITIZEN);
 		String fullName = "";
 		for (Document item : documents) {
 			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
@@ -117,7 +123,7 @@ public class CitizenServices {
 		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, USER_PROFILE);
+		ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN);
 		for (Document item : documents) {
 			item.remove("password");
 			item.remove("salt");
@@ -168,7 +174,7 @@ public class CitizenServices {
 	 * solicitud.
 	 * 
 	 * @param pRequest
-	 *            request
+	 *            request (mayoralty name and procedure name are send inside the route adn the citizen's email is send as a parameter)
 	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
@@ -179,23 +185,45 @@ public class CitizenServices {
 		//response = messager.getOkMessage("Proceso Exitoso");
 
 		Object response = null;
+		
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
 		
-		Procedure procedure = new Procedure();
-		procedureRequest.setProcedureClassName(procedure.getName());
-		procedureRequest.setActivities(procedure.getActivities());
+		String procedureName = pRequest.params(":procedureName");
+		Document procedureFilter = new Document();
+		procedureFilter.append("slug", procedureName);
+		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		if(!procedures.isEmpty()){
+			Document procedureDoc = procedures.get(0);
+			procedureDoc.remove("_id");
+			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
+			procedureRequest.setProcedureClassName(procedure.getName());
+			procedureRequest.setActivities(procedure.getActivities());
+		}else{
+			//hay que poner el mensaje
+		}
 		
-		Citizen citizen = new Citizen();
-		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
-
-		Document procedureData = new Document();
+		Document citizenFilter = new Document();
+		citizenFilter.append("email", pRequest.queryParams("email"));
+		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+		if(!citezens.isEmpty()){
+			Document citezenDoc = citezens.get(0);
+			citezenDoc.remove("_id");
+			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
+			procedureRequest.setCitizen(citizen);
+		}else{
+			//hay que poner el mensaje
+		}
+		
+		String mayoraltyName = pRequest.params(":mayoraltyName");
+		procedureRequest.setMayoralty(mayoraltyName);
+		
+		Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
 		procedureRequest.setProcedureData(procedureData);
 
 		Document deliveryDocs = new Document();
-		procedureRequest.setDeliveryDocs(deliveryDocs);
-		
+		//procedureRequest.setDeliveryDocs(deliveryDocs);
+		System.out.println(procedureRequest.toDocument());
 		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 		response = messager.getOkMessage("Registro Exitoso");
 		// HEAD
@@ -301,8 +329,7 @@ public class CitizenServices {
 			log.info(jwtEx.getMessage());
 			return "failed";	
 		}
-		
-		
+				
 		procedureFilter.append("citizen.email", email);
 		
 		//---
