@@ -199,10 +199,8 @@ public class CitizenServices {
 			ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
 			
 			Document citezenDoc = citezens.get(0);
-			String id = citezenDoc.get("_id").toString();
 			citezenDoc.remove("_id");
 			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
-			citizen.setId(id);
 			procedureRequest.setCitizen(citizen);
 			
 			String mayoraltyName = pRequest.params(":mayoraltyName");
