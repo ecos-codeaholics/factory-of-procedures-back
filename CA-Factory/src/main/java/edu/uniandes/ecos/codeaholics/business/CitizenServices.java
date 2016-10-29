@@ -232,7 +232,7 @@ public class CitizenServices {
 		procedureRequest.setProcedureData(procedureData);
 
 		Document deliveryDocs = new Document();
-		//procedureRequest.setDeliveryDocs(deliveryDocs);
+		procedureRequest.setDeliveryDocs(deliveryDocs);
 		System.out.println(procedureRequest.toDocument());
 		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 		response = messager.getOkMessage("Registro Exitoso");

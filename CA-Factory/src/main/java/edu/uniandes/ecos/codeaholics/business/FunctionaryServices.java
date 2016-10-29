@@ -4,6 +4,8 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
 import edu.uniandes.ecos.codeaholics.persistence.History;
+import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
 import spark.Response;
@@ -80,7 +84,7 @@ public class FunctionaryServices {
 		}
 
 		log.info("Consult procedures done");
-		
+
 		return dataset;
 
 	}
@@ -103,7 +107,6 @@ public class FunctionaryServices {
 		Document procedureFilter = new Document();
 
 		// .
-
 		String token = pRequest.headers("Authorization").split(" ")[1];
 
 		String email;
@@ -116,7 +119,6 @@ public class FunctionaryServices {
 		}
 
 		procedureFilter.append("activities.functionary", email);
-
 		// ..
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
@@ -134,7 +136,7 @@ public class FunctionaryServices {
 		}
 
 		log.info("Consult procedures by id done");
-		
+
 		return dataset;
 	}
 
@@ -150,39 +152,86 @@ public class FunctionaryServices {
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 
 		log.info("Cambiando estado a tramite: " + pRequest.body());
+
+		// .
+		String token = pRequest.headers("Authorization").split(" ")[1];
+
+		String email;
+
+		try {
+			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}
+		// ..
 		
 		Object response = null;
+
 		java.util.Date utilDate = new java.util.Date(); // fecha actual
 		long lnMilisegundos = utilDate.getTime();
 		java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
 
-		List<Document> procedureFilter = new ArrayList<Document>();
-		
+		Document procedureFilter = new Document();
 		try {
-			
-			log.info("Body: " + pRequest.body());
+			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
+
 			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
+			ArrayList<Document> procedureRequest = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+
+			Document procedureDoc = procedureRequest.get(0);
+			String id = procedureDoc.get("_id").toString();
 			
-			ArrayList<Document> procedureRequest = DataBaseUtil
-					.find(new Document().append("fileNumber", pRequest.params(":procedureId")), PROCEDURESREQUEST);
-			Document procedure = (Document) procedureRequest.get(0);
-			@SuppressWarnings("unchecked")
-			ArrayList<Document> histories = (ArrayList<Document>) procedure.get("histories");
+			Date startDate = (Date) procedureDoc.get("startDate");
+			procedureDoc.remove("_id");
+			procedureDoc.remove("startDate");
+			
+			ProcedureRequest procedure = GSON.fromJson(procedureDoc.toJson(), ProcedureRequest.class);
+			procedure.setId(id);
+			procedure.setStartDate(startDate);
+			
+			//.
+			procedure.addHistory( new History(Integer.parseInt(pRequest.params(":stepId")), 
+					sqlDate.toString(),
+					email, 
+					status.getStatusHistory(), 
+					pRequest.queryParams("comment")));
+			//..
+			
+			int maxStep = -1;
+			int firstStep = -1;
+			int i;
+		
+			for (i = 0; i < procedure.getActivities().size(); i++) {
+				if (i == 0)
+					firstStep = procedure.getActivities().get(i).getStep();
+				if (procedure.getActivities().get(i).getStep() > maxStep)
+					maxStep = procedure.getActivities().get(i).getStep();
+				if (procedure.getActivities().get(i).getStep() < firstStep)
+					firstStep = procedure.getActivities().get(i).getStep();
+				if (procedure.getActivities().get(i).getStep() == Integer.parseInt(pRequest.params(":stepId"))) {
+					procedure.getActivities().get(i).setStatus(status.getStatusActivity());
+				}
+			}
 
-			histories.add(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(),
-					pRequest.queryParams("email"), status.getStatusHistory(), pRequest.queryParams("comment"))
-							.toDocument());
+			if (maxStep == Integer.parseInt(pRequest.params(":stepId"))
+					|| status.getStatusProcedure() == "Finalizado") {
+				procedure.setStatus("Finalizado");
+				procedure.setFinishDate(new Date());
+				procedure.getActivities().get(i - 1).setStatus("Finalizado");
+			}
+			
+			if (status.getStatusHistory() == "Rechazado") {
+				if (1 == firstStep) {
+					procedure.setStatus("Finalizado");
+					procedure.setFinishDate(new Date());
+				} else {
+					procedure.getActivities().get(i - 1).setStatus("Pendiente");
+					procedure.getActivities().get(i - 2).setStatus("En curso");
+				}
+			}
 
-			procedureFilter.add(new Document("fileNumber", new Document("$eq", pRequest.params(":procedureId"))));
-			procedureFilter.add(new Document("activities",
-					new Document("$elemMatch", new Document("step", Integer.parseInt(pRequest.params(":stepId"))))));
-
-			Document replaceValue = new Document("activities.$.status", status.getStatusActivity());
-
-			DataBaseUtil.compositeUpdate(procedureFilter, replaceValue, PROCEDURESREQUEST);
-			DataBaseUtil.compositeUpdate(procedureFilter, new Document("status", status.getStatusProcedure()),
-					PROCEDURESREQUEST);
-			DataBaseUtil.compositeUpdate(procedureFilter, new Document("histories", histories), PROCEDURESREQUEST);
+			DataBaseUtil.update(procedureFilter, procedure.toDocument(), PROCEDURESREQUEST);
 
 			response = messager.getOkMessage(status.getStatusProcedure());
 		} catch (Exception e) {
@@ -190,7 +239,7 @@ public class FunctionaryServices {
 		}
 
 		log.info("Procedure status updated done");
-		
+
 		return response;
 
 	}
