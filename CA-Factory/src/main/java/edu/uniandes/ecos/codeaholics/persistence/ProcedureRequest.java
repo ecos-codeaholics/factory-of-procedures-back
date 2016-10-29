@@ -30,7 +30,7 @@ public class ProcedureRequest {
 	
 	@SerializedName("_id")
 	private String _id;
-	private String procedureClassName;
+	private String className;
 	private String fileNumber;
 	private Citizen citizen;
 	private String mayoralty;
@@ -123,11 +123,11 @@ public class ProcedureRequest {
 	}
 	
 	public String getProcedureClassName() {
-		return procedureClassName;
+		return this.className;
 	}
 
 	public void setProcedureClassName(String procedureClassName) {
-		this.procedureClassName = procedureClassName;
+		this.className = procedureClassName;
 	}
 	
 	public ArrayList<Document> activitiesDocuments() {
@@ -146,6 +146,14 @@ public class ProcedureRequest {
 
 	public void setHistories(ArrayList<History> histories) {
 		this.histories = histories;
+	}
+	public void addHistory(History history){
+		if(this.histories == null){
+			this.histories = new ArrayList<History>();
+			this.histories.add(history);
+		}else{
+			this.histories.add(history);
+		}
 	}
 	public ArrayList<Document> historiesDocuments(){
 		ArrayList<Document> historiesDoc = new ArrayList<Document>();
