@@ -169,39 +169,47 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
-		System.out.println("Enter to the startProcedure method");
-		System.out.println(pRequest.body());
-		System.out.println(pRequest.params(":mayoraltyName"));
-		System.out.println(pRequest.params(":procedureName"));
-		System.out.println("param of the query request is: " + pRequest.queryParams("email"));
-		System.out.println(pRequest.uri());
 
 		Object response = null;
 		
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
 		
+		String procedureName = pRequest.params(":procedureName");
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.queryParams("procedure"));
+		procedureFilter.append("slug", procedureName);
 		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
-		Procedure procedure = GSON.fromJson(procedures.get(0).toJson(), Procedure.class);
-		procedureRequest.setProcedureClassName(procedure.getName());
-		procedureRequest.setActivities(procedure.getActivities());
+		if(!procedures.isEmpty()){
+			Document procedureDoc = procedures.get(0);
+			procedureDoc.remove("_id");
+			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
+			procedureRequest.setProcedureClassName(procedure.getName());
+			procedureRequest.setActivities(procedure.getActivities());
+		}else{
+			//hay que poner el mensaje
+		}
 		
 		Document citizenFilter = new Document();
-		citizenFilter.append("name", pRequest.queryParams("citezen"));
-		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, PROCEDURES);
-		Citizen citizen = GSON.fromJson(citezens.get(0).toJson(), Citizen.class);
-		procedureRequest.setCitizen(citizen);
-		String mayoralty= "";
-		procedureRequest.setMayoralty(pRequest.params(":mayoraltyName"));
-
-		Document procedureData = new Document();
+		citizenFilter.append("email", pRequest.queryParams("email"));
+		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+		if(!citezens.isEmpty()){
+			Document citezenDoc = citezens.get(0);
+			citezenDoc.remove("_id");
+			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
+			procedureRequest.setCitizen(citizen);
+		}else{
+			//hay que poner el mensaje
+		}
+		
+		String mayoraltyName = pRequest.params(":mayoraltyName");
+		procedureRequest.setMayoralty(mayoraltyName);
+		
+		Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
 		procedureRequest.setProcedureData(procedureData);
 
 		Document deliveryDocs = new Document();
-		procedureRequest.setDeliveryDocs(deliveryDocs);
-		
+		//procedureRequest.setDeliveryDocs(deliveryDocs);
+		System.out.println(procedureRequest.toDocument());
 		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 		response = messager.getOkMessage("Registro Exitoso");
 		// HEAD
