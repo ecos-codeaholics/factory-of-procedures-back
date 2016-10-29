@@ -149,7 +149,7 @@ public class ProcedureRequest {
 	}
 	public ArrayList<Document> historiesDocuments(){
 		ArrayList<Document> historiesDoc = new ArrayList<Document>();
-		if (!this.histories.isEmpty()) {
+		if(!this.histories.isEmpty()){
 			for (int i = 0; i < this.histories.size(); i++) {
 				historiesDoc.add(this.histories.get(i).toDocument());
 			}
@@ -169,7 +169,11 @@ public class ProcedureRequest {
 		procedureRequest.append(STARTDATE, this.getStartDate());
 		procedureRequest.append(FINISHDATE, this.getFinishDate());
 		procedureRequest.append(STATUS, this.getStatus());
-		procedureRequest.append(HISTORIES, historiesDocuments());
+		if(this.histories != null){
+			procedureRequest.append(HISTORIES, historiesDocuments());
+		}else{
+			procedureRequest.append(HISTORIES, null);
+		}
 		
 		return procedureRequest;
 	}
