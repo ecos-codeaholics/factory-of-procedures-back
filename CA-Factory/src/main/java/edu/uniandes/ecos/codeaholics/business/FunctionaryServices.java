@@ -24,7 +24,7 @@ import spark.Response;
 
 public class FunctionaryServices {
 
-	private final static Logger log = LogManager.getLogger(AuthServices.class);
+	private final static Logger log = LogManager.getLogger(FunctionaryServices.class);
 
 	private static IMessageSvc messager = new ResponseMessage();
 

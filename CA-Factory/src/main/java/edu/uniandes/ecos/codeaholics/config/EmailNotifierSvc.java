@@ -39,7 +39,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 	public enum EmailType {
 
-		REGISTRATION, RESET, UPDATE, CHANGE;
+		REGISTRATION, RESET, UPDATE, CHANGE, INITPROCEDURE;
 
 	}
 
@@ -92,14 +92,32 @@ public class EmailNotifierSvc implements INotifierSvc {
 	 * @throws AddressException
 	 * @throws MessagingException
 	 */
-	public void send(EmailType pContext, ArrayList<String> pToEmail) throws AddressException, MessagingException {
+	public void send(EmailType pContext, String pToEmail) throws AddressException, MessagingException {
+
+		if (pContext == EmailType.REGISTRATION) {
+			sendRegister(pToEmail);
+		}
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param pContext
+	 * @param pToEmail
+	 *            ArrayList, the first parameter is the email which are going to
+	 *            recive the msj, In the case of recovery the second parameter
+	 *            is the new password
+	 * @throws AddressException
+	 * @throws MessagingException
+	 */
+	public void send(EmailType pContext, String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException {
 
 		if (pContext == EmailType.RESET) {
-			sendReset(pToEmail);
-		} else if (pContext == EmailType.REGISTRATION) {
-			sendRegister(pToEmail);
+			sendReset(pToEmail, pParams);
 		} else if (pContext == EmailType.CHANGE) {
-			sendChange(pToEmail);
+			sendChange(pToEmail, pParams);
+		}else if(pContext == EmailType.INITPROCEDURE){
+			sendStartProcedure(pToEmail, pParams);
 		}
 	}
 
@@ -111,49 +129,39 @@ public class EmailNotifierSvc implements INotifierSvc {
 	 * @throws AddressException
 	 * @throws MessagingException
 	 */
-	public void sendReset(ArrayList<String> pToEmail) throws AddressException, MessagingException {
-		generateMailMessage = new MimeMessage(getMailSession);
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-		generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
-		String emailBody = "Su clave ha sido restaurada de manera exitosa en nuestro sistema. "
-				+ "<br><br><br>Su nuevo password es: " + pToEmail.get(1)
-				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
-		generateMailMessage.setContent(emailBody, "text/html");
-		log.debug("Mail Session has been created successfully..");
-		log.info("-----------------------------------");
-		log.info("Get Session and Send mail to recover the password");
-		log.info("-----------------------------------");
-		Transport transport = getMailSession.getTransport("smtp");
-		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
-		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		transport.close();
-	}
-
-	public void sendRegister(ArrayList<String> pToEmail) throws AddressException, MessagingException {
-		generateMailMessage = new MimeMessage(getMailSession);
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-		generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
+	private void sendRegister(String pToEmail) throws AddressException, MessagingException {
 		String emailBody = "Su registro se ha realizado de manera exitosa en nuestro sistema. "
 				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
-		generateMailMessage.setContent(emailBody, "text/html");
-		log.debug("Mail Session has been created successfully..");
-
-		log.info("-----------------------------------");
-		log.info("Get Session and Send mail");
-		log.info("-----------------------------------");
-		Transport transport = getMailSession.getTransport("smtp");
-		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
-		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		transport.close();
+		sendEmail(pToEmail,"Bienvenido a la Fabrica de Tramites", emailBody);
+	}
+	
+	private void sendReset(String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException {
+		String emailBody = "Su clave ha sido restaurada de manera exitosa en nuestro sistema. "
+				+ "<br><br><br>Su nuevo password es: " + pParams.get(0)
+				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+		sendEmail(pToEmail,"Reseteo clave en el Sitema", emailBody);
 	}
 
-	public void sendChange(ArrayList<String> pToEmail) throws AddressException, MessagingException {
-		generateMailMessage = new MimeMessage(getMailSession);
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail.get(0)));
-		generateMailMessage.setSubject("Bienvenido a la Fabrica de Tramites");
+	private void sendChange(String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException {
 		String emailBody = "Su clave ha sido cambiada exitosamente en nuestro sistema. "
-				+ "<br><br><br>Su nueva clave es: " + pToEmail.get(1)
+				+ "<br><br><br>Su nueva clave es: " + pParams.get(0)
 				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+		sendEmail(pToEmail,"Cambio clave en el Sitema", emailBody);
+	}
+	
+	private void sendStartProcedure(String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException {
+		String emailBody = "Su solicitud de tramite fue registrada por nuestro sistema de forma exitosa. "
+				+ "<br><br><br>Solicitud: " + pParams.get(0)
+				+ "<br><br><br>Numero de Radicado: " + pParams.get(1)
+				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+		sendEmail(pToEmail,"Tramite Iniciado", emailBody);
+	}
+	
+	private void sendEmail(String pToEmail, String pSubject,String pEmailBody) throws AddressException, MessagingException {
+		generateMailMessage = new MimeMessage(getMailSession);
+		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(pToEmail));
+		generateMailMessage.setSubject(pSubject);
+		String emailBody = pEmailBody;
 		generateMailMessage.setContent(emailBody, "text/html");
 		log.debug("Mail Session has been created successfully..");
 		log.info("-----------------------------------");

@@ -50,14 +50,12 @@ public class EmailNotifierTest {
 		
 		emailer.add();
 		emailer.build();
-		ArrayList<String> pToEmail = new ArrayList<String>();
-		pToEmail.add("osorio.af@gmail.com");
 
 		try {
 			TestsUtil.isConnected();
 			for(Iterator<EmailType> itr = emailTypes.iterator(); itr.hasNext(); ) {
 			    EmailType type = itr.next();
-			    emailer.send(type, pToEmail);
+			    emailer.send(type, "osorio.af@gmail.com");
 			    success = true;
 			}
 		} catch (AddressException e) {

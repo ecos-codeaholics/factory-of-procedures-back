@@ -129,16 +129,8 @@ public class AuthServices {
 			citizen.setUserProfile(CITIZEN_USER_PROFILE);
 			DataBaseUtil.save(citizen.toDocument(), CITIZEN_USER_PROFILE);
 
-			// create array list to send as a parameter to the EmailNotifierSvc
-			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(citizen.getEmail());
-
-			// TODO: replace with new service -
-			// EmailNotifier.send(EmailType.REGISTRATION,citizen.getEmail());
-			// Notification.sendEmail(citizen.getEmail());
-			// Send Email
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.REGISTRATION, parametersEmail);
+			sendEmail.send(EmailType.REGISTRATION, citizen.getEmail());
 
 			response = messager.getOkMessage("Registro Exitoso");
 
@@ -248,13 +240,12 @@ public class AuthServices {
 			// create array list to ssend as a parameter to the EmailNotifierSvc
 
 			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(data.getEmail());
 			parametersEmail.add(newPassword);
 
 			// Send Email
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
 
-			sendPassword.send(EmailType.CHANGE, parametersEmail);
+			sendPassword.send(EmailType.CHANGE, data.getEmail(), parametersEmail);
 
 			response = messager.getOkMessage("Proceso Exitoso");
 
@@ -339,12 +330,11 @@ public class AuthServices {
 
 			// create array list to send as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();
-			parametersEmail.add(documents.get(0).getString("email"));
 			parametersEmail.add(newPassword);
 
 			// Send Email
 			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
-			sendPassword.send(EmailType.CHANGE, parametersEmail);
+			sendPassword.send(EmailType.CHANGE, documents.get(0).getString("email"), parametersEmail);
 
 			response = messager.getOkMessage("Proceso Exitoso");
 

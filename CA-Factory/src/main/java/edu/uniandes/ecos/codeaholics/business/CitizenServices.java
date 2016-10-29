@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
 import com.google.gson.Gson;
@@ -13,6 +15,8 @@ import com.google.gson.JsonSyntaxException;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
+import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
+import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
@@ -27,6 +31,8 @@ public class CitizenServices {
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 	
 	private static IMessageSvc messager = new ResponseMessage();
+	
+	private final static Logger log = LogManager.getLogger(CitizenServices.class);
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
@@ -178,42 +184,49 @@ public class CitizenServices {
 		String procedureName = pRequest.params(":procedureName");
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", procedureName);
-		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
-		if(!procedures.isEmpty()){
+		
+		try {
+			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+			
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
 			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
 			procedureRequest.setProcedureClassName(procedure.getName());
 			procedureRequest.setActivities(procedure.getActivities());
-		}else{
-			//hay que poner el mensaje
-		}
-		
-		Document citizenFilter = new Document();
-		citizenFilter.append("email", pRequest.queryParams("email"));
-		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
-		if(!citezens.isEmpty()){
+			
+			Document citizenFilter = new Document();
+			citizenFilter.append("email", pRequest.queryParams("email"));
+			ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+			
 			Document citezenDoc = citezens.get(0);
+			String id = citezenDoc.get("_id").toString();
 			citezenDoc.remove("_id");
 			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
+			citizen.setId(id);
 			procedureRequest.setCitizen(citizen);
-		}else{
-			//hay que poner el mensaje
-		}
-		
-		String mayoraltyName = pRequest.params(":mayoraltyName");
-		procedureRequest.setMayoralty(mayoraltyName);
-		
-		Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
-		procedureRequest.setProcedureData(procedureData);
+			
+			String mayoraltyName = pRequest.params(":mayoraltyName");
+			procedureRequest.setMayoralty(mayoraltyName);
+			
+			Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
+			procedureRequest.setProcedureData(procedureData);
 
-		Document deliveryDocs = new Document();
-		procedureRequest.setDeliveryDocs(deliveryDocs);
-		System.out.println(procedureRequest.toDocument());
-		DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+			Document deliveryDocs = new Document();
+			procedureRequest.setDeliveryDocs(deliveryDocs);
+			System.out.println(procedureRequest.toDocument());
+			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+			
+			ArrayList<String> parameters = new ArrayList<>();
+			parameters.add(procedureRequest.getProcedureClassName());
+			parameters.add(procedureRequest.getFileNumber());
+			
+			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
+			
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
 		response = messager.getOkMessage("Registro Exitoso");
-		// HEAD
-		// res.status(200);
 		pResponse.type("application/json");
 		// return "Proceso Exitoso";
 
