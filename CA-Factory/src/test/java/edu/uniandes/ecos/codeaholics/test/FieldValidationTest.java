@@ -30,20 +30,29 @@ public class FieldValidationTest {
 	private static String badEmail = "andres@uniandes";
 	private static String goodName = "Juan";
 	private static String badName = "F3l1p*";
+	private static String goodNumber = "1234567890";
+	private static String badNumber = "1234R6%";
 	
 	@Test
 	public void emailValidationTest() {
-		
-		assertTrue( ValidationUtil.validateEmail(goodEmail) );
-		assertFalse( ValidationUtil.validateEmail(badEmail) );
+
+		assertTrue(ValidationUtil.validate.apply(goodEmail, ValidationUtil.PATTERN_EMAIL));
+		assertFalse(ValidationUtil.validate.apply(badEmail, ValidationUtil.PATTERN_EMAIL));
 	}
 
 	@Test
 	public void nameValidationTest() {
-		
-		assertTrue( ValidationUtil.validateLetters(goodName) );
-		assertFalse( ValidationUtil.validateLetters(badName) );
 
-		
+		assertTrue(ValidationUtil.validate.apply(goodName, ValidationUtil.PATTERN_NAME));
+		assertFalse(ValidationUtil.validate.apply(badName, ValidationUtil.PATTERN_NAME));
+
+	}
+	
+	@Test
+	public void numberValidationTest() {
+
+		assertTrue(ValidationUtil.validate.apply(goodNumber, ValidationUtil.PATTERN_NUMBER));
+		assertFalse(ValidationUtil.validate.apply(badNumber, ValidationUtil.PATTERN_NUMBER));
+
 	}
 }

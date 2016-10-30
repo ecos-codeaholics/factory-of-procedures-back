@@ -5,7 +5,6 @@
 package edu.uniandes.ecos.codeaholics.business;
 
 import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
 import edu.uniandes.ecos.codeaholics.persistence.History;
-import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
@@ -54,16 +52,15 @@ public class FunctionaryServices {
 		Document procedureFilter = new Document();
 
 		// .
-		String token = pRequest.headers("Authorization").split(" ")[1];
-
 		String email;
 
 		try {
-			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
 		}
+		// ..
 
 		procedureFilter.append("activities.functionary", email);
 
@@ -106,20 +103,18 @@ public class FunctionaryServices {
 
 		Document procedureFilter = new Document();
 
-		// .
-		String token = pRequest.headers("Authorization").split(" ")[1];
-
+		//.
 		String email;
 
 		try {
-			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
 		}
+		//..
 
 		procedureFilter.append("activities.functionary", email);
-		// ..
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
@@ -153,19 +148,17 @@ public class FunctionaryServices {
 
 		log.info("Cambiando estado a tramite: " + pRequest.body());
 
-		// .
-		String token = pRequest.headers("Authorization").split(" ")[1];
-
+		//.
 		String email;
 
 		try {
-			email = Authorization.getTokenClaim(token, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
 		}
-		// ..
-		
+		//..
+
 		Object response = null;
 
 		java.util.Date utilDate = new java.util.Date(); // fecha actual
@@ -181,27 +174,24 @@ public class FunctionaryServices {
 
 			Document procedureDoc = procedureRequest.get(0);
 			String id = procedureDoc.get("_id").toString();
-			
+
 			Date startDate = (Date) procedureDoc.get("startDate");
 			procedureDoc.remove("_id");
 			procedureDoc.remove("startDate");
-			
+
 			ProcedureRequest procedure = GSON.fromJson(procedureDoc.toJson(), ProcedureRequest.class);
 			procedure.setId(id);
 			procedure.setStartDate(startDate);
-			
-			//.
-			procedure.addHistory( new History(Integer.parseInt(pRequest.params(":stepId")), 
-					sqlDate.toString(),
-					email, 
-					status.getStatusHistory(), 
-					pRequest.queryParams("comment")));
-			//..
-			
+
+			// .
+			procedure.addHistory(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(), email,
+					status.getStatusHistory(), pRequest.queryParams("comment")));
+			// ..
+
 			int maxStep = -1;
 			int firstStep = -1;
 			int i;
-		
+
 			for (i = 0; i < procedure.getActivities().size(); i++) {
 				if (i == 0)
 					firstStep = procedure.getActivities().get(i).getStep();
@@ -220,7 +210,7 @@ public class FunctionaryServices {
 				procedure.setFinishDate(new Date());
 				procedure.getActivities().get(i - 1).setStatus("Finalizado");
 			}
-			
+
 			if (status.getStatusHistory() == "Rechazado") {
 				if (1 == firstStep) {
 					procedure.setStatus("Finalizado");

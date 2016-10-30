@@ -2,6 +2,11 @@ body {
     margin: 0;
     padding: 50px;
 }
-h1 {
-    color: blue;
+header, footer {
+    padding: 1em;
+    color: white;
+    background-color: #0080FF;
+    clear: left;
+    text-align: center;
 }
+

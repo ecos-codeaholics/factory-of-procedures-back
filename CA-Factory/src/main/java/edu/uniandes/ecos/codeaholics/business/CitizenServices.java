@@ -30,16 +30,14 @@ import spark.Request;
 import spark.Response;
 
 public class CitizenServices {
-	
+
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-	
+
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
 	private final static Logger log = LogManager.getLogger(CitizenServices.class);
-	
-	private static String USER_PROFILE = "citizen";
 
 	private static String CITIZEN = "citizen";
 
@@ -62,22 +60,22 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", pRequest.params(":name"));
-				
+
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
-		
-		if( documents.isEmpty()) {
-			log.info("No data found for " + pRequest.params(":name") );
+
+		if (documents.isEmpty()) {
+			log.info("No data found for " + pRequest.params(":name"));
 		}
-		
+
 		for (Document item : documents) {
 			dataset.add(item);
 		}
-		
+
 		log.info("getProcedure done");
-		
+
 		pResponse.type("application/json");
 		return dataset;
-	
+
 	}
 
 	/***
@@ -159,10 +157,10 @@ public class CitizenServices {
 
 		try {
 
-			String token = pRequest.headers("Authorization").split(" ")[1];
-			
-			String email = Authorization.getTokenClaim( token, Authorization.TOKEN_EMAIL_KEY);
-						
+			// .
+			String email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			// ..
+
 			if (email != null) {
 				Authentication.closeSession(email);
 				response = messager.getOkMessage("Proceso Exitoso");
@@ -184,50 +182,51 @@ public class CitizenServices {
 	 * solicitud.
 	 * 
 	 * @param pRequest
-	 *            request (mayoralty name and procedure name are send inside the route adn the citizen's email is send as a parameter)
+	 *            request (mayoralty name and procedure name are send inside the
+	 *            route adn the citizen's email is send as a parameter)
 	 * @param pResponse
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
-		//Object response;
-		//response = messager.getOkMessage("Proceso Exitoso");
+		// Object response;
+		// response = messager.getOkMessage("Proceso Exitoso");
 
 		Object response = null;
-		
+
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 		procedureRequest.setFileNumber(UUID.randomUUID().toString());
-		
+
 		String procedureName = pRequest.params(":procedureName");
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", procedureName);
 		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
-		if(!procedures.isEmpty()){
+		if (!procedures.isEmpty()) {
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
 			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
 			procedureRequest.setProcedureClassName(procedure.getName());
 			procedureRequest.setActivities(procedure.getActivities());
-		}else{
-			//hay que poner el mensaje
+		} else {
+			// hay que poner el mensaje
 		}
-		
+
 		Document citizenFilter = new Document();
 		citizenFilter.append("email", pRequest.queryParams("email"));
 		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
-		if(!citezens.isEmpty()){
+		if (!citezens.isEmpty()) {
 			Document citezenDoc = citezens.get(0);
 			citezenDoc.remove("_id");
 			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
 			procedureRequest.setCitizen(citizen);
-		}else{
-			//hay que poner el mensaje
+		} else {
+			// hay que poner el mensaje
 		}
-		
+
 		String mayoraltyName = pRequest.params(":mayoraltyName");
 		procedureRequest.setMayoralty(mayoraltyName);
-		
+
 		Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
 		procedureRequest.setProcedureData(procedureData);
 
@@ -258,19 +257,17 @@ public class CitizenServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
-		//System.out.println("param of the request is: " + pRequest.queryParams("email"));
-
-		String token = pRequest.headers("Authorization").split(" ")[1];
-		
+		// .
 		String email;
-		
+
 		try {
-			email = Authorization.getTokenClaim( token, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";	
+			return "failed";
 		}
-			
+		// ..
+
 		Document procedureFilter = new Document();
 		procedureFilter.append("citizen.email", email);
 
@@ -297,9 +294,9 @@ public class CitizenServices {
 			procedure1.put("city", "Palestina");
 			procedure1.put("status", "Finalizado");
 			dataset.add(procedure1);
-			
+
 			log.info(dataset);
-			
+
 			Document procedure2 = new Document();
 			procedure2.put("id", 2);
 			procedure2.put("name", "Jeison");
@@ -331,25 +328,26 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 
-		String token = pRequest.headers("Authorization").split(" ")[1];
-		
+		// .
 		String email;
-		
+
 		try {
-			email = Authorization.getTokenClaim( token, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";	
+			return "failed";
 		}
-				
-		procedureFilter.append("citizen.email", email);
-		
-		//---
-		//procedureFilter.append("fileNumber", Long.parseLong(pRequest.params(":id")));
-		//procedureFilter.append("citizen.email", pRequest.queryParams("email"));
-		
-		procedureFilter.append("fileNumber", pRequest.params(":id"));
+		// ..
 
+		procedureFilter.append("citizen.email", email);
+
+		// ---
+		// procedureFilter.append("fileNumber",
+		// Long.parseLong(pRequest.params(":id")));
+		// procedureFilter.append("citizen.email",
+		// pRequest.queryParams("email"));
+
+		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
@@ -362,9 +360,9 @@ public class CitizenServices {
 			item.remove("state");
 			item.remove("schedule");
 			dataset.add(item);
-			
+
 			log.info("Lo encontro");
-			
+
 		}
 
 		return dataset;
