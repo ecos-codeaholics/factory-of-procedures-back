@@ -190,9 +190,6 @@ public class CitizenServices {
 	 */
 	public static Object startProcedure(Request pRequest, Response pResponse) {
 
-		// Object response;
-		// response = messager.getOkMessage("Proceso Exitoso");
-
 		Object response = null;
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
@@ -201,7 +198,9 @@ public class CitizenServices {
 		String procedureName = pRequest.params(":procedureName");
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", procedureName);
+		
 		ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+
 		if (!procedures.isEmpty()) {
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
@@ -213,8 +212,22 @@ public class CitizenServices {
 		}
 
 		Document citizenFilter = new Document();
-		citizenFilter.append("email", pRequest.queryParams("email"));
+		
+		//.
+		String email;
+
+		try {
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}
+		
+		citizenFilter.append("email", email);	
+		//..
+		
 		ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+		
 		if (!citezens.isEmpty()) {
 			Document citezenDoc = citezens.get(0);
 			citezenDoc.remove("_id");
@@ -323,7 +336,6 @@ public class CitizenServices {
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
 		log.info(pRequest.params(":id"));
-		log.info("param of the query request is: " + pRequest.queryParams("email"));
 		log.info(pRequest.uri());
 
 		Document procedureFilter = new Document();
@@ -341,12 +353,6 @@ public class CitizenServices {
 
 		procedureFilter.append("citizen.email", email);
 
-		// ---
-		// procedureFilter.append("fileNumber",
-		// Long.parseLong(pRequest.params(":id")));
-		// procedureFilter.append("citizen.email",
-		// pRequest.queryParams("email"));
-
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
@@ -361,10 +367,10 @@ public class CitizenServices {
 			item.remove("schedule");
 			dataset.add(item);
 
-			log.info("Lo encontro");
-
 		}
 
+		log.info("Consult procedures by id done");
+		
 		return dataset;
 	}
 
