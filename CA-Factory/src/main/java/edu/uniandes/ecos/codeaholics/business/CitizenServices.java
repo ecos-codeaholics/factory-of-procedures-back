@@ -61,12 +61,12 @@ public class CitizenServices {
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.params(":name"));
+		procedureFilter.append("slug", pRequest.params(":procedureName"));
 
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
 
 		if (documents.isEmpty()) {
-			log.info("No data found for " + pRequest.params(":name"));
+			log.info("No data found for " + pRequest.params(":procedureName"));
 		}
 
 		for (Document item : documents) {
