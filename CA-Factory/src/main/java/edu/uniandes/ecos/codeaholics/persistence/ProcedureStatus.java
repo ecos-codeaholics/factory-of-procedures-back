@@ -12,12 +12,20 @@ package edu.uniandes.ecos.codeaholics.persistence;
 public class ProcedureStatus {
 
 	String status;
+	String comment;
 
 	/**
 	 * @return the status
 	 */
 	public String getStatus() {
 		return status;
+	}
+	
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return comment;
 	}
 
 	public String getStatusHistory() {

@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
@@ -146,7 +147,7 @@ public class FunctionaryServices {
 	 */
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 
-		log.info("Cambiando estado a tramite: " + pRequest.body());
+		log.info("Changing procedure status: " + pRequest.body());
 
 		//.
 		String email;
@@ -162,8 +163,8 @@ public class FunctionaryServices {
 		Object response = null;
 
 		java.util.Date utilDate = new java.util.Date(); // fecha actual
-		long lnMilisegundos = utilDate.getTime();
-		java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
+		long lnMiliseconds = utilDate.getTime();
+		java.sql.Date sqlDate = new java.sql.Date(lnMiliseconds);
 
 		Document procedureFilter = new Document();
 		try {
@@ -184,8 +185,9 @@ public class FunctionaryServices {
 			procedure.setStartDate(startDate);
 
 			// .
+			String comment = GeneralUtil.extractFromBody(pRequest, "comment");
 			procedure.addHistory(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(), email,
-					status.getStatusHistory(), pRequest.queryParams("comment")));
+					status.getStatusHistory(), comment ));
 			// ..
 
 			int maxStep = -1;
@@ -205,14 +207,14 @@ public class FunctionaryServices {
 			}
 
 			if (maxStep == Integer.parseInt(pRequest.params(":stepId"))
-					|| status.getStatusProcedure() == "Finalizado") {
+					|| status.getStatusProcedure().equals("Finalizado") ) { 
 				procedure.setStatus("Finalizado");
 				procedure.setFinishDate(new Date());
 				procedure.getActivities().get(i - 1).setStatus("Finalizado");
 			}
 
-			if (status.getStatusHistory() == "Rechazado") {
-				if (1 == firstStep) {
+			if ( status.getStatusHistory().equals("Rechazado") ) {
+				if (firstStep == 1) { 
 					procedure.setStatus("Finalizado");
 					procedure.setFinishDate(new Date());
 				} else {
