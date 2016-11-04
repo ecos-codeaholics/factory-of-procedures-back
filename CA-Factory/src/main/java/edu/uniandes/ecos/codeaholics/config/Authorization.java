@@ -327,4 +327,21 @@ public final class Authorization {
 		return value;
 	}
 
+	/** Get from the Request, the token and then from it extract the needed Claim
+	 * @param pRequest
+	 * @param pClaim
+	 * @return
+	 * @throws InvalidTokenException
+	 */
+	public static String getFromToken( Request pRequest, String pClaim ) throws  InvalidTokenException {
+		
+		String token = pRequest.headers("Authorization").split(" ")[1];
+		try {
+			return Authorization.getTokenClaim(token, pClaim);	
+		} catch ( InvalidTokenException ex ) {
+			throw ex;
+		}
+	
+	}
+		
 }

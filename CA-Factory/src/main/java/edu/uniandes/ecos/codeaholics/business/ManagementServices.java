@@ -4,6 +4,9 @@
 
 package edu.uniandes.ecos.codeaholics.business;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import spark.Request;
 import spark.Response;
 
@@ -15,6 +18,8 @@ import spark.Response;
  */
 public class ManagementServices {
 
+	private final static Logger log = LogManager.getLogger(ManagementServices.class);
+
 	/**
 	 * Se encarga de crear una alcaldia
 	 * @param pRequest
@@ -24,6 +29,7 @@ public class ManagementServices {
 	 * @return	json con mensaje de exito o fracaso
 	 */
 	public static String createMayoralty(Request pRequest, Response pResponse) {
+		log.info("Mayoralty created");
 		return "success";
 	}
 

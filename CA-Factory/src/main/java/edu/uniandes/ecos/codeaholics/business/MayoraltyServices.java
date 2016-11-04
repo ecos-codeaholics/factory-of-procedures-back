@@ -7,6 +7,8 @@ package edu.uniandes.ecos.codeaholics.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
@@ -23,6 +25,8 @@ public class MayoraltyServices {
 	
 	private static String MAYORALTY = "mayoralty";
 
+	private final static Logger log = LogManager.getLogger(MayoraltyServices.class);
+	
 	/***
 	 * Consulta lista de tramites por alcaldia.
 	 * 
@@ -37,14 +41,17 @@ public class MayoraltyServices {
 		Document filter = new Document();
 		filter.append("slug", pRequest.params(":mayoraltyName").toString());
 
+		log.info(pRequest.params(":mayoraltyName").toString());
+		
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, MAYORALTY);
+		
 		if(!mayoralties.isEmpty()){
 			Document mayoralty = (Document) mayoralties.get(0);
 			@SuppressWarnings("unchecked")
 			ArrayList<String> procedures =  (ArrayList<String>) mayoralty.get("procedures");
 			for (String item : procedures) {
-				System.out.println(item);
+				log.info(item);
 				Document procedure = new Document();
 				procedure.append("name", item);
 				procedure.append("slug", item.replace(" ", "").toLowerCase());
@@ -66,8 +73,10 @@ public class MayoraltyServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object getMayoraltyList(Request pRequest, Response pResponse) {
+		
 		List<Document> dataset = new ArrayList<>();
 		ArrayList<Document> documents = DataBaseUtil.getAll(MAYORALTY);
+		
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");
