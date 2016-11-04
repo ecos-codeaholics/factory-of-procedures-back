@@ -8,6 +8,7 @@ import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Routes;
+import edu.uniandes.ecos.codeaholics.config.SessionManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -162,6 +163,9 @@ public class App {
 			return "OK";
 		});
 
+		
+		SessionManager.test1();
+		
 	}
 
 	/**
