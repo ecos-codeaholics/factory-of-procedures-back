@@ -17,7 +17,6 @@ import com.google.gson.GsonBuilder;
 
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
-import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
@@ -48,8 +47,6 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
-		log.info("Param of the request is: " + pRequest.queryParams("email"));
-
 		Document procedureFilter = new Document();
 
 		// .
@@ -59,7 +56,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception
 		}
 		// ..
 
@@ -98,10 +95,8 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		log.info(pRequest.params(":id"));
-		log.info("param of the query request is: " + pRequest.queryParams("email"));
-		log.info(pRequest.uri());
-
+		log.debug(pRequest.uri());
+	
 		Document procedureFilter = new Document();
 
 		//.
@@ -111,7 +106,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception
 		}
 		//..
 
@@ -156,7 +151,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception
 		}
 		//..
 
@@ -185,7 +180,7 @@ public class FunctionaryServices {
 			procedure.setStartDate(startDate);
 
 			// .
-			String comment = GeneralUtil.extractFromBody(pRequest, "comment");
+			String comment = status.getComment();
 			procedure.addHistory(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(), email,
 					status.getStatusHistory(), comment ));
 			// ..

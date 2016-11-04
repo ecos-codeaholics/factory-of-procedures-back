@@ -125,9 +125,6 @@ public class CitizenServices {
 	 */
 	public static Object getCitizenDetail(Request pRequest, Response pResponse) {
 
-		// Este no hace falta por por que el body del request viene null
-		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
-
 		Document filter = new Document();
 		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
 		filter.append("name", Integer.parseInt(pRequest.params("identification")));
