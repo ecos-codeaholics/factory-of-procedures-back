@@ -404,10 +404,10 @@ public class CitizenServices {
 
 		Object response = null;
 
+		log.info(pRequest.toString());
 		try {
-
 			fileManager.uploadDocument(pRequest);
-			response = messager.getOkMessage("Proceso Exitoso");
+			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);

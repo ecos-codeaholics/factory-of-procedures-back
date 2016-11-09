@@ -48,67 +48,70 @@ import spark.Response;
 public class DocumentSvc implements IDocumentSvc {
 
 	Logger logger = LogManager.getRootLogger();
-	
-	private String answerStr = "";
-	
 
-	/* (non-Javadoc)
-	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#uploadDocument(Request pRequest)
+	private String answerStr = "";
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.uniandes.ecos.codeaholics.config.IDocumentSvc#uploadDocument(Request
+	 * pRequest)
 	 */
 	@Override
 	public void uploadDocument(Request pRequest) {
-		
+
 		File uploadDir = null;
-		
+
 		try {
 			FileUtil.configTmpDir();
 			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
 			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
-		} catch (Exception e) {		
+		} catch (Exception e) {
 			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
 			logger.error(e.getMessage());
 		}
-			
+
 		pRequest.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-		
+
 		try {
-			
+
 			Collection<Part> parts;
-			parts = pRequest.raw().getParts();			
+			parts = pRequest.raw().getParts();
 			Part fPart = parts.iterator().next();
-			
-			try (InputStream input = fPart.getInputStream()) {
-				
-				Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
-				
-				Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
-				
-				RequiredDocument rDoc;
 
-				rDoc = new RequiredDocument();
-				rDoc.setFilePath(FileUtil.LOCAL_TMP_PATH);
-				rDoc.setTmpName(tempFile.getFileName().toString());
-				rDoc.setOriginalName(fPart.getSubmittedFileName());
-				rDoc.setFileSize(fPart.getSize());
-				rDoc.setRadicado(123456);
-				rDoc.setTimestamp(System.currentTimeMillis());
+			InputStream input = fPart.getInputStream();
 
-				Gson gson = new Gson();
-				answerStr = gson.toJson(rDoc);
-				logger.info(answerStr);
-				
-			}
-			
+			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+
+			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+			RequiredDocument rDoc;
+
+			rDoc = new RequiredDocument();
+			rDoc.setFilePath(FileUtil.LOCAL_TMP_PATH);
+			rDoc.setTmpName(tempFile.getFileName().toString());
+			rDoc.setOriginalName(fPart.getSubmittedFileName());
+			rDoc.setFileSize(fPart.getSize());
+			rDoc.setRadicado(123456);
+			rDoc.setTimestamp(System.currentTimeMillis());
+
+			Gson gson = new Gson();
+			answerStr = gson.toJson(rDoc);
+			logger.info(answerStr);
+
 		} catch (IOException | ServletException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#downloadDocument()
 	 */
 	@Override
@@ -123,12 +126,12 @@ public class DocumentSvc implements IDocumentSvc {
 			String key = pRequest.queryParams("filepath");
 			path = Paths.get(locationDir + "/" + key);
 			outFileName = key;
-			
+
 		} catch (Exception e) {
 			locationDir = "";
 			logger.error(e.getMessage());
 		}
-		
+
 		byte[] data = null;
 		try {
 			data = Files.readAllBytes(path);
@@ -136,7 +139,7 @@ public class DocumentSvc implements IDocumentSvc {
 
 			e1.printStackTrace();
 		}
-	
+
 		HttpServletResponse raw = pResponse.raw();
 		pResponse.header("Content-Disposition", "attachment; filename=" + outFileName);
 		pResponse.type("application/force-download");
@@ -152,12 +155,14 @@ public class DocumentSvc implements IDocumentSvc {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#listDocuments()
 	 */
 	@Override
 	public String listDocuments() {
-		
+
 		String allFiles = "";
 
 		try {
@@ -174,7 +179,7 @@ public class DocumentSvc implements IDocumentSvc {
 				allFiles += obj.toString() + ",";
 			}
 			allFiles = FileUtil.removeLastChar(allFiles) + "]";
-			
+
 		} catch (Exception e) {
 			allFiles = "[{}]";
 			e.printStackTrace();
@@ -191,5 +196,4 @@ public class DocumentSvc implements IDocumentSvc {
 		return answerStr;
 	}
 
-	
 }
