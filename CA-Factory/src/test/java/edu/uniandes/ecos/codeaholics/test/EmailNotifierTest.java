@@ -36,27 +36,53 @@ import edu.uniandes.ecos.codeaholics.config.INotifierSvc;
 public class EmailNotifierTest {
 
 	private static INotifierSvc emailer = new EmailNotifierSvc();
-
-	ArrayList<EmailType> emailTypes = new ArrayList<EmailType>();
+	
+	private static ArrayList<EmailType> emailTypes = new ArrayList<EmailType>();
 
 	@Test
-	public void emailSenderTest() {
+	public void emailRegistrationTest() {
 
 		boolean success = false;
 
-		emailTypes.add(EmailType.REGISTRATION);
-		//emailTypes.add(EmailType.RECOVERY);
-		//emailTypes.add(EmailType.UPDATE);
-		
-		emailer.add();
-		emailer.build();
+		try {
+			TestsUtil.isConnected();
+			EmailType type = EmailType.REGISTRATION;
+			emailer.send(type, "osorio.af@gmail.com");
+			success = true;
+
+		} catch (AddressException e) {
+			success = false;
+
+		} catch (MessagingException e) {
+			success = false;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			success = true; // There is no connection
+		}
+
+		assertTrue(success);
+
+	}
+
+	@Test
+	public void emailResetTest() {
+
+		boolean success = false;
+
+		emailTypes.add(EmailType.RESET);
+		// emailTypes.add(EmailType.RESET);
+		// emailTypes.add(EmailType.UPDATE);
+
+		ArrayList<String> params = new ArrayList<String>();
+		params.add("NEWPASSWORD");
 
 		try {
 			TestsUtil.isConnected();
-			for(Iterator<EmailType> itr = emailTypes.iterator(); itr.hasNext(); ) {
-			    EmailType type = itr.next();
-			    emailer.send(type, "osorio.af@gmail.com");
-			    success = true;
+			for (Iterator<EmailType> itr = emailTypes.iterator(); itr.hasNext();) {
+				EmailType type = itr.next();
+				emailer.send(type, "osorio.af@gmail.com", params);
+				success = true;
 			}
 		} catch (AddressException e) {
 			success = false;

@@ -26,10 +26,6 @@ import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
  * 
  */
 public interface INotifierSvc {
-
-	public void add();
-	
-	public void build();
 	
 	public void send( EmailType pContext, String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException;
 	
