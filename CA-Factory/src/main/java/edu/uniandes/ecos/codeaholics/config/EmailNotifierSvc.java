@@ -132,7 +132,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private void sendRegister(String pToEmail) throws AddressException, MessagingException {
 		String emailBody = "Su registro se ha realizado de manera exitosa en nuestro sistema. "
 				+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
-		sendEmail(pToEmail,"Bienvenido a la Fábrica de Tramites", emailBody);
+		sendEmail(pToEmail,"Bienvenido a la F\u00E1brica de Tr\u00E1mites", emailBody);
 	}
 	
 	private void sendReset(String pToEmail, ArrayList<String> pParams) throws AddressException, MessagingException {
