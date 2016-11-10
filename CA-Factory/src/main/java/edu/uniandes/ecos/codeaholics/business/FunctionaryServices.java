@@ -56,7 +56,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed"; //TODO: handle this exception
+			return "failed"; //TODO: handle this exception at the front
 		}
 		// ..
 
@@ -106,7 +106,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed"; //TODO: handle this exception
+			return "failed"; //TODO: handle this exception at the front
 		}
 		//..
 
@@ -151,7 +151,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed"; //TODO: handle this exception
+			return "failed"; //TODO: handle this exception at the front
 		}
 		//..
 
