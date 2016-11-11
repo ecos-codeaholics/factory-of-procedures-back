@@ -488,7 +488,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile("admin");
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Hacienda");
@@ -573,7 +573,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile("admin");
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Hacienda");
