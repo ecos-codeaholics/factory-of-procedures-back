@@ -76,14 +76,13 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 				String salt = documents.get(0).get("salt").toString();
 				String[] hash = GeneralUtil.getHash(pPwd, salt);
-				user.append("userProfile", pProfile);
 				user.append("password", hash[1]);
 
-				ValidateUser(user, pProfile);
+				String functioryRol = ValidateUser(user, pProfile);
 
 				log.info(pEmail + " has passwd checked. go ahead and create session with token.");
 
-				createSession(pEmail, pProfile, salt);
+				createSession(pEmail, functioryRol, salt);
 
 				log.info("New session created with token: " + token.toString());
 
@@ -103,14 +102,16 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 	}
 
-	private void ValidateUser(Document user, String pProfile) throws WrongUserOrPasswordException {
-
+	private String ValidateUser(Document user, String pProfile) throws WrongUserOrPasswordException {
+		String rol = "";
 		ArrayList<Document> results = DataBaseUtil.find(user, pProfile);
 
 		if (results.isEmpty()) {
 			throw new WrongUserOrPasswordException("La clave que ingresaste es incorrecta", "103");
+		}else{
+			rol = results.get(0).get("userProfile").toString();
 		}
-
+		return rol;
 	}
 
 	/*
