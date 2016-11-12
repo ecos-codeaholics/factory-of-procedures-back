@@ -391,7 +391,7 @@ public class TestsUtil {
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Certificado de residencia");
 		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Solicitud De Contrataci\u00F3on Monitor Deportes");
+		procedures.add("Solicitud De Contratacion Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -440,8 +440,8 @@ public class TestsUtil {
 
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de estratificaci\u00F3n");
-		procedures.add("Solicitud De Contrataci\u00F3n Monitor Deportes");
+		procedures.add("Certificado de estratificacion");
+		procedures.add("Solicitud De Contratacion Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -689,8 +689,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("n\u00FAmero de documento de identidad");
+		field1.setLabel("Identificaci\u00F3n");
+		field1.setDescription("N\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -703,11 +703,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direcci\u00F3n");
-		field2.setDescription("direcci\u00F3n de residencia");
+		field2.setLabel("Direcci\u00F3n");
+		field2.setDescription("Direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direcci\u00F3n");
+		field2.setName("direccion");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -717,9 +717,9 @@ public class TestsUtil {
 		field3.setType("text");
 		field3.setSubtype("text");
 		field3.setRequired(true);
-		field3.setLabel("barrio");
-		field3.setDescription("barrio");
-		field3.setPlaceHolder("barrio");
+		field3.setLabel("Barrio");
+		field3.setDescription("Barrio");
+		field3.setPlaceHolder("Barrio");
 		field3.setClassname("form-control");
 		field3.setName("barrio");
 		field3.setMaxlenght(50);
@@ -731,8 +731,8 @@ public class TestsUtil {
 		field4.setType("text");
 		field4.setSubtype("tel");
 		field4.setRequired(true);
-		field4.setLabel("telefono");
-		field4.setDescription("n\u00FAmero telef\u00F3nico de contacto");
+		field4.setLabel("Tel\u00E9fono");
+		field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -744,8 +744,8 @@ public class TestsUtil {
 
 		field5.setType("textarea");
 		field5.setRequired(true);
-		field5.setLabel("Carta de Solicitud");
-		field5.setDescription("Carta de Solicitud");
+		field5.setLabel("Carta de solicitud");
+		field5.setDescription("Carta de solicitud");
 		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
@@ -836,8 +836,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("n\u00FAmero de documento de identidad");
+		field1.setLabel("Identificaci\u00F3n");
+		field1.setDescription("N\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -850,11 +850,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direcci\u00F3n");
-		field2.setDescription("direcci\u00F3n de residencia");
+		field2.setLabel("Direcci\u00F3n");
+		field2.setDescription("Direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direcci\u00F3n");
+		field2.setName("direccion");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -864,9 +864,9 @@ public class TestsUtil {
 		field3.setType("text");
 		field3.setSubtype("text");
 		field3.setRequired(true);
-		field3.setLabel("barrio");
-		field3.setDescription("barrio");
-		field3.setPlaceHolder("barrio");
+		field3.setLabel("Barrio");
+		field3.setDescription("Barrio");
+		field3.setPlaceHolder("Barrio");
 		field3.setClassname("form-control");
 		field3.setName("barrio");
 		field3.setMaxlenght(50);
@@ -878,8 +878,8 @@ public class TestsUtil {
 		field4.setType("text");
 		field4.setSubtype("tel");
 		field4.setRequired(true);
-		field4.setLabel("telefono");
-		field4.setDescription("n\u00FAmero telefonico de contacto");
+		field4.setLabel("Tel\u00E9fono");
+		field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -891,8 +891,8 @@ public class TestsUtil {
 
 		field5.setType("textarea");
 		field5.setRequired(true);
-		field5.setLabel("Carta de Solicitud");
-		field5.setDescription("Carta de Solicitud");
+		field5.setLabel("Carta de solicitud");
+		field5.setDescription("Carta de solicitud");
 		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
@@ -1007,8 +1007,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("n\u00FAmero de documento de identidad");
+		field1.setLabel("Identificaci\u00F3n");
+		field1.setDescription("N\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -1021,11 +1021,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direcci\u00F3n");
-		field2.setDescription("direcci\u00F3n de residencia");
+		field2.setLabel("Direcci\u00F3n");
+		field2.setDescription("Direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direcci\u00F3n");
+		field2.setName("direccion");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -1035,9 +1035,9 @@ public class TestsUtil {
 		field3.setType("text");
 		field3.setSubtype("text");
 		field3.setRequired(true);
-		field3.setLabel("barrio");
-		field3.setDescription("barrio");
-		field3.setPlaceHolder("barrio");
+		field3.setLabel("Barrio");
+		field3.setDescription("Barrio");
+		field3.setPlaceHolder("Barrio");
 		field3.setClassname("form-control");
 		field3.setName("barrio");
 		field3.setMaxlenght(50);
@@ -1049,8 +1049,8 @@ public class TestsUtil {
 		field4.setType("text");
 		field4.setSubtype("tel");
 		field4.setRequired(true);
-		field4.setLabel("telefono");
-		field4.setDescription("n\u00FAmero telefonico de contacto");
+		field4.setLabel("Tel\u00E9fono");
+		field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -1062,8 +1062,8 @@ public class TestsUtil {
 
 		field5.setType("textarea");
 		field5.setRequired(true);
-		field5.setLabel("Carta de Solicitud");
-		field5.setDescription("Carta de Solicitud");
+		field5.setLabel("Carta de solicitud");
+		field5.setDescription("Carta de solicitud");
 		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
@@ -1127,8 +1127,8 @@ public class TestsUtil {
 			field1.setType("text");
 			field1.setSubtype("tel");
 			field1.setRequired(true);
-			field1.setLabel("identificaci\u00F3n");
-			field1.setDescription("n\u00FAmero de documento de identidad");
+			field1.setLabel("Identificaci\u00F3n");
+			field1.setDescription("N\u00FAmero de documento de identidad");
 			field1.setPlaceHolder("123456789");
 			field1.setClassname("form-control");
 			field1.setName("identification");
@@ -1141,11 +1141,11 @@ public class TestsUtil {
 			field2.setType("text");
 			field2.setSubtype("text");
 			field2.setRequired(true);
-			field2.setLabel("direcci\u00F3n");
-			field2.setDescription("direcci\u00F3n de residencia");
+			field2.setLabel("Direcci\u00F3n");
+			field2.setDescription("Direcci\u00F3n de residencia");
 			field2.setPlaceHolder("CAlle -- # -- --");
 			field2.setClassname("form-control");
-			field2.setName("direcci\u00F3n");
+			field2.setName("direccion");
 			field2.setMaxlenght(100);
 
 			formFields.add(field2);
@@ -1155,9 +1155,9 @@ public class TestsUtil {
 			field3.setType("text");
 			field3.setSubtype("text");
 			field3.setRequired(true);
-			field3.setLabel("barrio");
-			field3.setDescription("barrio");
-			field3.setPlaceHolder("barrio");
+			field3.setLabel("Barrio");
+			field3.setDescription("Barrio");
+			field3.setPlaceHolder("Barrio");
 			field3.setClassname("form-control");
 			field3.setName("barrio");
 			field3.setMaxlenght(50);
@@ -1169,8 +1169,8 @@ public class TestsUtil {
 			field4.setType("text");
 			field4.setSubtype("tel");
 			field4.setRequired(true);
-			field4.setLabel("telefono");
-			field4.setDescription("n\u00FAmero telefonico de contacto");
+			field4.setLabel("Tel\u00E9fono");
+			field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
 			field4.setPlaceHolder("3-----");
 			field4.setClassname("form-control");
 			field4.setName("telefono");
@@ -1182,8 +1182,8 @@ public class TestsUtil {
 
 			field5.setType("textarea");
 			field5.setRequired(true);
-			field5.setLabel("Carta de Solicitud");
-			field5.setDescription("Carta de Solicitud");
+			field5.setLabel("Carta de solicitud");
+			field5.setDescription("Carta de solicitud");
 			field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 			field5.setClassname("form-control");
 			field5.setName("carta");
@@ -1222,11 +1222,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 1 # 12 -12");
-		procedureData.put("barrio", "barrio Tal");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Barrio", "El Castillo");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1290,11 +1290,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1355,11 +1355,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1420,11 +1420,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1486,11 +1486,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 1 # 12 -12");
-		procedureData.put("barrio", "barrio Tal");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Barrio", "El Castillo");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1549,11 +1549,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1612,11 +1612,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1677,11 +1677,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
@@ -1730,7 +1730,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Solicitud De Contrataci\u00F3on Monitor Deportes");
+		procedureRequest.setProcedureClassName("Solicitud De Contratacion Monitor Deportes");
 		procedureRequest.setFileNumber("9");
 
 		Citizen citizen = new Citizen();
@@ -1743,11 +1743,11 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificaci\u00F3n", 123456);
-		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
-		procedureData.put("barrio", "barrio lat");
-		procedureData.put("telefono", 55667733);
-		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
+		procedureData.put("Identificaci\u00F3n", 123456);
+		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Barrio", "La Soledad");
+		procedureData.put("Tel\u00E9fono", 55667733);
+		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
 
 		procedureRequest.setProcedureData(procedureData);
 
