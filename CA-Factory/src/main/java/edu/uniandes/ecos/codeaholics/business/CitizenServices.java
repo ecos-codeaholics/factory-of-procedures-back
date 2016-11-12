@@ -406,6 +406,16 @@ public class CitizenServices {
 
 		log.info(pRequest.toString());
 		try {
+			log.info("headers: " + pRequest.headers());
+			String citizen = pRequest.headers("citizen");
+			String fileRequest = pRequest.headers("fileRequest");
+			
+			
+			log.info("nombre del req: " + fileRequest);
+			log.info("ciuda: " + citizen);
+			
+			String nameFile=fileRequest+citizen;
+			
 			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
 
