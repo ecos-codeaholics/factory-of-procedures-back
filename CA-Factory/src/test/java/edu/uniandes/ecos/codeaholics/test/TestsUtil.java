@@ -690,7 +690,7 @@ public class TestsUtil {
 		field1.setSubtype("tel");
 		field1.setRequired(true);
 		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("número de documento de identidad");
+		field1.setDescription("n\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -732,7 +732,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("número telef\u00F3nico de contacto");
+		field4.setDescription("n\u00FAmero telef\u00F3nico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -837,7 +837,7 @@ public class TestsUtil {
 		field1.setSubtype("tel");
 		field1.setRequired(true);
 		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("número de documento de identidad");
+		field1.setDescription("n\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -879,7 +879,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("número telefonico de contacto");
+		field4.setDescription("n\u00FAmero telefonico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -1008,7 +1008,7 @@ public class TestsUtil {
 		field1.setSubtype("tel");
 		field1.setRequired(true);
 		field1.setLabel("identificaci\u00F3n");
-		field1.setDescription("número de documento de identidad");
+		field1.setDescription("n\u00FAmero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -1050,7 +1050,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("número telefonico de contacto");
+		field4.setDescription("n\u00FAmero telefonico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -1104,7 +1104,7 @@ public class TestsUtil {
 			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadan\u00EDa",5,"","Pendiente"));
 			activities.add(new Activity("RP","Responsabilidad presupuestal","Jefe de presupuesto",6,"jvaldez@elrosal","Pendiente"));
 			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadan\u00EDa",7,"","Pendiente"));
-			activities.add(new Activity("Informe supervisión","Informe de supervisión del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Informe supervisi\u00F3n","Informe de supervisi\u00F3n del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
 			activities.add(new Activity("Orden de pago","Solicitud de orden de pago y comprobante de egreso","Tesoreria",9,"jvaldez@elrosal","Pendiente"));
 
 			procedure.setActivities(activities);
@@ -1128,7 +1128,7 @@ public class TestsUtil {
 			field1.setSubtype("tel");
 			field1.setRequired(true);
 			field1.setLabel("identificaci\u00F3n");
-			field1.setDescription("número de documento de identidad");
+			field1.setDescription("n\u00FAmero de documento de identidad");
 			field1.setPlaceHolder("123456789");
 			field1.setClassname("form-control");
 			field1.setName("identification");
@@ -1170,7 +1170,7 @@ public class TestsUtil {
 			field4.setSubtype("tel");
 			field4.setRequired(true);
 			field4.setLabel("telefono");
-			field4.setDescription("número telefonico de contacto");
+			field4.setDescription("n\u00FAmero telefonico de contacto");
 			field4.setPlaceHolder("3-----");
 			field4.setClassname("form-control");
 			field4.setName("telefono");
