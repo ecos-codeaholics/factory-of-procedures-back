@@ -10,6 +10,8 @@ import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -233,11 +235,18 @@ public class CitizenServices {
 
 			String mayoraltyName = pRequest.params(":mayoraltyName");
 			procedureRequest.setMayoralty(mayoraltyName);
-
-			Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
+		
+			JsonParser parser = new JsonParser();
+			JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+			JsonObject jsonData = (JsonObject) json.get("dataForm");
+			JsonObject jsonDocs = (JsonObject) json.get("docs");
+		
+			//Document procedureInfo = GSON.fromJson(pRequest.body(), Document.class);
+			Document procedureData = GSON.fromJson(jsonData, Document.class);
+			 
 			procedureRequest.setProcedureData(procedureData);
-
-			Document deliveryDocs = new Document();
+			
+			Document deliveryDocs = GSON.fromJson(jsonDocs, Document.class);
 			procedureRequest.setDeliveryDocs(deliveryDocs);
 			System.out.println(procedureRequest.toDocument());
 			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
