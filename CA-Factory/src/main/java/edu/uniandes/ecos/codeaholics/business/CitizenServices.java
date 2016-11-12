@@ -1,6 +1,7 @@
 package edu.uniandes.ecos.codeaholics.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.sun.mail.imap.protocol.Status;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
@@ -25,11 +27,11 @@ import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
-
+import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
 import spark.Response;
 
@@ -209,6 +211,12 @@ public class CitizenServices {
 			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
 			procedureRequest.setProcedureClassName(procedure.getName());
 			procedureRequest.setActivities(procedure.getActivities());
+			procedureRequest.getActivities().get(0);
+
+			for (Activity activity : procedureRequest.getActivities()) {
+				if(activity.getStep() == 1)
+					activity.setStatus("En curso");
+			}
 
 			Document citizenFilter = new Document();
 
@@ -248,6 +256,9 @@ public class CitizenServices {
 			
 			Document deliveryDocs = GSON.fromJson(jsonDocs, Document.class);
 			procedureRequest.setDeliveryDocs(deliveryDocs);
+			
+			procedureRequest.setStatus("En proceso");
+			procedureRequest.setStartDate(new Date());
 			System.out.println(procedureRequest.toDocument());
 			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 
