@@ -169,7 +169,7 @@ public class ProcedureRequest {
 		Document procedureRequest = new Document();
 		procedureRequest.append(CLASSNAME, this.getProcedureClassName());
 		procedureRequest.append(FILENUMBER, this.getFileNumber());
-		procedureRequest.append(CITIZEN, this.getCitizen().toDocument());
+		procedureRequest.append(CITIZEN, this.getCitizen().toDocumentES()); //Citizen Att in ES
 		procedureRequest.append(MAYORALTY, this.getMayoralty());
 		procedureRequest.append(PROCEDUREDATA, this.getProcedureData());
 		procedureRequest.append(DELIVERYDOCS, this.getDeliveryDocs());
