@@ -649,7 +649,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
-		activity1.setStatus("En curso");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 
@@ -784,7 +784,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
-		activity1.setStatus("Finalizado");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 
@@ -931,7 +931,7 @@ public class TestsUtil {
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
-		activity1.setStatus("En curso");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 
@@ -1245,7 +1245,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("anapoima");
 		activity1.setAprobacion("En proceso");
-		activity1.setStatus("En curso");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1313,7 +1313,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("En curso");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1378,7 +1378,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("En curso");
+		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);

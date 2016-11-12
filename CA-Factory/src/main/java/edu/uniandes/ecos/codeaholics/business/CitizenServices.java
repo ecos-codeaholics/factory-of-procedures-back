@@ -224,9 +224,9 @@ public class CitizenServices {
 			// ..
 			// citizenFilter.append("email", pRequest.queryParams("email"));
 
-			ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, CITIZEN);
 
-			Document citezenDoc = citezens.get(0);
+			Document citezenDoc = citizens.get(0);
 			citezenDoc.remove("_id");
 			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
 			procedureRequest.setCitizen(citizen);
@@ -406,6 +406,16 @@ public class CitizenServices {
 
 		log.info(pRequest.toString());
 		try {
+			log.info("headers: " + pRequest.headers());
+			String citizen = pRequest.headers("citizen");
+			String fileRequest = pRequest.headers("fileRequest");
+			
+			
+			log.info("nombre del req: " + fileRequest);
+			log.info("ciuda: " + citizen);
+			
+			String nameFile=fileRequest+citizen;
+			
 			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
 
