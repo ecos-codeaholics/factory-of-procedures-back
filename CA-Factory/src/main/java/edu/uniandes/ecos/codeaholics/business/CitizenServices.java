@@ -273,7 +273,7 @@ public class CitizenServices {
 			log.error(e.getMessage());
 		}
 
-		response = messager.getOkMessage("Registro Exitoso");
+		response = messager.getOkMessage("Registro exitoso de su solicitud" + procedureRequest.getFileNumber());
 		pResponse.type("application/json");
 		// return "Proceso Exitoso";
 
