@@ -350,7 +350,7 @@ public class TestsUtil {
 	}
 
 	// add Alcaldia uno
-	public static void addMayoraltyUno() {
+	public static void addMayoraltyUno(ArrayList<String> pProcedureList) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -388,19 +388,19 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Certificado de residencia");
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
+		//ArrayList<String> procedures = new ArrayList<>();
+		//procedures.add("Certificado de residencia");
+		//procedures.add("Auxilio para Gastos Sepelio");
+		//procedures.add("Solicitud De Contratacion Monitor Deportes");
 
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedureList);
 
 		collection.insertOne(mayoralty.toDocument());
 
 	}
 
 	// add Alcaldia dos
-	public static void addMayoraltyDos() {
+	public static void addMayoraltyDos(ArrayList<String> pProcedure) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -422,7 +422,7 @@ public class TestsUtil {
 		dependencyUno.setFunctionaries(funcionaryUno);
 
 		Dependency dependencyDos = new Dependency();
-		dependencyDos.setName("Atenci\u00F3on al Ciudadano");
+		dependencyDos.setName("Atenci\u00F3n al Ciudadano");
 
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
@@ -438,12 +438,12 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de estratificacion");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
+		//ArrayList<String> procedures = new ArrayList<>();
+		//procedures.add("Auxilio para Gastos Sepelio");
+		//procedures.add("Certificado de estratificacion");
+		//procedures.add("Solicitud De Contratacion Monitor Deportes");
 
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedure);
 
 		collection.insertOne(mayoralty.toDocument());
 
@@ -705,7 +705,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -852,7 +852,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -1023,7 +1023,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -1143,7 +1143,7 @@ public class TestsUtil {
 			field2.setRequired(true);
 			field2.setLabel("Direcci\u00F3n");
 			field2.setDescription("Direcci\u00F3n de residencia");
-			field2.setPlaceHolder("CAlle -- # -- --");
+			field2.setPlaceHolder("Calle 20 # 34 56");
 			field2.setClassname("form-control");
 			field2.setName("direccion");
 			field2.setMaxlenght(100);
@@ -1963,5 +1963,6 @@ public class TestsUtil {
 		}
 
 	}
+
 
 }
