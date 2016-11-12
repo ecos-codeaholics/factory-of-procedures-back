@@ -155,14 +155,8 @@ public class Citizen {
 	public Document toDocumentES() {
 		Document citizen = new Document();
 		citizen.append(IDENTIFICATION_ES, this.getIdentification())
-				.append(NAME_ES, this.getName())
-				.append(LASTNAME1_ES, this.getLastName1())
-				.append(LASTNAME2_ES, this.getLastName2())
-				.append(EMAIL, this.getEmail())
-				.append(SALT, this.getSalt())
-				.append(PASSWORD, this.getPassword())
-				.append(BIRTHDATE, this.getBirthDate())
-				.append(PROFILE, this.getUserProfile());
+				.append(NAME_ES, this.getName() + " " + this.getLastName1()+ " " + this.getLastName2())
+				.append(EMAIL, this.getEmail());
 		
 		return citizen;
 	}
