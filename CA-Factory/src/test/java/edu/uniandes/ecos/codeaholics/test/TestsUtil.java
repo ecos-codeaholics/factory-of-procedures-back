@@ -440,7 +440,7 @@ public class TestsUtil {
 
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de estratificacion");
+		procedures.add("Certificado de Estratificaci\\u00f3n");
 		procedures.add("Solicitud De Contratacion Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);

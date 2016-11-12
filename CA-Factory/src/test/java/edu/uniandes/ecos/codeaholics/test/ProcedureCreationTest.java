@@ -59,7 +59,7 @@ public class ProcedureCreationTest {
 	public void createProcedureTest() {
 		TestsUtil.addProcedureUno ("Certificado de Residencia");
 		TestsUtil.addProcedureDos ("Auxilio para Gastos Sepelio");
-		TestsUtil.addProcedureTres ("Certificado de Estratificacion");
+		TestsUtil.addProcedureTres ("Certificado de Estratificaci\u00f3n");
 		//SCC
 		TestsUtil.addProcedureCuatro ("Solicitud De Contratacion Monitor Deportes");	
 		assertEquals(true, true);

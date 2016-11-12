@@ -4,6 +4,7 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
+import java.util.Date;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -32,4 +33,15 @@ public final class ValidationUtil {
 		return Pattern.compile(pattern).matcher(from).matches();
 	};
 	
+	@SuppressWarnings("deprecation")
+	public static Boolean validateBithDate (Date pBirthDate){
+		Boolean result = true;
+		Date today = new Date();
+		Date minDate = new Date(today.getYear() - 18, today.getMonth(), today.getDay());
+		if(pBirthDate.getTime() > minDate.getTime()){
+			result = false;
+		}
+		
+		return result;
+	}
 }
