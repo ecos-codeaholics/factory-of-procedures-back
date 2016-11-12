@@ -60,11 +60,12 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureTest() {
+
 		TestsUtil.addProcedureUno (PROCEDURE_UNO);
 		TestsUtil.addProcedureDos (PROCEDURE_DOS);
 		TestsUtil.addProcedureTres (PROCEDURE_TRES);
-		//SCC
-		TestsUtil.addProcedureCuatro (PROCEDURE_CUATRO);	
+		TestsUtil.addProcedureCuatro (PROCEDURE_CUATRO);
+		
 		assertEquals(true, true);
 	}
 	
@@ -84,6 +85,7 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureRequestTest() {
+		
 		TestsUtil.addProcedureRequestUno();
 		TestsUtil.addProcedureRequestDos();
 		TestsUtil.addProcedureRequestTres();

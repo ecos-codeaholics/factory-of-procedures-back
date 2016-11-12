@@ -33,6 +33,7 @@ import edu.uniandes.ecos.codeaholics.config.IAuthenticationSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 //import edu.uniandes.ecos.codeaholics.config.Notification;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.config.ValidationUtil;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUserOrPasswordException;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import spark.Request;
@@ -127,23 +128,30 @@ public class AuthServices {
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
 			citizen.setUserProfile(CITIZEN_USER_PROFILE);
-			DataBaseUtil.save(citizen.toDocument(), CITIZEN_USER_PROFILE);
+			Document citizenValidation  = validateCitizen (citizen);
+			
+			if(citizenValidation.get("result").toString().equals("true")){
+				DataBaseUtil.save(citizen.toDocument(), CITIZEN_USER_PROFILE);
+				EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+				sendEmail.send(EmailType.REGISTRATION, citizen.getEmail());
 
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.REGISTRATION, citizen.getEmail());
-
-			response = messager.getOkMessage("Registro Exitoso");
+				response = messager.getOkMessage("Registro Exitoso");
+			}else{
+				pResponse.status(401);
+				response = messager.getNotOkMessage(citizenValidation.get("message").toString());
+			}
+			
 
 		} catch (JsonSyntaxException e) {
-			pResponse.status(400);
+			pResponse.status(401);
 			response = messager.getNotOkMessage(e.getMessage());
 		} catch (AddressException e) {
-			response = messager.getNotOkMessage(e.getMessage()); // change
-																	// message
+			pResponse.status(401);
+			response = messager.getNotOkMessage(e.getMessage());
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			response = messager.getNotOkMessage(e.getMessage()); // change
-																	// message
+			pResponse.status(401);
+			response = messager.getNotOkMessage(e.getMessage()); 
 			e.printStackTrace();
 		}
 
@@ -155,6 +163,43 @@ public class AuthServices {
 		pRequest.body();
 		return response;
 
+	}
+	
+	private static Document validateCitizen(Citizen pCitizen){
+		Document response = new Document();
+		Boolean validate = true;
+		String message = "Ok";
+		validate = ValidationUtil.validate.apply(pCitizen.getName(), ValidationUtil.PATTERN_NAME);
+		if(!validate){
+			message = "No se permiten n\u00fameros en el nombre";
+		}else{
+			validate = ValidationUtil.validate.apply(pCitizen.getLastName1(), ValidationUtil.PATTERN_NAME);
+			if(!validate){
+				message = "No se permiten n\u00fameros en el primer apellido";
+			}else{
+				if(pCitizen.getLastName2() != null){
+					validate = ValidationUtil.validate.apply(pCitizen.getLastName2(), ValidationUtil.PATTERN_NAME);
+				}
+				if(!validate){
+					message = "No se permiten n\u00fameros en el segundo apellido";
+				}else{
+					validate = ValidationUtil.validate.apply(pCitizen.getEmail(), ValidationUtil.PATTERN_EMAIL);
+					if(!validate){
+						message = "Correo ingresado no cumple con formato requerido";
+					}else{
+						validate = ValidationUtil.validateBithDate(pCitizen.getBirthDate());
+						if(!validate){
+							message = "Debe tener mas de 18 años para registrarse";
+						}
+					}
+				}
+			}
+		}
+		response.put("result", validate);
+		response.put("message", message);
+		
+		
+		return response;
 	}
 	
 	/***
