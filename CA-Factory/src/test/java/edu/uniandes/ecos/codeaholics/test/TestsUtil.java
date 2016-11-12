@@ -41,12 +41,6 @@ import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.RequiredUpload;
 import edu.uniandes.ecos.codeaholics.persistence.Session;
 
-//import edu.uniandes.ecos.codeaholics.persistence.Dependency;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
-//import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
-
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
  *
@@ -115,25 +109,29 @@ public class TestsUtil {
 
 	}
 
-	/** Cleanup DB of Test users
+	/**
+	 * Cleanup DB of Test users
+	 * 
 	 * @param pEmail
 	 */
 	public void removeCitizen(String pEmail) {
-		
+
 		Document user = new Document();
 		user.append("email", pEmail);
 		logger.info("Removing user with email ... " + pEmail);
 		DataBaseUtil.delete(user, Constants.CITIZEN_COLLECTION);
-		
+
 	}
-	
-	/** Create a mock session for a specific user
+
+	/**
+	 * Create a mock session for a specific user
+	 * 
 	 * @param pEmail
 	 * @param pProfile
 	 * @param pToken
 	 * @param pSalt
 	 */
-	public void addSession(String pEmail, String pProfile, String pToken, String pSalt ) {
+	public void addSession(String pEmail, String pProfile, String pToken, String pSalt) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.SESSION_COLLECTION);
@@ -143,7 +141,7 @@ public class TestsUtil {
 		session.setUserProfile(pProfile);
 		session.setToken(pToken);
 		session.setSalt(pSalt);
-		
+
 		Document prevSession = new Document();
 		prevSession.append("email", pEmail);
 		ArrayList<Document> documents = DataBaseUtil.find(prevSession, Constants.SESSION_COLLECTION);
@@ -157,7 +155,7 @@ public class TestsUtil {
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -350,7 +348,7 @@ public class TestsUtil {
 	}
 
 	// add Alcaldia uno
-	public static void addMayoraltyUno() {
+	public static void addMayoraltyUno(ArrayList<String> pProcedureList) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -388,19 +386,14 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Certificado de residencia");
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
-
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedureList);
 
 		collection.insertOne(mayoralty.toDocument());
 
 	}
 
 	// add Alcaldia dos
-	public static void addMayoraltyDos() {
+	public static void addMayoraltyDos(ArrayList<String> pProcedure) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -422,7 +415,7 @@ public class TestsUtil {
 		dependencyUno.setFunctionaries(funcionaryUno);
 
 		Dependency dependencyDos = new Dependency();
-		dependencyDos.setName("Atenci\u00F3on al Ciudadano");
+		dependencyDos.setName("Atenci\u00F3n al Ciudadano");
 
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
@@ -438,12 +431,7 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de Estratificaci\\u00f3n");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
-
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedure);
 
 		collection.insertOne(mayoralty.toDocument());
 
@@ -606,7 +594,6 @@ public class TestsUtil {
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
-		;
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -633,8 +620,6 @@ public class TestsUtil {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("procedures");
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
@@ -705,7 +690,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -768,8 +753,6 @@ public class TestsUtil {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("procedures");
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 
@@ -852,7 +835,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -1023,7 +1006,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -1082,123 +1065,137 @@ public class TestsUtil {
 
 	// Procedure
 	// SCC
-		public static void addProcedureCuatro(String pName) {
+	public static void addProcedureCuatro(String pName) {
 
-			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-			MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection("procedures");
 
-			// ArrayList<Functionary> listOfFunctionaries = new
-			// ArrayList<Functionary>();
-			ArrayList<FormField> formFields = new ArrayList<FormField>();
-			ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
-			ArrayList<Activity> activities = new ArrayList<Activity>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
 
-			Procedure procedure = new Procedure();
-			procedure.setName(pName);
+		Procedure procedure = new Procedure();
+		procedure.setName(pName);
 
-			// Activities
-			activities.add(new Activity("CDP","Certificado de disponibilidad Presupuestal","Jefe de presupuesto",1,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Elaboraci\u00F3n Contrato","Realizaci\u00F3n del contrato","Coordinador de deportes ",2,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Aprobaci\u00F3n juridica","Aprobaci\u00F3n de propuesta","Juridico",3,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Firma Alcalde","Firma del alcalde y Documento de supervisor del contrato","Alcalde",4,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadan\u00EDa",5,"","Pendiente"));
-			activities.add(new Activity("RP","Responsabilidad presupuestal","Jefe de presupuesto",6,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadan\u00EDa",7,"","Pendiente"));
-			activities.add(new Activity("Informe supervisi\u00F3n","Informe de supervisi\u00F3n del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Orden de pago","Solicitud de orden de pago y comprobante de egreso","Tesoreria",9,"jvaldez@elrosal","Pendiente"));
+		// Activities
+		activities.add(new Activity("CDP", "Certificado de disponibilidad Presupuestal", "Jefe de presupuesto", 1,
+				"jvaldez@elrosal", "Pendiente"));
+		activities.add(new Activity("Elaboraci\u00F3n Contrato", "Realizaci\u00F3n del contrato",
+				"Coordinador de deportes ", 2, "jvaldez@elrosal", "Pendiente"));
+		activities.add(new Activity("Aprobaci\u00F3n juridica", "Aprobaci\u00F3n de propuesta", "Juridico", 3,
+				"jvaldez@elrosal", "Pendiente"));
+		activities.add(new Activity("Firma Alcalde", "Firma del alcalde y Documento de supervisor del contrato",
+				"Alcalde", 4, "jvaldez@elrosal", "Pendiente"));
+		activities.add(new Activity("Firma Ciudadano", "Firma del contrato por el ciudadano", "Ciudadan\u00EDa", 5, "",
+				"Pendiente"));
+		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6, "jvaldez@elrosal",
+				"Pendiente"));
+		activities.add(new Activity("Informe de labor", "Informe del objeto contractual", "Ciudadan\u00EDa", 7, "",
+				"Pendiente"));
+		activities.add(new Activity("Informe supervisi\u00F3n", "Informe de supervisi\u00F3n del contrato",
+				"Coordinador del contrato", 8, "jvaldez@elrosal", "Pendiente"));
+		activities.add(new Activity("Orden de pago", "Solicitud de orden de pago y comprobante de egreso", "Tesoreria",
+				9, "jvaldez@elrosal", "Pendiente"));
 
-			procedure.setActivities(activities);
+		procedure.setActivities(activities);
 
-			// Required
-	
-			reqDocs.add(new RequiredUpload("file", true, "C\u00E9dula de Ciudadan\u00EDa del solicitante", "Adjunte su c\u00E9dula en formato (png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social", "Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci\u00F3n publica", "Adjunte su hoja de vida de funci\u00F3n publica (pdf)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria", "Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales", "Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			procedure.setRequired(reqDocs);
+		// Required
 
-			// Form
+		reqDocs.add(new RequiredUpload("file", true, "C\u00E9dula de Ciudadan\u00EDa del solicitante",
+				"Adjunte su c\u00E9dula en formato (png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)",
+				"form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social",
+				"Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci\u00F3n publica",
+				"Adjunte su hoja de vida de funci\u00F3n publica (pdf)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria",
+				"Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales",
+				"Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control",
+				"cedulaAtt"));
+		procedure.setRequired(reqDocs);
 
-			FormField field1 = new FormField();
+		// Form
 
-			field1.setType("text");
-			field1.setSubtype("tel");
-			field1.setRequired(true);
-			field1.setLabel("Identificaci\u00F3n");
-			field1.setDescription("N\u00FAmero de documento de identidad");
-			field1.setPlaceHolder("123456789");
-			field1.setClassname("form-control");
-			field1.setName("identification");
-			field1.setMaxlenght(11);
+		FormField field1 = new FormField();
 
-			formFields.add(field1);
+		field1.setType("text");
+		field1.setSubtype("tel");
+		field1.setRequired(true);
+		field1.setLabel("Identificaci\u00F3n");
+		field1.setDescription("N\u00FAmero de documento de identidad");
+		field1.setPlaceHolder("123456789");
+		field1.setClassname("form-control");
+		field1.setName("identification");
+		field1.setMaxlenght(11);
 
-			FormField field2 = new FormField();
+		formFields.add(field1);
 
-			field2.setType("text");
-			field2.setSubtype("text");
-			field2.setRequired(true);
-			field2.setLabel("Direcci\u00F3n");
-			field2.setDescription("Direcci\u00F3n de residencia");
-			field2.setPlaceHolder("CAlle -- # -- --");
-			field2.setClassname("form-control");
-			field2.setName("direccion");
-			field2.setMaxlenght(100);
+		FormField field2 = new FormField();
 
-			formFields.add(field2);
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("Direcci\u00F3n");
+		field2.setDescription("Direcci\u00F3n de residencia");
+		field2.setPlaceHolder("Calle 20 # 34 56");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
 
-			FormField field3 = new FormField();
+		formFields.add(field2);
 
-			field3.setType("text");
-			field3.setSubtype("text");
-			field3.setRequired(true);
-			field3.setLabel("Barrio");
-			field3.setDescription("Barrio");
-			field3.setPlaceHolder("Barrio");
-			field3.setClassname("form-control");
-			field3.setName("barrio");
-			field3.setMaxlenght(50);
+		FormField field3 = new FormField();
 
-			formFields.add(field3);
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("Barrio");
+		field3.setDescription("Barrio");
+		field3.setPlaceHolder("Barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
 
-			FormField field4 = new FormField();
+		formFields.add(field3);
 
-			field4.setType("text");
-			field4.setSubtype("tel");
-			field4.setRequired(true);
-			field4.setLabel("Tel\u00E9fono");
-			field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
-			field4.setPlaceHolder("3-----");
-			field4.setClassname("form-control");
-			field4.setName("telefono");
-			field4.setMaxlenght(10);
+		FormField field4 = new FormField();
 
-			formFields.add(field4);
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("Tel\u00E9fono");
+		field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
 
-			FormField field5 = new FormField();
+		formFields.add(field4);
 
-			field5.setType("textarea");
-			field5.setRequired(true);
-			field5.setLabel("Carta de solicitud");
-			field5.setDescription("Carta de solicitud");
-			field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
-			field5.setClassname("form-control");
-			field5.setName("carta");
-			field5.setMaxlenght(5000);
+		FormField field5 = new FormField();
 
-			formFields.add(field5);
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de solicitud");
+		field5.setDescription("Carta de solicitud");
+		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
 
-			procedure.setFields(formFields);
+		formFields.add(field5);
 
-			logger.info("inserting new procedure instance");
+		procedure.setFields(formFields);
 
-			System.out.println(procedure.getFields());
-			collection.insertOne(procedure.toDocument());
+		logger.info("inserting new procedure instance");
 
-		}
+		System.out.println(procedure.getFields());
+		collection.insertOne(procedure.toDocument());
+
+	}
 
 	// ProcedureRequest1
 	@SuppressWarnings("deprecation")
@@ -1215,15 +1212,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("andres@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("andres");
-		citizen.setLastName1("osorio");
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Direcci\u00F3n", "Calle 1 # 12 21");
 		procedureData.put("Barrio", "El Castillo");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1283,15 +1280,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("andres@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("andres");
-		citizen.setLastName1("osorio");
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1319,10 +1316,10 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
-				
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1348,15 +1345,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("fabian@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("fabian");
-		citizen.setLastName1("hernandez");
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1384,10 +1381,10 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
-				
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1413,15 +1410,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("fabian@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("fabian");
-		citizen.setLastName1("hernandez");
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1479,15 +1476,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jheison@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("jheison");
-		citizen.setLastName1("rodriguez");
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Direcci\u00F3n", "Calle 1 # 12 21");
 		procedureData.put("Barrio", "El Castillo");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1514,9 +1511,9 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(null);
 		procedureRequest.setStatus("En proceso");
@@ -1542,15 +1539,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jheison@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("jheison");
-		citizen.setLastName1("rodriguez");
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1577,9 +1574,9 @@ public class TestsUtil {
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1605,15 +1602,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("david@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("david");
-		citizen.setLastName1("martinez");
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1642,9 +1639,9 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1670,15 +1667,15 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setEmail("david@uniandes");
 		citizen.setIdentification(123456);
-		citizen.setName("david");
-		citizen.setLastName1("martinez");
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1705,9 +1702,9 @@ public class TestsUtil {
 
 		activities.add(activity1);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
@@ -1719,9 +1716,8 @@ public class TestsUtil {
 
 	}
 
-
 	// ProcedureRequest9
-	//SCC
+	// SCC
 	@SuppressWarnings("deprecation")
 	public static <V> void addProcedureRequestNueve() {
 
@@ -1744,7 +1740,7 @@ public class TestsUtil {
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1771,9 +1767,9 @@ public class TestsUtil {
 
 		activities.add(activity1);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
@@ -1786,6 +1782,7 @@ public class TestsUtil {
 	}
 
 	public static void addProcedureRequest() {
+
 		ProcedureRequest procedure = new ProcedureRequest();
 
 		procedure.setProcedureClassName("Certificado de residencia");
@@ -1902,14 +1899,14 @@ public class TestsUtil {
 				found = true;
 				/*
 				 * File directoryName = new File(value + "/junittest"); if
-				 * (!directoryName.exists()) {
-				 * logger.info("creating directory: " + directoryName); boolean
-				 * result = false; try { directoryName.mkdir(); result = true; }
-				 * catch (SecurityException se) {
+				 * (!directoryName.exists()) { logger.info(
+				 * "creating directory: " + directoryName); boolean result =
+				 * false; try { directoryName.mkdir(); result = true; } catch
+				 * (SecurityException se) {
 				 * System.out.println(se.getLocalizedMessage()); } if (result) {
-				 * tmpPath = directoryName.toString();
-				 * logger.info("LOCALTMP + /junittest created"); } } else {
-				 * tmpPath = directoryName.toString(); }
+				 * tmpPath = directoryName.toString(); logger.info(
+				 * "LOCALTMP + /junittest created"); } } else { tmpPath =
+				 * directoryName.toString(); }
 				 */
 				break;
 			}

@@ -25,6 +25,11 @@ public class Citizen {
 	public static final String BIRTHDATE = "birthDate";
 	public static final String PROFILE = "userProfile";
 	
+	public static final String IDENTIFICATION_ES = "Identificaci\u00F3n";
+	public static final String NAME_ES = "Nombre";
+	public static final String LASTNAME1_ES = "Primer Apellido";
+	public static final String LASTNAME2_ES = "Segundo Apellido";
+	
 	@SerializedName("_id")
 	private String _id;
 	private Integer identification;
@@ -146,6 +151,20 @@ public class Citizen {
 		
 		return citizen;
 	}
-
 	
+	public Document toDocumentES() {
+		Document citizen = new Document();
+		citizen.append(IDENTIFICATION_ES, this.getIdentification())
+				.append(NAME_ES, this.getName())
+				.append(LASTNAME1_ES, this.getLastName1())
+				.append(LASTNAME2_ES, this.getLastName2())
+				.append(EMAIL, this.getEmail())
+				.append(SALT, this.getSalt())
+				.append(PASSWORD, this.getPassword())
+				.append(BIRTHDATE, this.getBirthDate())
+				.append(PROFILE, this.getUserProfile());
+		
+		return citizen;
+	}
+
 }

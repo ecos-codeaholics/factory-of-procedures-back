@@ -2,6 +2,8 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
@@ -15,6 +17,13 @@ public class ProcedureCreationTest {
 
 	Logger logger = LogManager.getRootLogger();
 
+	private static String PROCEDURE_UNO = "Certificado de Residencia";
+	private static String PROCEDURE_DOS = "Auxilio para Gastos Sepelio";
+	private static String PROCEDURE_TRES = "Certificado de Estratificaci\u00F3n";
+	private static String PROCEDURE_CUATRO = "Solicitud De Contrataci\u00F3n Monitor Deportes";
+
+	private static ArrayList<String> PROCDEURES_LIST = new ArrayList<String>();
+	
 	@BeforeClass
 	public static void beforeClass() {
 		App.main(null);
@@ -25,13 +34,7 @@ public class ProcedureCreationTest {
 	public static void afterClass() {
 		Spark.stop();
 	}
-	
-	//@Test 
-	//public void clearDB () {
-	//	TestsUtil.clearAllCollections();		
-	//	assertEquals(true, true);
-	//}
-	
+		
 	@Test
 	public void createCitizenTest(){
 		
@@ -57,25 +60,32 @@ public class ProcedureCreationTest {
 	
 	@Test
 	public void createProcedureTest() {
-		TestsUtil.addProcedureUno ("Certificado de Residencia");
-		TestsUtil.addProcedureDos ("Auxilio para Gastos Sepelio");
-		TestsUtil.addProcedureTres ("Certificado de Estratificaci\u00f3n");
-		//SCC
-		TestsUtil.addProcedureCuatro ("Solicitud De Contratacion Monitor Deportes");	
+
+		TestsUtil.addProcedureUno (PROCEDURE_UNO);
+		TestsUtil.addProcedureDos (PROCEDURE_DOS);
+		TestsUtil.addProcedureTres (PROCEDURE_TRES);
+		TestsUtil.addProcedureCuatro (PROCEDURE_CUATRO);
+		
 		assertEquals(true, true);
 	}
 	
 	@Test
 	public void createMayoraltiesTest(){
 		
-		TestsUtil.addMayoraltyUno();
-		TestsUtil.addMayoraltyDos();
+		PROCDEURES_LIST.add(PROCEDURE_UNO);
+		PROCDEURES_LIST.add(PROCEDURE_DOS);
+		PROCDEURES_LIST.add(PROCEDURE_TRES);
+		PROCDEURES_LIST.add(PROCEDURE_CUATRO);
+		
+		TestsUtil.addMayoraltyUno(PROCDEURES_LIST);
+		TestsUtil.addMayoraltyDos(PROCDEURES_LIST);
 		
 		assertEquals(true, true);		
 	}
 	
 	@Test
 	public void createProcedureRequestTest() {
+		
 		TestsUtil.addProcedureRequestUno();
 		TestsUtil.addProcedureRequestDos();
 		TestsUtil.addProcedureRequestTres();
