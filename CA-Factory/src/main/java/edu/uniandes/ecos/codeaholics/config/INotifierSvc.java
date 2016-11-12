@@ -32,3 +32,4 @@ public interface INotifierSvc {
 	public void send( EmailType pContext, String pToEmail) throws AddressException, MessagingException;
 	
 }
+

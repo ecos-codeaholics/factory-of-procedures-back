@@ -61,12 +61,12 @@ public class CitizenServices {
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.params(":name"));
+		procedureFilter.append("slug", pRequest.params(":procedureName"));
 
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
 
 		if (documents.isEmpty()) {
-			log.info("No data found for " + pRequest.params(":name"));
+			log.info("No data found for " + pRequest.params(":procedureName"));
 		}
 
 		for (Document item : documents) {
@@ -124,9 +124,6 @@ public class CitizenServices {
 	 * @return json informacion disponible del ciudadano
 	 */
 	public static Object getCitizenDetail(Request pRequest, Response pResponse) {
-
-		// Este no hace falta por por que el body del request viene null
-		// Citizen citizen = GSON.fromJson(pRequest, Citizen.class);
 
 		Document filter = new Document();
 		filter.append("identification", Integer.parseInt(pRequest.params("identification")));
@@ -407,10 +404,10 @@ public class CitizenServices {
 
 		Object response = null;
 
+		log.info(pRequest.toString());
 		try {
-
 			fileManager.uploadDocument(pRequest);
-			response = messager.getOkMessage("Proceso Exitoso");
+			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);

@@ -14,10 +14,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import spark.ModelAndView;
 import spark.ResponseTransformer;
 import spark.template.freemarker.FreeMarkerEngine;
+import spark.Request;
 
 /**
  * Created by davidMtz on 27/6/16.
@@ -112,6 +115,9 @@ public final class GeneralUtil {
 		return new FreeMarkerEngine().render(new ModelAndView(pModel, pTemplatePath));
 	}
 	
+	/**
+	 * @return
+	 */
 	public static String randomPassword(){
 		String result= null;
 		String string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -125,4 +131,23 @@ public final class GeneralUtil {
 		
 		return result;	
 	}
+	
+	/**
+	 * @param pRequest
+	 * @param pKey
+	 * @return
+	 */
+	public static String extractFromBody(Request pRequest, String pKey) {
+		
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+		String value = "";
+		if (json.getAsJsonObject().has(pKey)) {
+			value = json.getAsJsonObject().get(pKey).getAsString();
+			log.info("Found key with value: " + value);
+		}
+		return value;
+		
+	}
+	
 }

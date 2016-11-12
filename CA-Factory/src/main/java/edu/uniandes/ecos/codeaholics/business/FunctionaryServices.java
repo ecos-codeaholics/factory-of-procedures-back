@@ -47,8 +47,6 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProcedures(Request pRequest, Response pResponse) {
 
-		log.info("Param of the request is: " + pRequest.queryParams("email"));
-
 		Document procedureFilter = new Document();
 
 		// .
@@ -58,7 +56,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception at the front
 		}
 		// ..
 
@@ -97,10 +95,8 @@ public class FunctionaryServices {
 	 */
 	public static Object consultProceduresById(Request pRequest, Response pResponse) {
 
-		log.info(pRequest.params(":id"));
-		log.info("param of the query request is: " + pRequest.queryParams("email"));
-		log.info(pRequest.uri());
-
+		log.debug(pRequest.uri());
+	
 		Document procedureFilter = new Document();
 
 		//.
@@ -110,7 +106,7 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception at the front
 		}
 		//..
 
@@ -146,7 +142,7 @@ public class FunctionaryServices {
 	 */
 	public static Object approveProcedureStep(Request pRequest, Response pResponse) {
 
-		log.info("Cambiando estado a tramite: " + pRequest.body());
+		log.info("Changing procedure status: " + pRequest.body());
 
 		//.
 		String email;
@@ -155,15 +151,15 @@ public class FunctionaryServices {
 			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
-			return "failed";
+			return "failed"; //TODO: handle this exception at the front
 		}
 		//..
 
 		Object response = null;
 
 		java.util.Date utilDate = new java.util.Date(); // fecha actual
-		long lnMilisegundos = utilDate.getTime();
-		java.sql.Date sqlDate = new java.sql.Date(lnMilisegundos);
+		long lnMiliseconds = utilDate.getTime();
+		java.sql.Date sqlDate = new java.sql.Date(lnMiliseconds);
 
 		Document procedureFilter = new Document();
 		try {
@@ -184,8 +180,9 @@ public class FunctionaryServices {
 			procedure.setStartDate(startDate);
 
 			// .
+			String comment = status.getComment();
 			procedure.addHistory(new History(Integer.parseInt(pRequest.params(":stepId")), sqlDate.toString(), email,
-					status.getStatusHistory(), pRequest.queryParams("comment")));
+					status.getStatusHistory(), comment ));
 			// ..
 
 			int maxStep = -1;
@@ -205,14 +202,14 @@ public class FunctionaryServices {
 			}
 
 			if (maxStep == Integer.parseInt(pRequest.params(":stepId"))
-					|| status.getStatusProcedure() == "Finalizado") {
+					|| status.getStatusProcedure().equals("Finalizado") ) { 
 				procedure.setStatus("Finalizado");
 				procedure.setFinishDate(new Date());
 				procedure.getActivities().get(i - 1).setStatus("Finalizado");
 			}
 
-			if (status.getStatusHistory() == "Rechazado") {
-				if (1 == firstStep) {
+			if ( status.getStatusHistory().equals("Rechazado") ) {
+				if (firstStep == 1) { 
 					procedure.setStatus("Finalizado");
 					procedure.setFinishDate(new Date());
 				} else {

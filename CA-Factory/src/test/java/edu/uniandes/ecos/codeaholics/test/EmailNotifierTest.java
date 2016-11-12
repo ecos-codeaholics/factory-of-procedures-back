@@ -36,7 +36,7 @@ import edu.uniandes.ecos.codeaholics.config.INotifierSvc;
 public class EmailNotifierTest {
 
 	private static INotifierSvc emailer = new EmailNotifierSvc();
-	
+
 	private static ArrayList<EmailType> emailTypes = new ArrayList<EmailType>();
 
 	@Test
@@ -71,8 +71,7 @@ public class EmailNotifierTest {
 		boolean success = false;
 
 		emailTypes.add(EmailType.RESET);
-		// emailTypes.add(EmailType.RESET);
-		// emailTypes.add(EmailType.UPDATE);
+		emailTypes.add(EmailType.UPDATE);
 
 		ArrayList<String> params = new ArrayList<String>();
 		params.add("NEWPASSWORD");
@@ -99,4 +98,36 @@ public class EmailNotifierTest {
 
 	}
 
+	@Test
+	public void emailInitiateProcedureTest() {
+
+		boolean success = false;
+
+		ArrayList<String> params = new ArrayList<String>();
+		params.add("Fecha y hora de hoy");
+		params.add("12345678790");
+
+		try {
+			TestsUtil.isConnected();
+			emailer.send(EmailType.INITPROCEDURE, "osorio.af@gmail.com", params);
+			success = true;
+			
+		} catch (
+
+		AddressException e) {
+			success = false;
+
+		} catch (MessagingException e) {
+			success = false;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			success = true; // There is no connection
+		}
+
+		assertTrue(success);
+
+	}
+
 }
+

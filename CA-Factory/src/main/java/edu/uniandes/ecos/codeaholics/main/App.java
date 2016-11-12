@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import static spark.Spark.*;
 
+
 /**
  * 
  * @author Codeaholics
@@ -109,7 +110,7 @@ public class App {
 		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById, GeneralUtil.json());
 
 		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/:name/", CitizenServices::getProcedure, GeneralUtil.json());
+		get(Routes.CITIZENS + "procedures/detail/:procedureName/", CitizenServices::getProcedure, GeneralUtil.json());
 		
 		// iniciar tramite /CITIZENS/ metodo POST {procedureData info json}
 		post(Routes.CITIZENS + "procedures/", CitizenServices::startProcedure, GeneralUtil.json());
@@ -208,4 +209,5 @@ public class App {
 			}
 		}
 	}
+	
 }

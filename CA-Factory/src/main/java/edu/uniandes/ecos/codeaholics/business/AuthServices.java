@@ -86,7 +86,7 @@ public class AuthServices {
 					bStr.append((String) authenticate.getAnswer());
 					pResponse.header("access-control-expose-headers", "Authorization");
 					pResponse.header("Authorization", bStr.toString());
-					response = messager.getOkMessage("Inicio de sesion Exitoso");
+					response = messager.getOkMessage("Inicio de sesi\u00F3on Exitoso");
 				} else {
 					response = authenticate.getAnswer();
 				}
@@ -214,7 +214,7 @@ public class AuthServices {
 			// doesn't correspond to a registered user
 			if (documents.isEmpty()) {// throw exception
 				log.info("Identificacion y correo no concuerdan");
-				throw new WrongUserOrPasswordException("Identificacion y correo no concuerdan", "400");
+				throw new WrongUserOrPasswordException("Identificaci\u00F3on y correo no concuerdan", "400");
 			}
 
 			// Create randomize password
@@ -312,7 +312,7 @@ public class AuthServices {
 
 			if (!passwordHashed.equals(savedPassword)) {
 				log.info("Contrasena Incorrecta");
-				throw new WrongUserOrPasswordException("Contrasena Incorrecta", "400");
+				throw new WrongUserOrPasswordException("Contrase\u00F1a Incorrecta", "400");
 			}
 
 			// create hashed NEW password and salt

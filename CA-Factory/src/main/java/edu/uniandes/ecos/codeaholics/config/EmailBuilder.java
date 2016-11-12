@@ -18,9 +18,15 @@ import java.util.Properties;
  * 
  * Original Author: @author AOSORIO
  * 
+<<<<<<< HEAD
  * Description: [one line class summary]
  * 
  * Implementation: [Notes on implementation]
+=======
+ * Description: Class for building email notifications
+ * 
+ * Implementation: Email text is obtained from java properties files
+>>>>>>> development
  *
  * Created: Nov 10, 2016 10:17:13 AM
  * 
@@ -113,7 +119,8 @@ public class EmailBuilder {
 
 		while (itrParam.hasNext()){
 			String param = itrParam.next();
-			body = this.getBody().replace("######", param);
+			body = this.getBody().replaceFirst("######", param);			
+
 		}
 		
 		emailBody.append(this.getBody());

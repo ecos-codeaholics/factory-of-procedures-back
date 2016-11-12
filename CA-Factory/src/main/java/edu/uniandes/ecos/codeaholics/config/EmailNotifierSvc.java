@@ -46,7 +46,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private static final String REGISTRATION_FILE = "src/main/resources/email/registration.properties";
 	private static final String RESET_FILE = "src/main/resources/email/reset.properties";
 	private static final String UPDATE_FILE = "src/main/resources/email/update.properties";
-	private static final String INITIATE_FILE = "src/main/resources/email/update.properties";
+	private static final String INITIATE_FILE = "src/main/resources/email/initiate.properties";
 
 	private static Map<EmailType,String> context = new HashMap<EmailType,String>();
 	
@@ -148,3 +148,4 @@ public class EmailNotifierSvc implements INotifierSvc {
 	}
 
 }
+
