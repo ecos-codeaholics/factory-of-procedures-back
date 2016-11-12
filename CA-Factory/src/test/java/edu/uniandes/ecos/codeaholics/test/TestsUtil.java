@@ -185,19 +185,6 @@ public class TestsUtil {
 			logger.info("Collection " + collectionName + " dropped");
 		}
 
-		/*
-		 * collection = dbOne.getCollection("functionary"); collection.drop();
-		 * 
-		 * collection = dbOne.getCollection("mayoralty"); collection.drop();
-		 * 
-		 * collection = dbOne.getCollection("procedures"); collection.drop();
-		 * 
-		 * collection = dbOne.getCollection("proceduresRequest");
-		 * collection.drop();
-		 * 
-		 * collection = dbOne.getCollection(Constants.SESSION_COLLECTION); collection.drop();
-		 */
-
 	}
 
 	// add citizen
@@ -207,7 +194,7 @@ public class TestsUtil {
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
-		citizen.setName("Andres");
+		citizen.setName("Andr\u00E9s");
 		citizen.setLastName1("Osorio");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("andres@uniandes");
@@ -385,7 +372,7 @@ public class TestsUtil {
 		dependencyUno.setFunctionaries(funcionaryUno);
 
 		Dependency dependencyDos = new Dependency();
-		dependencyDos.setName("Atencion al Ciudadano");
+		dependencyDos.setName("Atenci\u00F3n al Ciudadano");
 
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
@@ -404,7 +391,7 @@ public class TestsUtil {
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Certificado de residencia");
 		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
+		procedures.add("Solicitud De Contrataci\u00F3on Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -435,7 +422,7 @@ public class TestsUtil {
 		dependencyUno.setFunctionaries(funcionaryUno);
 
 		Dependency dependencyDos = new Dependency();
-		dependencyDos.setName("Atencion al Ciudadano");
+		dependencyDos.setName("Atenci\u00F3on al Ciudadano");
 
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
@@ -453,8 +440,8 @@ public class TestsUtil {
 
 		ArrayList<String> procedures = new ArrayList<>();
 		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de estratificacion");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
+		procedures.add("Certificado de estratificaci\u00F3n");
+		procedures.add("Solicitud De Contrataci\u00F3n Monitor Deportes");
 
 		mayoralty.setProcedures(procedures);
 
@@ -534,7 +521,7 @@ public class TestsUtil {
 		citizen.setUserProfile("functionary");
 
 		citizen.setMayoralty("Anapoima");
-		citizen.setDependency("Atencion al Ciudadano");
+		citizen.setDependency("Atenci\u00F3n al Ciudadano");
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -618,7 +605,7 @@ public class TestsUtil {
 		citizen.setUserProfile("functionary");
 
 		citizen.setMayoralty("El Rosal");
-		citizen.setDependency("Atencion al Ciudadano");
+		citizen.setDependency("Atenci\u00F3n al Ciudadano");
 		;
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
@@ -658,8 +645,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setStatus("En curso");
@@ -675,8 +662,8 @@ public class TestsUtil {
 		reqDoc1.setRequired(true);
 		reqDoc1.setClassName("form-control");
 
-		reqDoc1.setLabel("Cedula de Ciudadania");
-		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setLabel("C\u00E9dula de Ciudadan\u00EDa");
+		reqDoc1.setDescription("Adjunte su c\u00E9dula en formato (png, jpeg)");
 		reqDoc1.setName("cedulaAtt");
 
 		reqDocs.add(reqDoc1);
@@ -702,8 +689,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificacion");
-		field1.setDescription("numero de documento de identidad");
+		field1.setLabel("identificaci\u00F3n");
+		field1.setDescription("n鷐ero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -716,11 +703,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direccion");
-		field2.setDescription("direccion de residencia");
+		field2.setLabel("direcci\u00F3n");
+		field2.setDescription("direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direccion");
+		field2.setName("direcci\u00F3n");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -745,7 +732,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("numero telefonico de contacto");
+		field4.setDescription("n鷐ero telef\u00F3nico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -759,7 +746,7 @@ public class TestsUtil {
 		field5.setRequired(true);
 		field5.setLabel("Carta de Solicitud");
 		field5.setDescription("Carta de Solicitud");
-		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
 		field5.setMaxlenght(5000);
@@ -793,9 +780,9 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
-		activity1.setDependency("Atencion al ciudadano");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
+		activity1.setDependency("Atenci\u00F3n al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setStatus("Finalizado");
 
@@ -810,8 +797,8 @@ public class TestsUtil {
 		reqDoc1.setRequired(true);
 		reqDoc1.setClassName("form-control");
 
-		reqDoc1.setLabel("Cedula de Ciudadania");
-		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setLabel("C\u00E9dula de Ciudadan\u00EDa");
+		reqDoc1.setDescription("Adjunte su c\u00E9dula en formato (png, jpeg)");
 		reqDoc1.setName("cedulaAtt");
 
 		reqDocs.add(reqDoc1);
@@ -849,8 +836,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificacion");
-		field1.setDescription("numero de documento de identidad");
+		field1.setLabel("identificaci\u00F3n");
+		field1.setDescription("n鷐ero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -863,11 +850,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direccion");
-		field2.setDescription("direccion de residencia");
+		field2.setLabel("direcci\u00F3n");
+		field2.setDescription("direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direccion");
+		field2.setName("direcci\u00F3n");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -892,7 +879,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("numero telefonico de contacto");
+		field4.setDescription("n鷐ero telefonico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -906,7 +893,7 @@ public class TestsUtil {
 		field5.setRequired(true);
 		field5.setLabel("Carta de Solicitud");
 		field5.setDescription("Carta de Solicitud");
-		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
 		field5.setMaxlenght(5000);
@@ -940,8 +927,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setStatus("En curso");
@@ -957,8 +944,8 @@ public class TestsUtil {
 		reqDoc1.setRequired(true);
 		reqDoc1.setClassName("form-control");
 
-		reqDoc1.setLabel("Cedula de Ciudadania del solicitante");
-		reqDoc1.setDescription("Adjunte su cedula en formato (png, jpeg)");
+		reqDoc1.setLabel("C\u00E9dula de ciudadan\u00EDa del solicitante");
+		reqDoc1.setDescription("Adjunte su c\u00E9dula en formato (png, jpeg)");
 		reqDoc1.setName("cedulaAtt");
 
 		reqDocs.add(reqDoc1);
@@ -981,8 +968,8 @@ public class TestsUtil {
 		reqDoc3.setRequired(true);
 		reqDoc3.setClassName("form-control");
 
-		reqDoc3.setLabel("Cedula del fallecido");
-		reqDoc3.setDescription("Adjunte la cedula del fallecido (png, jpeg)");
+		reqDoc3.setLabel("C\u00E9dula del fallecido");
+		reqDoc3.setDescription("Adjunte la c\u00E9dula del fallecido (png, jpeg)");
 		reqDoc3.setName("cedulaFallecidoAtt");
 
 		reqDocs.add(reqDoc3);
@@ -993,8 +980,8 @@ public class TestsUtil {
 		reqDoc4.setRequired(true);
 		reqDoc4.setClassName("form-control");
 
-		reqDoc4.setLabel("Certificado de defuncion");
-		reqDoc4.setDescription("Adjunte el certificado de defuncion (png, jpeg)");
+		reqDoc4.setLabel("Certificado de defunci\u00F3n");
+		reqDoc4.setDescription("Adjunte el certificado de defunci\u00F3n (png, jpeg)");
 		reqDoc4.setName("defuncionAtt");
 
 		reqDocs.add(reqDoc4);
@@ -1020,8 +1007,8 @@ public class TestsUtil {
 		field1.setType("text");
 		field1.setSubtype("tel");
 		field1.setRequired(true);
-		field1.setLabel("identificacion");
-		field1.setDescription("numero de documento de identidad");
+		field1.setLabel("identificaci\u00F3n");
+		field1.setDescription("n鷐ero de documento de identidad");
 		field1.setPlaceHolder("123456789");
 		field1.setClassname("form-control");
 		field1.setName("identification");
@@ -1034,11 +1021,11 @@ public class TestsUtil {
 		field2.setType("text");
 		field2.setSubtype("text");
 		field2.setRequired(true);
-		field2.setLabel("direccion");
-		field2.setDescription("direccion de residencia");
+		field2.setLabel("direcci\u00F3n");
+		field2.setDescription("direcci\u00F3n de residencia");
 		field2.setPlaceHolder("CAlle -- # -- --");
 		field2.setClassname("form-control");
-		field2.setName("direccion");
+		field2.setName("direcci\u00F3n");
 		field2.setMaxlenght(100);
 
 		formFields.add(field2);
@@ -1063,7 +1050,7 @@ public class TestsUtil {
 		field4.setSubtype("tel");
 		field4.setRequired(true);
 		field4.setLabel("telefono");
-		field4.setDescription("numero telefonico de contacto");
+		field4.setDescription("n鷐ero telefonico de contacto");
 		field4.setPlaceHolder("3-----");
 		field4.setClassname("form-control");
 		field4.setName("telefono");
@@ -1077,7 +1064,7 @@ public class TestsUtil {
 		field5.setRequired(true);
 		field5.setLabel("Carta de Solicitud");
 		field5.setDescription("Carta de Solicitud");
-		field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 		field5.setClassname("form-control");
 		field5.setName("carta");
 		field5.setMaxlenght(5000);
@@ -1111,23 +1098,23 @@ public class TestsUtil {
 
 			// Activities
 			activities.add(new Activity("CDP","Certificado de disponibilidad Presupuestal","Jefe de presupuesto",1,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Elaboracion Contrato","Realizaci贸n del contrato","Coordinador de deportes ",2,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Aprobacion juridica","Aprobaci贸n de propuesta","Juridico",3,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Elaboraci\u00F3n Contrato","Realizaci\u00F3n del contrato","Coordinador de deportes ",2,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Aprobaci\u00F3n juridica","Aprobaci\u00F3n de propuesta","Juridico",3,"jvaldez@elrosal","Pendiente"));
 			activities.add(new Activity("Firma Alcalde","Firma del alcalde y Documento de supervisor del contrato","Alcalde",4,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadania",5,"","Pendiente"));
+			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadan\u00EDa",5,"","Pendiente"));
 			activities.add(new Activity("RP","Responsabilidad presupuestal","Jefe de presupuesto",6,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadania",7,"","Pendiente"));
-			activities.add(new Activity("Informe supervisi贸n","Informe de supervisi贸n del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
+			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadan\u00EDa",7,"","Pendiente"));
+			activities.add(new Activity("Informe supervisi髇","Informe de supervisi髇 del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
 			activities.add(new Activity("Orden de pago","Solicitud de orden de pago y comprobante de egreso","Tesoreria",9,"jvaldez@elrosal","Pendiente"));
 
 			procedure.setActivities(activities);
 
 			// Required
 	
-			reqDocs.add(new RequiredUpload("file", true, "Cedula de Ciudadania del solicitante", "Adjunte su cedula en formato (png, jpeg)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "C\u00E9dula de Ciudadan\u00EDa del solicitante", "Adjunte su c\u00E9dula en formato (png, jpeg)", "form-control", "cedulaAtt"));
 			reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)", "form-control", "cedulaAtt"));
 			reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social", "Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci贸n publica", "Adjunte su hoja de vida de funci贸n publica (pdf)", "form-control", "cedulaAtt"));
+			reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci\u00F3n publica", "Adjunte su hoja de vida de funci\u00F3n publica (pdf)", "form-control", "cedulaAtt"));
 			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria", "Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
 			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales", "Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
 			reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control", "cedulaAtt"));
@@ -1140,8 +1127,8 @@ public class TestsUtil {
 			field1.setType("text");
 			field1.setSubtype("tel");
 			field1.setRequired(true);
-			field1.setLabel("identificacion");
-			field1.setDescription("numero de documento de identidad");
+			field1.setLabel("identificaci\u00F3n");
+			field1.setDescription("n鷐ero de documento de identidad");
 			field1.setPlaceHolder("123456789");
 			field1.setClassname("form-control");
 			field1.setName("identification");
@@ -1154,11 +1141,11 @@ public class TestsUtil {
 			field2.setType("text");
 			field2.setSubtype("text");
 			field2.setRequired(true);
-			field2.setLabel("direccion");
-			field2.setDescription("direccion de residencia");
+			field2.setLabel("direcci\u00F3n");
+			field2.setDescription("direcci\u00F3n de residencia");
 			field2.setPlaceHolder("CAlle -- # -- --");
 			field2.setClassname("form-control");
-			field2.setName("direccion");
+			field2.setName("direcci\u00F3n");
 			field2.setMaxlenght(100);
 
 			formFields.add(field2);
@@ -1183,7 +1170,7 @@ public class TestsUtil {
 			field4.setSubtype("tel");
 			field4.setRequired(true);
 			field4.setLabel("telefono");
-			field4.setDescription("numero telefonico de contacto");
+			field4.setDescription("n鷐ero telefonico de contacto");
 			field4.setPlaceHolder("3-----");
 			field4.setClassname("form-control");
 			field4.setName("telefono");
@@ -1197,7 +1184,7 @@ public class TestsUtil {
 			field5.setRequired(true);
 			field5.setLabel("Carta de Solicitud");
 			field5.setDescription("Carta de Solicitud");
-			field5.setPlaceHolder("Por favor diligencia su peticion detalladamente");
+			field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
 			field5.setClassname("form-control");
 			field5.setName("carta");
 			field5.setMaxlenght(5000);
@@ -1235,8 +1222,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 1 # 12 -12");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 1 # 12 -12");
 		procedureData.put("barrio", "barrio Tal");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1253,8 +1240,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("anapoima");
 		activity1.setAprobacion("En proceso");
@@ -1303,8 +1290,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1321,8 +1308,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setAprobacion("Finalizado");
@@ -1368,8 +1355,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1386,8 +1373,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("Finalizado");
@@ -1433,8 +1420,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1452,9 +1439,9 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
-		activity1.setDependency("Atencion al ciudadano");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
+		activity1.setDependency("Atenci\u00F3n al ciudadano");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
@@ -1499,8 +1486,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 1 # 12 -12");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 1 # 12 -12");
 		procedureData.put("barrio", "barrio Tal");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1517,8 +1504,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@anapoima");
 		activity1.setAprobacion("En proceso");
@@ -1562,8 +1549,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("anapoima");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1580,8 +1567,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setAprobacion("Finalizado");
@@ -1625,8 +1612,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 2 # 23 -23");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 2 # 23 -23");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1644,8 +1631,8 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("jvaldez@elrosal");
 		activity1.setAprobacion("Finalizado");
@@ -1690,8 +1677,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1709,9 +1696,9 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
-		activity1.setDependency("Atencion al ciudadano");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
+		activity1.setDependency("Atenci\u00F3n al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
@@ -1743,7 +1730,7 @@ public class TestsUtil {
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
-		procedureRequest.setProcedureClassName("Solicitud De Contratacion Monitor Deportes");
+		procedureRequest.setProcedureClassName("Solicitud De Contrataci\u00F3on Monitor Deportes");
 		procedureRequest.setFileNumber("9");
 
 		Citizen citizen = new Citizen();
@@ -1756,8 +1743,8 @@ public class TestsUtil {
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
-		procedureData.put("identificacion", 123456);
-		procedureData.put("direccion", "calle 10 # 10 - 10");
+		procedureData.put("identificaci\u00F3n", 123456);
+		procedureData.put("direcci\u00F3n", "calle 10 # 10 - 10");
 		procedureData.put("barrio", "barrio lat");
 		procedureData.put("telefono", 55667733);
 		procedureData.put("carta de Solicitud", "Solicito amablemente un certificado de residencia");
@@ -1775,9 +1762,9 @@ public class TestsUtil {
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
-		activity1.setName("Aprobacion");
-		activity1.setDescription("Revisar documentacion y aprobar");
-		activity1.setDependency("Atencion al ciudadano");
+		activity1.setName("Aprobaci\u00F3n");
+		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
+		activity1.setDependency("Atenci\u00F3n al ciudadano");
 		activity1.setFunctionary("acalle@anapoima");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");

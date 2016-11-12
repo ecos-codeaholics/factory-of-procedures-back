@@ -18,9 +18,9 @@ import java.util.Properties;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Class for building email notifications
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: Email text is obtained from java properties files
  *
  * Created: Nov 10, 2016 10:17:13 AM
  * 
