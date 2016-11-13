@@ -1,5 +1,9 @@
+/** Copyright or License
+ *
+ */
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +18,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.sun.mail.imap.protocol.Status;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
+import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
@@ -31,7 +35,6 @@ import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
 import spark.Request;
 import spark.Response;
 
@@ -50,6 +53,8 @@ public class CitizenServices {
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
 	private static String PROCEDURES = "procedures";
+
+	private static String BARCODER_EXTSVC_ROUTE = "https://warm-beach-98503.herokuapp.com/serialnumbers";
 
 	/***
 	 * Obtiene el modelo del tramite para ser iniciado.
@@ -196,7 +201,16 @@ public class CitizenServices {
 		Object response = null;
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
-		procedureRequest.setFileNumber(UUID.randomUUID().toString());
+
+		try {
+			ExternalSvcInvoker.invoke(BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException ex) {
+			log.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		String procedureName = pRequest.params(":procedureName");
 		Document procedureFilter = new Document();
@@ -214,7 +228,7 @@ public class CitizenServices {
 			procedureRequest.getActivities().get(0);
 
 			for (Activity activity : procedureRequest.getActivities()) {
-				if(activity.getStep() == 1)
+				if (activity.getStep() == 1)
 					activity.setStatus("En curso");
 			}
 
@@ -243,20 +257,21 @@ public class CitizenServices {
 
 			String mayoraltyName = pRequest.params(":mayoraltyName");
 			procedureRequest.setMayoralty(mayoraltyName);
-		
+
 			JsonParser parser = new JsonParser();
 			JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
 			JsonObject jsonData = (JsonObject) json.get("dataForm");
 			JsonObject jsonDocs = (JsonObject) json.get("docs");
-		
-			//Document procedureInfo = GSON.fromJson(pRequest.body(), Document.class);
+
+			// Document procedureInfo = GSON.fromJson(pRequest.body(),
+			// Document.class);
 			Document procedureData = GSON.fromJson(jsonData, Document.class);
-			 
+
 			procedureRequest.setProcedureData(procedureData);
-			
+
 			Document deliveryDocs = GSON.fromJson(jsonDocs, Document.class);
 			procedureRequest.setDeliveryDocs(deliveryDocs);
-			
+
 			procedureRequest.setStatus("En proceso");
 			procedureRequest.setStartDate(new Date());
 			System.out.println(procedureRequest.toDocument());
@@ -429,15 +444,14 @@ public class CitizenServices {
 			log.info("headers: " + pRequest.headers());
 			String citizen = pRequest.headers("citizen");
 			String fileRequest = pRequest.headers("fileRequest");
-			
-			
+
 			log.info("nombre del req: " + fileRequest);
 			log.info("ciuda: " + citizen);
-			
-			String nameFile=fileRequest+citizen;
-			
+
+			String nameFile = fileRequest + citizen;
+
 			fileManager.uploadDocument(pRequest);
-			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
+			response = messager.getOkMessage(((DocumentSvc) fileManager).getAnswerStr());
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);
