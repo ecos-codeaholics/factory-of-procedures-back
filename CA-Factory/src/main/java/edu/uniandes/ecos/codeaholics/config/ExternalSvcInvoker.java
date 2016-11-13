@@ -35,9 +35,7 @@ public class ExternalSvcInvoker {
 
 	private static Object response;
 
-	public static void invoke(String pRoute, int pPort) {
-
-		String serverPath = "http://localhost:" + pPort;
+	public static void invoke(String pRoute) {
 		
 		int httpResult = 0;
 		String httpMessage = "";
@@ -46,7 +44,7 @@ public class ExternalSvcInvoker {
 
 		try {
 
-			URL appUrl = new URL(serverPath + pRoute);
+			URL appUrl = new URL(pRoute);
 
 			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
 			urlConnection.setDoOutput(true);

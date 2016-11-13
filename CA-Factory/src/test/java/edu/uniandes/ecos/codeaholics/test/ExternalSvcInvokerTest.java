@@ -31,10 +31,9 @@ public class ExternalSvcInvokerTest {
 	@Test
 	public void barcoderTest() {
 
-		String route = "/serialnumbers";
-		int port = 4568;
+		String route = "https://warm-beach-98503.herokuapp.com/serialnumbers";
 		
-		ExternalSvcInvoker.invoke(route,port);
+		ExternalSvcInvoker.invoke(route);
 		JsonObject json = (JsonObject)ExternalSvcInvoker.getResponse();
 		System.out.println(json.get("code"));
 		assertTrue(json.has("code"));

@@ -4,6 +4,7 @@ import edu.uniandes.ecos.codeaholics.business.AuthServices;
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.business.FunctionaryServices;
 import edu.uniandes.ecos.codeaholics.business.MayoraltyServices;
+import edu.uniandes.ecos.codeaholics.business.StatisticsServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -170,7 +171,9 @@ public class App {
 			return "OK";
 		});
 
-		
+		//Statistics
+		get(Routes.AUTH, StatisticsServices::getBasicStats, GeneralUtil.json());
+				
 		SessionManager.test1();
 		
 	}

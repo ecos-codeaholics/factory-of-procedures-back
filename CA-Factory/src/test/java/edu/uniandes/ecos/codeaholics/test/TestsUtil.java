@@ -41,12 +41,6 @@ import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.RequiredUpload;
 import edu.uniandes.ecos.codeaholics.persistence.Session;
 
-//import edu.uniandes.ecos.codeaholics.persistence.Dependency;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldAttribute;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldOptions;
-//import edu.uniandes.ecos.codeaholics.persistence.FieldValidation;
-//import edu.uniandes.ecos.codeaholics.persistence.FormField.Type;
-
 /**
  * Package: edu.uniandes.ecos.codeaholics.test
  *
@@ -1219,7 +1213,7 @@ public class TestsUtil {
 		citizen.setLastName1("osorio");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
@@ -1243,7 +1237,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("anapoima");
+		activity1.setFunctionary("Anapoima");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1287,7 +1281,7 @@ public class TestsUtil {
 		citizen.setLastName1("osorio");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
@@ -1483,7 +1477,7 @@ public class TestsUtil {
 		citizen.setLastName1("rodriguez");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
@@ -1546,7 +1540,7 @@ public class TestsUtil {
 		citizen.setLastName1("rodriguez");
 
 		procedureRequest.setCitizen(citizen);
-		procedureRequest.setMayoralty("anapoima");
+		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
