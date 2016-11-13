@@ -6,6 +6,8 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
@@ -33,10 +35,16 @@ public class ExternalSvcInvokerTest {
 
 		String route = "https://warm-beach-98503.herokuapp.com/serialnumbers";
 		
-		ExternalSvcInvoker.invoke(route);
-		JsonObject json = (JsonObject)ExternalSvcInvoker.getResponse();
-		System.out.println(json.get("code"));
-		assertTrue(json.has("code"));
+		try {
+			ExternalSvcInvoker.invoke(route);
+			JsonObject json = (JsonObject)ExternalSvcInvoker.getResponse();
+			System.out.println(json.get("code"));
+			assertTrue(json.has("code"));
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail("Problem with service");
+		}
 		
 	}
 

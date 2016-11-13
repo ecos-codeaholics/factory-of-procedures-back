@@ -5,13 +5,14 @@
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.io.BufferedReader;
-//import java.io.BufferedWriter;
-//import java.io.InputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-//import java.io.OutputStreamWriter;
-//import java.io.Writer;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,10 +33,12 @@ import com.google.gson.JsonParser;
  * 
  */
 public class ExternalSvcInvoker {
-
+	
+	static Logger logger = LogManager.getRootLogger();
+	
 	private static Object response;
 
-	public static void invoke(String pRoute) {
+	public static void invoke(String pRoute) throws FileNotFoundException {
 		
 		int httpResult = 0;
 		String httpMessage = "";
@@ -73,10 +76,15 @@ public class ExternalSvcInvoker {
 
 			response = json;
 			
-			System.out.println(httpResult);
-				
-		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info(httpResult);
+			logger.info(httpMessage);
+			logger.info(jsonResponse);
+			
+		} catch (FileNotFoundException ex) {
+			logger.info("Not found: " + pRoute);
+			throw ex;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
 	}
