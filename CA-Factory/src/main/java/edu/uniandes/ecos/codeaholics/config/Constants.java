@@ -26,6 +26,8 @@ public class Constants {
 	public static final String PROCEDURESREQUEST_COLLECTION = "proceduresRequest";
 
 	public static final String PROCEDURES_COLLECTION = "procedures";
+	
+	public static final String MAYORALTIES_COLLECTION = "mayoralty";
 
 
 }

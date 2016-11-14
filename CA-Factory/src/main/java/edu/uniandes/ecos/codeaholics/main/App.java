@@ -4,6 +4,7 @@ import edu.uniandes.ecos.codeaholics.business.AuthServices;
 import edu.uniandes.ecos.codeaholics.business.CitizenServices;
 import edu.uniandes.ecos.codeaholics.business.FunctionaryServices;
 import edu.uniandes.ecos.codeaholics.business.MayoraltyServices;
+import edu.uniandes.ecos.codeaholics.business.StatisticsServices;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
@@ -169,6 +170,12 @@ public class App {
 			return "OK";
 		});
 
+		/*
+		 * Get some basic statistics to display at the Home page
+		 * 
+		 */
+		get(Routes.STATS + "basics/", StatisticsServices::getBasicStats, GeneralUtil.json());
+		
 	}
 
 	/**

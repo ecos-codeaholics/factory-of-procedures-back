@@ -26,5 +26,8 @@ public class Routes {
 
 	// Rutas de authenticacion
 	public static final String AUTH = "/auth/";
+	
+	// Ruta para estadisticas y reportes
+	public static final String STATS = "/stats/";
 
 }
