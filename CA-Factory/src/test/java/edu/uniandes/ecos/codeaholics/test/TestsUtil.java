@@ -633,7 +633,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setFunctionary("acalle@anapoima");
 		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
@@ -913,7 +913,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("acalle@elrosal");
 		activity1.setStatus("Pendiente");
 
 		activities.add(activity1);
@@ -1079,13 +1079,13 @@ public class TestsUtil {
 
 		// Activities
 		activities.add(new Activity("CDP", "Certificado de disponibilidad Presupuestal", "Jefe de presupuesto", 1,
-				"jvaldez@elrosal", "Pendiente"));
+				"acalle@elrosal", "Pendiente"));
 		activities.add(new Activity("Elaboraci\u00F3n Contrato", "Realizaci\u00F3n del contrato",
-				"Coordinador de deportes ", 2, "jvaldez@elrosal", "Pendiente"));
+				"Coordinador de deportes ", 2, "acalle@elrosal", "Pendiente"));
 		activities.add(new Activity("Aprobaci\u00F3n juridica", "Aprobaci\u00F3n de propuesta", "Juridico", 3,
-				"jvaldez@elrosal", "Pendiente"));
+				"acalle@elrosal", "Pendiente"));
 		activities.add(new Activity("Firma Alcalde", "Firma del alcalde y Documento de supervisor del contrato",
-				"Alcalde", 4, "jvaldez@elrosal", "Pendiente"));
+				"Alcalde", 4, "acalle@elrosal", "Pendiente"));
 		activities.add(new Activity("Firma Ciudadano", "Firma del contrato por el ciudadano", "Ciudadan\u00EDa", 5, "",
 				"Pendiente"));
 		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6, "jvaldez@elrosal",
@@ -1093,9 +1093,9 @@ public class TestsUtil {
 		activities.add(new Activity("Informe de labor", "Informe del objeto contractual", "Ciudadan\u00EDa", 7, "",
 				"Pendiente"));
 		activities.add(new Activity("Informe supervisi\u00F3n", "Informe de supervisi\u00F3n del contrato",
-				"Coordinador del contrato", 8, "jvaldez@elrosal", "Pendiente"));
+				"Coordinador del contrato", 8, "acalle@elrosal", "Pendiente"));
 		activities.add(new Activity("Orden de pago", "Solicitud de orden de pago y comprobante de egreso", "Tesoreria",
-				9, "jvaldez@elrosal", "Pendiente"));
+				9, "acalle@elrosal", "Pendiente"));
 
 		procedure.setActivities(activities);
 
