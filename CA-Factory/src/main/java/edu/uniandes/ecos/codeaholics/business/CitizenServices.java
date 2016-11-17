@@ -288,7 +288,7 @@ public class CitizenServices {
 			log.error(e.getMessage());
 		}
 
-		response = messager.getOkMessage("Registro exitoso de su solicitud, su trámite fue creado con el número: " + procedureRequest.getFileNumber());
+		response = messager.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: " + procedureRequest.getFileNumber());
 		pResponse.type("application/json");
 		// return "Proceso Exitoso";
 
