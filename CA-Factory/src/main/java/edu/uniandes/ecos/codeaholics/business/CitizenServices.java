@@ -29,7 +29,7 @@ import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
-
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -53,8 +53,6 @@ public class CitizenServices {
 	private static String PROCEDURESREQUEST = "proceduresRequest";
 
 	private static String PROCEDURES = "procedures";
-
-	private static String BARCODER_EXTSVC_ROUTE = "https://warm-beach-98503.herokuapp.com/serialnumbers";
 
 	/***
 	 * Obtiene el modelo del tramite para ser iniciado.
@@ -203,7 +201,8 @@ public class CitizenServices {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
-			ExternalSvcInvoker.invoke(BARCODER_EXTSVC_ROUTE);
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE
+					);
 			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
 			procedureRequest.setFileNumber(json.get("code").getAsString());
 
@@ -246,7 +245,6 @@ public class CitizenServices {
 
 			citizenFilter.append("email", email);
 			// ..
-			// citizenFilter.append("email", pRequest.queryParams("email"));
 
 			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, CITIZEN);
 
@@ -263,18 +261,19 @@ public class CitizenServices {
 			JsonObject jsonData = (JsonObject) json.get("dataForm");
 			JsonObject jsonDocs = (JsonObject) json.get("docs");
 
-			// Document procedureInfo = GSON.fromJson(pRequest.body(),
-			// Document.class);
+			//TODO: there is no counter part to procedureData model comming from the Frontent
 			Document procedureData = GSON.fromJson(jsonData, Document.class);
-
 			procedureRequest.setProcedureData(procedureData);
-
+			//
+			
 			Document deliveryDocs = GSON.fromJson(jsonDocs, Document.class);
 			procedureRequest.setDeliveryDocs(deliveryDocs);
 
 			procedureRequest.setStatus("En proceso");
 			procedureRequest.setStartDate(new Date());
-			System.out.println(procedureRequest.toDocument());
+			
+			log.info(procedureRequest.toDocument());
+			
 			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 
 			ArrayList<String> parameters = new ArrayList<>();
@@ -290,9 +289,6 @@ public class CitizenServices {
 
 		response = messager.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: " + procedureRequest.getFileNumber());
 		pResponse.type("application/json");
-		// return "Proceso Exitoso";
-
-		pRequest.body();
 
 		return response;
 
@@ -448,7 +444,7 @@ public class CitizenServices {
 			log.info("nombre del req: " + fileRequest);
 			log.info("ciuda: " + citizen);
 
-			String nameFile = fileRequest + citizen;
+			//String nameFile = fileRequest + citizen;
 
 			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage(((DocumentSvc) fileManager).getAnswerStr());
