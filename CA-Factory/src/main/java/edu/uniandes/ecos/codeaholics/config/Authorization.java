@@ -128,7 +128,7 @@ public final class Authorization {
 	 */
 	public static String authorizeCitizen(Request pRequest, Response pResponse) {
 
-		return authorizeUser(pRequest, pResponse, "citizen");
+		return authorizeUser(pRequest, pResponse, Constants.CITIZEN_USER_PROFILE);
 
 	}
 
@@ -144,7 +144,7 @@ public final class Authorization {
 	 */
 	public static String authorizeFuntionary(Request pRequest, Response pResponse) {
 
-		return authorizeUser(pRequest, pResponse, "functionary");
+		return authorizeUser(pRequest, pResponse, Constants.FUNCTIONARY_USER_PROFILE);
 
 	}
 
@@ -160,7 +160,7 @@ public final class Authorization {
 	 */
 	public static String authorizeAdmin(Request pRequest, Response pResponse) {
 
-		return authorizeUser(pRequest, pResponse, "admin");
+		return authorizeUser(pRequest, pResponse, Constants.ADMIN_USER_PROFILE);
 
 	}
 

@@ -67,7 +67,7 @@ public class CitizenServices {
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", pRequest.params(":procedureName"));
 
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURES_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 		if (documents.isEmpty()) {
 			log.info("No data found for " + pRequest.params(":procedureName"));
@@ -179,7 +179,7 @@ public class CitizenServices {
 
 		try {
 
-			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, Constants.PROCEDURES_COLLECTION);
+			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
@@ -236,7 +236,7 @@ public class CitizenServices {
 			procedureRequest.setStatus("En proceso");
 			procedureRequest.setStartDate(new Date());
 			System.out.println(procedureRequest.toDocument());
-			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+			DataBaseUtil.save(procedureRequest.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
 
 			ArrayList<String> parameters = new ArrayList<>();
 			parameters.add(procedureRequest.getProcedureClassName());
@@ -268,7 +268,7 @@ public class CitizenServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static Object consultProcedures(Request pRequest, Response pResponse) {
+	public static Object consultProcedureRequets(Request pRequest, Response pResponse) {
 
 		// .
 		String email;
@@ -285,16 +285,9 @@ public class CitizenServices {
 		procedureFilter.append("citizen.email", email);
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -340,7 +333,6 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 
-		// .
 		String email;
 
 		try {
@@ -349,27 +341,18 @@ public class CitizenServices {
 			log.info(jwtEx.getMessage());
 			return "failed";
 		}
-		// ..
 
 		procedureFilter.append("citizen.email", email);
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
-
 		}
 
-		log.info("Consult procedures by id done");
+		log.info("Consult procedure by id done");
 
 		return dataset;
 	}

@@ -123,7 +123,7 @@ public class AuthenticationJWTTest {
 
 			Document session = new Document();
 			session.append("email", USER_EMAIL);
-			session.append("user-profile", "citizen");
+			session.append("user-profile", Constants.CITIZEN_USER_PROFILE);
 
 			if (authenticated) {
 				token = (String) jwtToken.getAnswer();
@@ -165,7 +165,7 @@ public class AuthenticationJWTTest {
 		String expToken = createExpiredJWT("emily@uniandes.edu.co", citizenSalt);
 		logger.info(expToken);
 
-		utilities.addSession("emily@uniandes.edu.co", "citizen", expToken, citizenSalt);
+		utilities.addSession("emily@uniandes.edu.co", Constants.CITIZEN_USER_PROFILE, expToken, citizenSalt);
 
 		boolean isAutorized = false;
 
@@ -173,7 +173,7 @@ public class AuthenticationJWTTest {
 
 			Document session = new Document();
 			session.append("email", "emily@uniandes.edu.co");
-			session.append("user-profile", "citizen");
+			session.append("user-profile", Constants.CITIZEN_USER_PROFILE);
 
 			// Check against token
 			session.append("token", expToken);
@@ -222,7 +222,7 @@ public class AuthenticationJWTTest {
 		builder.setIssuer(TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
-		builder.setAudience("citizen");
+		builder.setAudience(Constants.CITIZEN_USER_PROFILE);
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();

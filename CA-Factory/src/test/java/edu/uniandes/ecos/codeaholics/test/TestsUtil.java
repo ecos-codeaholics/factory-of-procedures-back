@@ -87,7 +87,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -164,11 +164,11 @@ public class TestsUtil {
 		logger.info("clearing all existing collections in the default DB");
 
 		ArrayList<String> collections = new ArrayList<String>();
-		collections.add("citizen");
-		collections.add("functionary");
-		collections.add("mayoralty");
-		collections.add("procedures");
-		collections.add("proceduresRequest");
+		collections.add(Constants.CITIZEN_COLLECTION);
+		collections.add(Constants.FUNCTIONARY_COLLECTION);
+		collections.add(Constants.MAYORALTY_COLLECTION);
+		collections.add(Constants.PROCEDURE_COLLECTION);
+		collections.add(Constants.PROCEDUREREQUEST_COLLECTION);
 		collections.add(Constants.SESSION_COLLECTION);
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
@@ -197,7 +197,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -230,7 +230,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -263,7 +263,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -287,7 +287,7 @@ public class TestsUtil {
 	// add citizen
 	public static void addCitizenCuatro() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("David");
@@ -295,7 +295,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -303,7 +303,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", "df.martinez1@uniandes.edu.co");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -318,7 +318,7 @@ public class TestsUtil {
 
 	public static void addCitizenCinco() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("Sebastian");
@@ -326,7 +326,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -334,7 +334,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", "s.cardona12@uniandes.edu.co");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -448,8 +448,8 @@ public class TestsUtil {
 	public static void addFunctionaryUno(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
-		MongoCollection<Document> collectionC = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
+		MongoCollection<Document> collectionC = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("Anapoima");
@@ -463,7 +463,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("admin");
+		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Hacienda");
@@ -474,7 +474,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 		collectionC.insertOne(citizen.toDocument());
 
 		if (documents.isEmpty()) {
@@ -492,7 +492,7 @@ public class TestsUtil {
 	public static void addFunctionaryDos(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("Anapoima");
@@ -506,7 +506,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
@@ -517,7 +517,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -534,7 +534,7 @@ public class TestsUtil {
 	public static void addFunctionaryTres(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("El Rosal");
@@ -548,7 +548,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("admin");
+		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Hacienda");
@@ -559,7 +559,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -576,7 +576,7 @@ public class TestsUtil {
 	public static void addFunctionaryCuatro(String pName, String pLastName1, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("El Rosal");
@@ -590,7 +590,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
@@ -601,7 +601,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -618,7 +618,7 @@ public class TestsUtil {
 	public static void addProcedureUno(String pName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
@@ -751,7 +751,7 @@ public class TestsUtil {
 	public static void addProcedureDos(String pName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
@@ -896,7 +896,7 @@ public class TestsUtil {
 	public static void addProcedureTres(String pName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
 		// ArrayList<Functionary> listOfFunctionaries = new
 		// ArrayList<Functionary>();
@@ -1068,7 +1068,7 @@ public class TestsUtil {
 	public static void addProcedureCuatro(String pName) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
@@ -1202,7 +1202,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestUno() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1270,7 +1270,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestDos() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1335,7 +1335,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestTres() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1400,7 +1400,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestCuatro() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1466,7 +1466,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestCinco() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1529,7 +1529,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestSeis() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1592,7 +1592,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestSiete() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1657,7 +1657,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestOcho() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1722,7 +1722,7 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestNueve() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1799,7 +1799,7 @@ public class TestsUtil {
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("jvaldes@uniandes.edu.co");
 		citizen.setPassword("Qwerty");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_COLLECTION);
 
 	}
 

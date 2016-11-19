@@ -11,9 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
@@ -33,8 +30,6 @@ public class MayoraltyServices {
 	private final static Logger log = LogManager.getLogger(MayoraltyServices.class);
 	
 	private static IMessageSvc messager = new ResponseMessage();
-	
-	private static Gson GSON = new GsonBuilder().serializeNulls().create();
 	
 	/***
 	 * Consulta lista de tramites por alcaldia.
@@ -163,7 +158,7 @@ public class MayoraltyServices {
 //			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
 //
 //			Document procedureDoc = procedures.get(0);
-//			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
+//			DataBaseUtil.save(procedureRequest.toDocument(), "procedureRequest");
 //
 //			ArrayList<String> parameters = new ArrayList<>();
 //			parameters.add(procedureRequest.getProcedureClassName());

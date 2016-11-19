@@ -65,15 +65,8 @@ public class FunctionaryServices {
 
 		List<Document> dataset = new ArrayList<>();
 
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -113,15 +106,8 @@ public class FunctionaryServices {
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -165,7 +151,7 @@ public class FunctionaryServices {
 			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
 
 			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
-			ArrayList<Document> procedureRequest = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
+			ArrayList<Document> procedureRequest = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 
 			Document procedureDoc = procedureRequest.get(0);
 			String id = procedureDoc.get("_id").toString();
@@ -217,7 +203,7 @@ public class FunctionaryServices {
 				}
 			}
 
-			DataBaseUtil.update(procedureFilter, procedure.toDocument(), Constants.PROCEDURESREQUEST_COLLECTION);
+			DataBaseUtil.update(procedureFilter, procedure.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
 
 			response = messager.getOkMessage(status.getStatusProcedure());
 		} catch (Exception e) {

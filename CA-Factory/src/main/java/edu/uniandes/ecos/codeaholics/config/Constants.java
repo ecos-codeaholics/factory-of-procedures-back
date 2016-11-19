@@ -22,10 +22,12 @@ public class Constants {
 	public static final String SESSION_COLLECTION = "session";
 	
 	public static final String CITIZEN_COLLECTION = "citizen";
+	
+	public static final String FUNCTIONARY_COLLECTION = "functionary";
 
-	public static final String PROCEDURESREQUEST_COLLECTION = "proceduresRequest";
+	public static final String PROCEDUREREQUEST_COLLECTION = "procedureRequest";
 
-	public static final String PROCEDURES_COLLECTION = "procedures";
+	public static final String PROCEDURE_COLLECTION = "procedure";
 	
 	public static final String MAYORALTY_COLLECTION = "mayoralty";
 	
