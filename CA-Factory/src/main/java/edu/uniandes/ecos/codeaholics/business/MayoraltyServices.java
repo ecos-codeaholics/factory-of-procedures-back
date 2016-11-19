@@ -14,6 +14,7 @@ import org.bson.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
@@ -28,12 +29,8 @@ import spark.Response;
  *
  */
 public class MayoraltyServices {
-	
-	private static String MAYORALTY = "mayoralty";
 
 	private final static Logger log = LogManager.getLogger(MayoraltyServices.class);
-	
-	private static String CITIZEN = "citizen";
 	
 	private static IMessageSvc messager = new ResponseMessage();
 	
@@ -56,7 +53,7 @@ public class MayoraltyServices {
 		log.info(pRequest.params(":mayoraltyName").toString());
 		
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, MAYORALTY);
+		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, Constants.MAYORALTY_COLLECTION);
 		
 		if(!mayoralties.isEmpty()){
 			Document mayoralty = (Document) mayoralties.get(0);
@@ -87,7 +84,7 @@ public class MayoraltyServices {
 	public static Object getMayoraltyList(Request pRequest, Response pResponse) {
 		
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(MAYORALTY);
+		ArrayList<Document> documents = DataBaseUtil.getAll(Constants.MAYORALTY_COLLECTION);
 		
 		for (Document item : documents) {
 			item.remove("dependencies");
@@ -117,7 +114,7 @@ public class MayoraltyServices {
 
 		List<Document> dataset = new ArrayList<>();
 		try {
-			ArrayList<Document> documents = DataBaseUtil.getAll(CITIZEN);
+			ArrayList<Document> documents = DataBaseUtil.getAll(Constants.CITIZEN_COLLECTION);
 			String fullName = "";
 			for (Document item : documents) {
 				fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "

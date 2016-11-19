@@ -42,7 +42,7 @@ public class AuthenticationJWTTest {
 	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
 	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
 
-	private final static String USER_EMAIL = "dbernal@uniandes";
+	private final static String USER_EMAIL = "dbernal@uniandes.edu.co";
 	private final static String USER_PWD = "12345678";
 	private final static String USER_NAME = "David";
 	private final static String USER_LASTNAME = "Bernal";
@@ -158,21 +158,21 @@ public class AuthenticationJWTTest {
 
 		TestsUtil utilities = new TestsUtil();
 
-		utilities.addCitizen("Emily", "Nurse", "emily@uniandes", "12345678");
+		utilities.addCitizen("Emily", "Nurse", "emily@uniandes.edu.co", "12345678");
 		String citizenSalt = utilities.getCitizenSalt();
 		logger.info(citizenSalt);
 
-		String expToken = createExpiredJWT("emily@uniandes", citizenSalt);
+		String expToken = createExpiredJWT("emily@uniandes.edu.co", citizenSalt);
 		logger.info(expToken);
 
-		utilities.addSession("emily@uniandes", "citizen", expToken, citizenSalt);
+		utilities.addSession("emily@uniandes.edu.co", "citizen", expToken, citizenSalt);
 
 		boolean isAutorized = false;
 
 		try {
 
 			Document session = new Document();
-			session.append("email", "emily@uniandes");
+			session.append("email", "emily@uniandes.edu.co");
 			session.append("user-profile", "citizen");
 
 			// Check against token
@@ -197,9 +197,9 @@ public class AuthenticationJWTTest {
 
 		assertFalse(isAutorized);
 		
-		AuthenticationJWT.closeSession("emily@uniandes");
+		AuthenticationJWT.closeSession("emily@uniandes.edu.co");
 		
-		utilities.removeCitizen("emily@uniandes");
+		utilities.removeCitizen("emily@uniandes.edu.co");
 
 	}
 

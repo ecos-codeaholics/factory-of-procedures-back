@@ -27,7 +27,15 @@ public class Constants {
 
 	public static final String PROCEDURES_COLLECTION = "procedures";
 	
-	public static final String MAYORALTIES_COLLECTION = "mayoralty";
+	public static final String MAYORALTY_COLLECTION = "mayoralty";
+	
+	public static final String CITIZEN_USER_PROFILE = "citizen";
+	
+	public static final String FUNCTIONARY_USER_PROFILE = "functionary";
+	
+	public static final String ADMIN_USER_PROFILE = "admin";
+	
+	public static final String STATUS_PENDING = "Pendiente";
 
 
 }

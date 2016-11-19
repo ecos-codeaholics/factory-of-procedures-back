@@ -25,6 +25,7 @@ import com.mongodb.MongoWriteException;
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.AuthenticationJWT;
 import edu.uniandes.ecos.codeaholics.config.ChangePwdModelHelper;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
@@ -50,8 +51,6 @@ public class AuthServices {
 	private final static Logger log = LogManager.getLogger(AuthServices.class);
 
 	private static String authenticationMethod = "JWT"; // ... JWT, Simple
-
-	private static String CITIZEN_USER_PROFILE = "citizen";
 
 	/***
 	 * Verifica las credenciales del ususario y crea la sesion.
@@ -127,11 +126,11 @@ public class AuthServices {
 			String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 			citizen.setPassword(hash[1]);
 			citizen.setSalt(hash[0]);
-			citizen.setUserProfile(CITIZEN_USER_PROFILE);
+			citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
 			Document citizenValidation  = validateCitizen (citizen);
 			
 			if(citizenValidation.get("result").toString().equals("true")){
-				DataBaseUtil.save(citizen.toDocument(), CITIZEN_USER_PROFILE);
+				DataBaseUtil.save(citizen.toDocument(), Constants.CITIZEN_COLLECTION);
 				EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 				sendEmail.send(EmailType.REGISTRATION, citizen.getEmail());
 
@@ -340,7 +339,7 @@ public class AuthServices {
 			Document filter = new Document();
 			filter.append("identification", identification);
 
-			ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN_USER_PROFILE);
+			ArrayList<Document> documents = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
 			if (documents.isEmpty()) {
 				log.info("Usuario no registrado");
 				throw new WrongUserOrPasswordException("Usuario no registrado", "400");
@@ -371,7 +370,7 @@ public class AuthServices {
 			valuesToReplace.put("salt", newSalt);
 
 			// Update the DB
-			updatePwdInDB(filter, valuesToReplace, CITIZEN_USER_PROFILE);
+			updatePwdInDB(filter, valuesToReplace, Constants.CITIZEN_COLLECTION);
 
 			// create array list to send as a parameter to the EmailNotifierSvc
 			ArrayList<String> parametersEmail = new ArrayList<>();

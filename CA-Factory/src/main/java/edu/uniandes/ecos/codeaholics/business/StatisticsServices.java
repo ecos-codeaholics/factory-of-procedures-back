@@ -43,7 +43,7 @@ public class StatisticsServices {
 		long ncitizen = db.getCollection(Constants.CITIZEN_COLLECTION).count(filter);
 			
 		// 2. Number of mayor
-		long nmayoralties = db.getCollection(Constants.MAYORALTIES_COLLECTION).count();
+		long nmayoralties = db.getCollection(Constants.MAYORALTY_COLLECTION).count();
 
 		// 3. Number of procedures
 		long nprocedures = db.getCollection(Constants.PROCEDURES_COLLECTION).count();

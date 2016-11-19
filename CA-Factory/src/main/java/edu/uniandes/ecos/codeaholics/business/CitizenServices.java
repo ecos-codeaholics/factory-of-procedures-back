@@ -21,6 +21,7 @@ import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
@@ -48,12 +49,6 @@ public class CitizenServices {
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
-	private static String CITIZEN = "citizen";
-
-	private static String PROCEDURESREQUEST = "proceduresRequest";
-
-	private static String PROCEDURES = "procedures";
-
 	private static String BARCODER_EXTSVC_ROUTE = "https://warm-beach-98503.herokuapp.com/serialnumbers";
 
 	/***
@@ -72,7 +67,7 @@ public class CitizenServices {
 		Document procedureFilter = new Document();
 		procedureFilter.append("slug", pRequest.params(":procedureName"));
 
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURES_COLLECTION);
 
 		if (documents.isEmpty()) {
 			log.info("No data found for " + pRequest.params(":procedureName"));
@@ -108,7 +103,7 @@ public class CitizenServices {
 		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN);
+		ArrayList<Document> documents = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
 		for (Document item : documents) {
 			item.remove("password");
 			item.remove("salt");
@@ -184,7 +179,7 @@ public class CitizenServices {
 
 		try {
 
-			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, Constants.PROCEDURES_COLLECTION);
 
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
@@ -214,7 +209,7 @@ public class CitizenServices {
 			// ..
 			// citizenFilter.append("email", pRequest.queryParams("email"));
 
-			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, CITIZEN);
+			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
 
 			Document citezenDoc = citizens.get(0);
 			citezenDoc.remove("_id");
@@ -290,7 +285,7 @@ public class CitizenServices {
 		procedureFilter.append("citizen.email", email);
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
 
 		for (Document item : documents) {
 			item.remove("dependencies");
@@ -361,7 +356,7 @@ public class CitizenServices {
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURESREQUEST_COLLECTION);
 		for (Document item : documents) {
 			item.remove("dependencies");
 			item.remove("procedures");

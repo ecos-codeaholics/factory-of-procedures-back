@@ -44,10 +44,10 @@ public class LoginFunctionaryTest {
 		logger.info("Running loging test");
 
 		
-		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima", "12345678");
-		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima", "12345678");
-		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal", "12345678");
-		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal", "12345678");
+		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima.gov.co", "12345678");
+		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima.gov.co", "12345678");
+		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal.gov.co", "12345678");
+		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal.gov.co", "12345678");
 
 		int httpResult = 0;
 		String httpMessage = "";
@@ -72,7 +72,7 @@ public class LoginFunctionaryTest {
 			urlConnection.setRequestProperty("Content-type", "application/json");
 			urlConnection.setRequestMethod("POST");
 
-			String loginData = "{email : \"jvaldez@elrosal\", password : \"12345678\" , userProfile : \"functionary\"}";
+			String loginData = "{email : \"jvaldez@elrosal.gov.co\", password : \"12345678\" , userProfile : \"functionary\"}";
 
 			Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
 			writer.write(loginData);

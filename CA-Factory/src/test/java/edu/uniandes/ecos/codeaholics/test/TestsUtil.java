@@ -195,7 +195,7 @@ public class TestsUtil {
 		citizen.setName("Andr\u00E9s");
 		citizen.setLastName1("Osorio");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile("citizen");
 
@@ -204,7 +204,7 @@ public class TestsUtil {
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "andres@uniandes");
+		user.append("email", "aosorio@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -228,7 +228,7 @@ public class TestsUtil {
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile("citizen");
 
@@ -237,7 +237,7 @@ public class TestsUtil {
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "fabian@uniandes");
+		user.append("email", "f.hernandez@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -261,7 +261,7 @@ public class TestsUtil {
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile("citizen");
 
@@ -270,7 +270,7 @@ public class TestsUtil {
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "jheison@uniandes");
+		user.append("email", "jl.rodriguez@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -293,7 +293,7 @@ public class TestsUtil {
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile("citizen");
 
@@ -302,7 +302,7 @@ public class TestsUtil {
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "david@uniandes");
+		user.append("email", "df.martinez1@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
 
 		if (documents.isEmpty()) {
@@ -324,7 +324,7 @@ public class TestsUtil {
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("sebastian@uniandes");
+		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile("citizen");
 
@@ -333,7 +333,7 @@ public class TestsUtil {
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "sebastian@uniandes");
+		user.append("email", "s.cardona12@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
 
 		if (documents.isEmpty()) {
@@ -365,7 +365,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
 		Functionary funcionarioUno = new Functionary();
 
-		funcionarioUno.setEmail("jvaldez@anapoima");
+		funcionarioUno.setEmail("jvaldez@anapoima.gov.co");
 		funcionaryUno.add(funcionarioUno);
 		dependencyUno.setFunctionaries(funcionaryUno);
 
@@ -375,7 +375,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
 
-		funcionarioDos.setEmail("acalle@anapoima");
+		funcionarioDos.setEmail("acalle@anapoima.gov.co");
 		funcionaryDos.add(funcionarioDos);
 		dependencyDos.setFunctionaries(funcionaryDos);
 
@@ -410,7 +410,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
 		Functionary funcionarioUno = new Functionary();
 
-		funcionarioUno.setEmail("jvaldez@elrosal");
+		funcionarioUno.setEmail("jvaldez@elrosal.gov.co");
 		funcionaryUno.add(funcionarioUno);
 		dependencyUno.setFunctionaries(funcionaryUno);
 
@@ -420,7 +420,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
 
-		funcionarioDos.setEmail("acalle@elrosal");
+		funcionarioDos.setEmail("acalle@elrosal.gov.co");
 		funcionaryDos.add(funcionarioDos);
 		dependencyDos.setFunctionaries(funcionaryDos);
 
@@ -633,8 +633,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@anapoima");
-		activity1.setStatus("Pendiente");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -766,8 +766,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
-		activity1.setStatus("Pendiente");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -913,8 +913,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@elrosal");
-		activity1.setStatus("Pendiente");
+		activity1.setFunctionary("acalle@elrosal.gov.co");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -1079,23 +1079,23 @@ public class TestsUtil {
 
 		// Activities
 		activities.add(new Activity("CDP", "Certificado de disponibilidad Presupuestal", "Jefe de presupuesto", 1,
-				"acalle@elrosal", "Pendiente"));
+				"acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Elaboraci\u00F3n Contrato", "Realizaci\u00F3n del contrato",
-				"Coordinador de deportes ", 2, "acalle@elrosal", "Pendiente"));
+				"Coordinador de deportes ", 2, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Aprobaci\u00F3n juridica", "Aprobaci\u00F3n de propuesta", "Juridico", 3,
-				"acalle@elrosal", "Pendiente"));
+				"acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Firma Alcalde", "Firma del alcalde y Documento de supervisor del contrato",
-				"Alcalde", 4, "acalle@elrosal", "Pendiente"));
+				"Alcalde", 4, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Firma Ciudadano", "Firma del contrato por el ciudadano", "Ciudadan\u00EDa", 5, "",
-				"Pendiente"));
-		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6, "jvaldez@elrosal",
-				"Pendiente"));
+				Constants.STATUS_PENDING));
+		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6, "jvaldez@elrosal.gov.co",
+				Constants.STATUS_PENDING));
 		activities.add(new Activity("Informe de labor", "Informe del objeto contractual", "Ciudadan\u00EDa", 7, "",
-				"Pendiente"));
+				Constants.STATUS_PENDING));
 		activities.add(new Activity("Informe supervisi\u00F3n", "Informe de supervisi\u00F3n del contrato",
-				"Coordinador del contrato", 8, "acalle@elrosal", "Pendiente"));
+				"Coordinador del contrato", 8, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Orden de pago", "Solicitud de orden de pago y comprobante de egreso", "Tesoreria",
-				9, "acalle@elrosal", "Pendiente"));
+				9, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 
 		procedure.setActivities(activities);
 
@@ -1210,7 +1210,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("1");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Andres");
 		citizen.setLastName1("Osorio");
@@ -1242,7 +1242,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("anapoima");
 		activity1.setAprobacion("En proceso");
-		activity1.setStatus("Pendiente");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1278,7 +1278,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("2");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Andres");
 		citizen.setLastName1("Osorio");
@@ -1308,9 +1308,9 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setFunctionary("jvaldez@anapoima.gov.co");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("Pendiente");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1343,7 +1343,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("3");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
@@ -1373,9 +1373,9 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("jvaldez@elrosal.gov.co");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("Pendiente");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1408,7 +1408,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("4");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
@@ -1439,7 +1439,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("jvaldez@elrosal.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1474,7 +1474,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("5");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
@@ -1504,7 +1504,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setFunctionary("jvaldez@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1537,7 +1537,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("6");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
@@ -1567,7 +1567,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus("En curso");
 
@@ -1600,7 +1600,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("7");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
@@ -1631,7 +1631,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("jvaldez@elrosal.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus("En curso");
 
@@ -1665,7 +1665,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("8");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
@@ -1696,7 +1696,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1730,7 +1730,7 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("9");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("sebastian@uniandes");
+		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
@@ -1761,7 +1761,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1797,7 +1797,7 @@ public class TestsUtil {
 		citizen.setName("Juan");
 		citizen.setLastName1("Valdes");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("jvaldes@uniandes");
+		citizen.setEmail("jvaldes@uniandes.edu.co");
 		citizen.setPassword("Qwerty");
 		citizen.setUserProfile("citizen");
 
