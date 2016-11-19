@@ -34,6 +34,7 @@ import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTo
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+//import edu.uniandes.ecos.codeaholics.persistence.ProcedureData;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import spark.Request;
 import spark.Response;
@@ -261,7 +262,8 @@ public class CitizenServices {
 			JsonObject jsonData = (JsonObject) json.get("dataForm");
 			JsonObject jsonDocs = (JsonObject) json.get("docs");
 
-			//TODO: there is no counter part to procedureData model comming from the Frontent
+			//ProcedureData procedureData = new ProcedureData(jsonData);			
+			//procedureRequest.setProcedureData(procedureData.toDocumentES()); // Attributes in ES
 			Document procedureData = GSON.fromJson(jsonData, Document.class);
 			procedureRequest.setProcedureData(procedureData);
 			//
@@ -272,10 +274,11 @@ public class CitizenServices {
 			procedureRequest.setStatus("En proceso");
 			procedureRequest.setStartDate(new Date());
 			
-			log.info(procedureRequest.toDocument());
+			log.info("New procedure request: " + procedureRequest.toDocument());
 			
 			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 
+			//. Notify to citizen
 			ArrayList<String> parameters = new ArrayList<>();
 			parameters.add(procedureRequest.getProcedureClassName());
 			parameters.add(procedureRequest.getFileNumber());
@@ -283,11 +286,15 @@ public class CitizenServices {
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
 
+			response = messager.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: " + procedureRequest.getFileNumber());
+			
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			e.printStackTrace();
+			log.info("There is a fucking error!!!!");
+			log.info(e.getLocalizedMessage());
+			response = messager.getNotOkMessage("Registro de solicitud fallido");
 		}
-
-		response = messager.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: " + procedureRequest.getFileNumber());
+			
 		pResponse.type("application/json");
 
 		return response;

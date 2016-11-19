@@ -25,6 +25,7 @@ public class Procedure {
 	@SerializedName("_id")
 	private String _id;
 	private String name;
+	private String mayoralty;
 	private ArrayList<Activity> activities;
 	private ArrayList<RequiredUpload> requiredUpload;
 	private ArrayList<FormField> fields;
@@ -78,6 +79,14 @@ public class Procedure {
 		this.slugProcedure = slugProcedure;
 	}
 
+	public String getMayoralty() {
+		return mayoralty;
+	}
+
+	public void setMayoralty(String mayoralty) {
+		this.mayoralty = mayoralty;
+	}
+
 	public ArrayList<Document> activitiesDocuments() {
 		ArrayList<Document> activitiesDocs = new ArrayList<Document>();
 		if (!this.getActivities().isEmpty()) {
@@ -111,6 +120,7 @@ public class Procedure {
 	public Document toDocument() {
 		Document procedure = new Document();
 		procedure.append(NAME, getName());
+		procedure.append(MAYORALTY, getMayoralty());
 		procedure.append(ACTIVITIES, activitiesDocuments());
 		procedure.append(REQUIRED, requiredDocuments());
 		procedure.append(SLUG, this.getName().replace(" ", "").toLowerCase());

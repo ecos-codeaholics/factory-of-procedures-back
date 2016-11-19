@@ -22,7 +22,9 @@ public class ProcedureCreationTest {
 	private static String PROCEDURE_TRES = "Certificado de Estratificaci\u00F3n";
 	private static String PROCEDURE_CUATRO = "Solicitud De Contrataci\u00F3n Monitor Deportes";
 
-	private static ArrayList<String> PROCDEURES_LIST = new ArrayList<String>();
+	private static ArrayList<String> PROCDEURES_LIST_UNO = new ArrayList<String>();
+	private static ArrayList<String> PROCDEURES_LIST_DOS = new ArrayList<String>();
+
 	
 	@BeforeClass
 	public static void beforeClass() {
@@ -65,20 +67,24 @@ public class ProcedureCreationTest {
 		TestsUtil.addProcedureDos (PROCEDURE_DOS);
 		TestsUtil.addProcedureTres (PROCEDURE_TRES);
 		TestsUtil.addProcedureCuatro (PROCEDURE_CUATRO);
-		
+				
 		assertEquals(true, true);
 	}
 	
 	@Test
 	public void createMayoraltiesTest(){
 		
-		PROCDEURES_LIST.add(PROCEDURE_UNO);
-		PROCDEURES_LIST.add(PROCEDURE_DOS);
-		PROCDEURES_LIST.add(PROCEDURE_TRES);
-		PROCDEURES_LIST.add(PROCEDURE_CUATRO);
+		PROCDEURES_LIST_UNO.add(PROCEDURE_UNO);
+		PROCDEURES_LIST_UNO.add(PROCEDURE_DOS);
+		PROCDEURES_LIST_UNO.add(PROCEDURE_TRES);
+		PROCDEURES_LIST_UNO.add(PROCEDURE_CUATRO);
 		
-		TestsUtil.addMayoraltyUno(PROCDEURES_LIST);
-		TestsUtil.addMayoraltyDos(PROCDEURES_LIST);
+		PROCDEURES_LIST_DOS.add(PROCEDURE_UNO);
+		PROCDEURES_LIST_DOS.add(PROCEDURE_DOS);
+		PROCDEURES_LIST_DOS.add(PROCEDURE_CUATRO);
+		
+		TestsUtil.addMayoraltyUno(PROCDEURES_LIST_UNO);
+		TestsUtil.addMayoraltyDos(PROCDEURES_LIST_DOS);
 		
 		assertEquals(true, true);		
 	}
@@ -94,9 +100,6 @@ public class ProcedureCreationTest {
 		TestsUtil.addProcedureRequestSeis();
 		TestsUtil.addProcedureRequestSiete();
 		TestsUtil.addProcedureRequestOcho();
-		
-		//SCC
-		//TestsUtil.addProcedureRequestNueve();
 
 		assertEquals(true, true);
 	}
