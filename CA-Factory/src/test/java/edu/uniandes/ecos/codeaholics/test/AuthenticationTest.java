@@ -36,19 +36,19 @@ public class AuthenticationTest {
 	public void simpleAuthenticationTest() {
 		
 		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "12345678");
+		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes.edu.co", "12345678");
 		
 		Authentication auth = new Authentication();
 				
 		try {
-			assertTrue(auth.doAuthentication("aosorio@uniandes", "12345678", Constants.CITIZEN_COLLECTION));
+			assertTrue(auth.doAuthentication("aosorio@uniandes.edu.co", "12345678", Constants.CITIZEN_COLLECTION));
 		} catch (WrongUserOrPasswordException e) {		
 			e.printStackTrace();
 		}
 		
-		Authentication.closeSession("aosorio@uniandes");
+		Authentication.closeSession("aosorio@uniandes.edu.co");
 		
-		utilities.removeCitizen("aosorio@uniandes");
+		utilities.removeCitizen("aosorio@uniandes.edu.co");
 		
 	}
 

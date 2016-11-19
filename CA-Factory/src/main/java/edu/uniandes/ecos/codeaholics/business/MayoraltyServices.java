@@ -11,7 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
+import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
+import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import spark.Request;
 import spark.Response;
 
@@ -22,10 +26,10 @@ import spark.Response;
  *
  */
 public class MayoraltyServices {
-	
-	private static String MAYORALTY = "mayoralty";
 
 	private final static Logger log = LogManager.getLogger(MayoraltyServices.class);
+	
+	private static IMessageSvc messager = new ResponseMessage();
 	
 	/***
 	 * Consulta lista de tramites por alcaldia.
@@ -44,7 +48,7 @@ public class MayoraltyServices {
 		log.info(pRequest.params(":mayoraltyName").toString());
 		
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, MAYORALTY);
+		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, Constants.MAYORALTY_COLLECTION);
 		
 		if(!mayoralties.isEmpty()){
 			Document mayoralty = (Document) mayoralties.get(0);
@@ -75,7 +79,7 @@ public class MayoraltyServices {
 	public static Object getMayoraltyList(Request pRequest, Response pResponse) {
 		
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(MAYORALTY);
+		ArrayList<Document> documents = DataBaseUtil.getAll(Constants.MAYORALTY_COLLECTION);
 		
 		for (Document item : documents) {
 			item.remove("dependencies");
@@ -90,6 +94,91 @@ public class MayoraltyServices {
 		
 		pResponse.type("application/json");
 		return dataset;
+	}
+	
+	/***
+	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return lista con json por cada ciudadano
+	 */
+	public static Object getCitizenList(Request pRequest, Response pResponse) {
+
+		List<Document> dataset = new ArrayList<>();
+		try {
+			ArrayList<Document> documents = DataBaseUtil.getAll(Constants.CITIZEN_COLLECTION);
+			String fullName = "";
+			for (Document item : documents) {
+				fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
+						+ item.get("email").toString();
+				item.remove("name");
+				item.remove("lastName1");
+				item.remove("lastName2");
+				item.remove("password");
+				item.remove("salt");
+				item.remove("birthDate");
+				item.remove("email");
+				item.put("fullName", fullName);
+				dataset.add(item);
+
+			}
+		} catch (Exception e) {
+			log.error("Problem listing citizen");
+		}
+		pResponse.type("application/json");
+		return dataset;
+	}
+	
+	/***
+	 * Registra la solicitud de un tramite y toda la infromacion asocida a esa
+	 * solicitud.
+	 * 
+	 * @param pRequest
+	 *            request (mayoralty name and procedure name are send inside the
+	 *            route adn the citizen's email is send as a parameter)
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object createFunctionary(Request pRequest, Response pResponse) {
+
+		Object response = null;
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
+
+		String procedureName = pRequest.params(":procedureName");
+		Document procedureFilter = new Document();
+		procedureFilter.append("slug", procedureName);
+
+		try {
+
+//			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+//
+//			Document procedureDoc = procedures.get(0);
+//			DataBaseUtil.save(procedureRequest.toDocument(), "procedureRequest");
+//
+//			ArrayList<String> parameters = new ArrayList<>();
+//			parameters.add(procedureRequest.getProcedureClassName());
+//			parameters.add(procedureRequest.getFileNumber());
+//
+//			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+//			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+
+		response = messager.getOkMessage("Registro exitoso de su solicitud, su tr�mite fue creado con el n�mero: " + procedureRequest.getFileNumber());
+		pResponse.type("application/json");
+		// return "Proceso Exitoso";
+
+		pRequest.body();
+
+		return response;
+
 	}
 
 }

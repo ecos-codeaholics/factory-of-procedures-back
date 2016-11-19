@@ -26,8 +26,8 @@ import edu.uniandes.ecos.codeaholics.config.ValidationUtil;
  */
 public class FieldValidationTest {
 
-	private static String goodEmail = "andres@uniandes.edu.co";
-	private static String badEmail = "andres@uniandes";
+	private static String goodEmail = "aosorio@uniandes.edu.co.edu.co";
+	private static String badEmail = "aosorio@uniandes.edu.co";
 	private static String goodName = "Juan";
 	private static String badName = "F3l1p*";
 	private static String goodNumber = "1234567890";

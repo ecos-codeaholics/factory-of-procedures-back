@@ -86,8 +86,6 @@ public class App {
 		/**
 		 * Citizen Routes
 		 */
-		// obtener lista de ciudadanos /CITIZENS/ metodo GET
-		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
 		// obtener detalles de unƒ ciudadano /CITIZENS/{id} --> template metodo
 		// GET
@@ -104,7 +102,7 @@ public class App {
 				GeneralUtil.json());
 
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
+		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedureRequets, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById, GeneralUtil.json());
@@ -136,6 +134,11 @@ public class App {
 		/**
 		 * Routes Administrator Mayoralty
 		 */
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		get(Routes.ADMIN, MayoraltyServices::getCitizenList, GeneralUtil.json());
+		
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		post(Routes.ADMIN, MayoraltyServices::getCitizenList, GeneralUtil.json());
 		// TODO
 
 		/**
