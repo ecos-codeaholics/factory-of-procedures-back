@@ -89,38 +89,7 @@ public class CitizenServices {
 
 	}
 
-	/***
-	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
-	 * 
-	 * @param pRequest
-	 *            request
-	 * @param pResponse
-	 *            response
-	 * @return lista con json por cada ciudadano
-	 */
-	public static Object getCitizenList(Request pRequest, Response pResponse) {
-
-		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(CITIZEN);
-		String fullName = "";
-		for (Document item : documents) {
-			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
-					+ item.get("email").toString();
-			item.remove("name");
-			item.remove("lastName1");
-			item.remove("lastName2");
-			item.remove("password");
-			item.remove("salt");
-			item.remove("birthDate");
-			item.remove("email");
-			item.put("fullName", fullName);
-			dataset.add(item);
-
-		}
-
-		pResponse.type("application/json");
-		return dataset;
-	}
+	
 
 	/***
 	 * Obtiene toda la informacion de un ciudadano dado su numero de
@@ -164,10 +133,7 @@ public class CitizenServices {
 		Object response = null;
 
 		try {
-
-			// .
 			String email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
-			// ..
 
 			if (email != null) {
 				Authentication.closeSession(email);
@@ -240,7 +206,7 @@ public class CitizenServices {
 			try {
 				email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
 			} catch (InvalidTokenException jwtEx) {
-				log.info(jwtEx.getMessage());
+				log.error(jwtEx.getMessage());
 				return "failed";
 			}
 
@@ -288,7 +254,7 @@ public class CitizenServices {
 			log.error(e.getMessage());
 		}
 
-		response = messager.getOkMessage("Registro exitoso de su solicitud, su trámite fue creado con el número: " + procedureRequest.getFileNumber());
+		response = messager.getOkMessage("Registro exitoso de su solicitud, su trï¿½mite fue creado con el nï¿½mero: " + procedureRequest.getFileNumber());
 		pResponse.type("application/json");
 		// return "Proceso Exitoso";
 
@@ -448,7 +414,7 @@ public class CitizenServices {
 			log.info("nombre del req: " + fileRequest);
 			log.info("ciuda: " + citizen);
 
-			String nameFile = fileRequest + citizen;
+			//String nameFile = fileRequest + citizen;
 
 			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage(((DocumentSvc) fileManager).getAnswerStr());
