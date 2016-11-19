@@ -669,19 +669,19 @@ public class TestsUtil {
 
 		// Form
 
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
+//		FormField field1 = new FormField();
+//
+//		field1.setType("text");
+//		field1.setSubtype("tel");
+//		field1.setRequired(true);
+//		field1.setLabel("Identificaci\u00F3n");
+//		field1.setDescription("N\u00FAmero de documento de identidad");
+//		field1.setPlaceHolder("123456789");
+//		field1.setClassname("form-control");
+//		field1.setName("identification");
+//		field1.setMaxlenght(11);
+//
+//		formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -814,19 +814,19 @@ public class TestsUtil {
 
 		// Form
 
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
+//		FormField field1 = new FormField();
+//
+//		field1.setType("text");
+//		field1.setSubtype("tel");
+//		field1.setRequired(true);
+//		field1.setLabel("Identificaci\u00F3n");
+//		field1.setDescription("N\u00FAmero de documento de identidad");
+//		field1.setPlaceHolder("123456789");
+//		field1.setClassname("form-control");
+//		field1.setName("identification");
+//		field1.setMaxlenght(11);
+//
+//		formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -985,19 +985,19 @@ public class TestsUtil {
 
 		// Form
 
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
+//		FormField field1 = new FormField();
+//
+//		field1.setType("text");
+//		field1.setSubtype("tel");
+//		field1.setRequired(true);
+//		field1.setLabel("Identificaci\u00F3n");
+//		field1.setDescription("N\u00FAmero de documento de identidad");
+//		field1.setPlaceHolder("123456789");
+//		field1.setClassname("form-control");
+//		field1.setName("identification");
+//		field1.setMaxlenght(11);
+//
+//		formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -1119,19 +1119,19 @@ public class TestsUtil {
 
 		// Form
 
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
+//		FormField field1 = new FormField();
+//
+//		field1.setType("text");
+//		field1.setSubtype("tel");
+//		field1.setRequired(true);
+//		field1.setLabel("Identificaci\u00F3n");
+//		field1.setDescription("N\u00FAmero de documento de identidad");
+//		field1.setPlaceHolder("123456789");
+//		field1.setClassname("form-control");
+//		field1.setName("identification");
+//		field1.setMaxlenght(11);
+//
+//		formFields.add(field1);
 
 		FormField field2 = new FormField();
 
