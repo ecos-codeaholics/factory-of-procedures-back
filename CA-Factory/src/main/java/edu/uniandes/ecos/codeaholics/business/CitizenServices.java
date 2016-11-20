@@ -4,6 +4,7 @@
 package edu.uniandes.ecos.codeaholics.business;
 
 import java.io.FileNotFoundException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,11 +62,15 @@ public class CitizenServices {
 	 */
 	public static Object getProcedure(Request pRequest, Response pResponse) {
 
+		String mayoraltyName = pRequest.params(":mayoraltyName");
+		String procedureName = pRequest.params(":procedureName");
+		
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.params(":procedureName"));
-
+		procedureFilter.append("mayoraltyslug", mayoraltyName);
+		procedureFilter.append("slug", procedureName);
+		
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -158,28 +163,45 @@ public class CitizenServices {
 
 		Object response = null;
 
+		// .
+		String email;
+
+		try {
+			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.error(jwtEx.getMessage());
+			return "failed";
+		}
+		// ..
+
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
+			
 			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
 			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
 			procedureRequest.setFileNumber(json.get("code").getAsString());
 
-		} catch (FileNotFoundException ex) {
+		} catch ( FileNotFoundException | UnknownHostException ex ) {
 			log.info("Problem reaching external service");
 			procedureRequest.setFileNumber(UUID.randomUUID().toString());
-		}
+		} 
 
+		String mayoraltyName = pRequest.params(":mayoraltyName");
 		String procedureName = pRequest.params(":procedureName");
+
 		Document procedureFilter = new Document();
+		procedureFilter.append("mayoraltyslug", mayoraltyName);
 		procedureFilter.append("slug", procedureName);
 
+		// ...
 		try {
 
 			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
+
 			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
 			procedureRequest.setProcedureClassName(procedure.getName());
 			procedureRequest.setActivities(procedure.getActivities());
@@ -192,33 +214,21 @@ public class CitizenServices {
 
 			Document citizenFilter = new Document();
 
-			// .
-			String email;
-
-			try {
-				email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
-			} catch (InvalidTokenException jwtEx) {
-				log.error(jwtEx.getMessage());
-				return "failed";
-			}
-
 			citizenFilter.append("email", email);
-			// ..
 
 			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
 
 			Document citizenDoc = citizens.get(0);
 			citizenDoc.remove("_id");
 			citizenDoc.remove("birthDate"); // AO: Need to deal with
-											// ISODate to Java
+											// ISODate --> Java
 
 			Citizen citizen = GSON.fromJson(citizenDoc.toJson(), Citizen.class);
 			procedureRequest.setCitizen(citizen);
 
-			log.info("Found citizen " + citizen.toDocument());
+			log.debug("Found citizen " + citizen.toDocument());
 
-			String mayoraltyName = pRequest.params(":mayoraltyName");
-			procedureRequest.setMayoralty(mayoraltyName);
+			procedureRequest.setMayoralty(procedureDoc.get("mayoralty").toString());
 
 			JsonParser parser = new JsonParser();
 			JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
@@ -237,7 +247,7 @@ public class CitizenServices {
 			System.out.println(procedureRequest.toDocument());
 			DataBaseUtil.save(procedureRequest.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
 
-			// . Notify to citizen
+			// .... Notify to citizen
 			ArrayList<String> parameters = new ArrayList<>();
 			parameters.add(procedureRequest.getProcedureClassName());
 			parameters.add(procedureRequest.getFileNumber());

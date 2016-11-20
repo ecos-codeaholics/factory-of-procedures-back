@@ -7,6 +7,7 @@ package edu.uniandes.ecos.codeaholics.test;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
+import java.net.UnknownHostException;
 
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class ExternalSvcInvokerTest {
 			System.out.println(json.get("code"));
 			assertTrue(json.has("code"));
 			
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException | UnknownHostException e) {
 			e.printStackTrace();
 		}
 		

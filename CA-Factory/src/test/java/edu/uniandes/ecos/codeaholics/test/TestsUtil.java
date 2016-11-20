@@ -645,7 +645,7 @@ public class TestsUtil {
 	}
 
 	// Procedure1
-	public static void addProcedureUno(String pName) {
+	public static void addProcedureUno(String pCode, String pName, String pMayoralty) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -655,7 +655,9 @@ public class TestsUtil {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
 		// Activities
 		Activity activity1 = new Activity();
@@ -778,7 +780,7 @@ public class TestsUtil {
 	}
 
 	// Procedure2
-	public static void addProcedureDos(String pName) {
+	public static void addProcedureDos(String pCode, String pName, String pMayoralty) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -787,8 +789,10 @@ public class TestsUtil {
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
-
+		procedure.setMayoralty(pMayoralty);
+		
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
 		Activity activity1 = new Activity();
@@ -923,20 +927,20 @@ public class TestsUtil {
 	}
 
 	// Procedure3
-	public static void addProcedureTres(String pName) {
+	public static void addProcedureTres(String pCode, String pName, String pMayoralty) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
-
+		procedure.setMayoralty(pMayoralty);
+		
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
@@ -1014,21 +1018,6 @@ public class TestsUtil {
 		procedure.setRequired(reqDocs);
 
 		// Form
-
-		// FormField field1 = new FormField();
-		//
-		// field1.setType("text");
-		// field1.setSubtype("tel");
-		// field1.setRequired(true);
-		// field1.setLabel("Identificaci\u00F3n");
-		// field1.setDescription("N\u00FAmero de documento de identidad");
-		// field1.setPlaceHolder("123456789");
-		// field1.setClassname("form-control");
-		// field1.setName("identification");
-		// field1.setMaxlenght(11);
-		//
-		// formFields.add(field1);
-
 		FormField field2 = new FormField();
 
 		field2.setType("text");
@@ -1093,9 +1082,13 @@ public class TestsUtil {
 
 	}
 
-	// Procedure
-	// SCC
-	public static void addProcedureCuatro(String pName) {
+	/*
+	 * Procedure: This is not an actual procedure from *Cundinamarca*
+	 * (it is not even a procedure)
+	 * Added to test several activities
+	 * SCC
+	 */ 
+	public static void addProcedureCuatro(String pCode, String pName, String pMayoralty) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -1105,7 +1098,9 @@ public class TestsUtil {
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
 		// Activities
 		activities.add(new Activity("CDP", "Certificado de disponibilidad Presupuestal", "Jefe de presupuesto", 1,
@@ -1148,21 +1143,6 @@ public class TestsUtil {
 		procedure.setRequired(reqDocs);
 
 		// Form
-
-		// FormField field1 = new FormField();
-		//
-		// field1.setType("text");
-		// field1.setSubtype("tel");
-		// field1.setRequired(true);
-		// field1.setLabel("Identificaci\u00F3n");
-		// field1.setDescription("N\u00FAmero de documento de identidad");
-		// field1.setPlaceHolder("123456789");
-		// field1.setClassname("form-control");
-		// field1.setName("identification");
-		// field1.setMaxlenght(11);
-		//
-		// formFields.add(field1);
-
 		FormField field2 = new FormField();
 
 		field2.setType("text");

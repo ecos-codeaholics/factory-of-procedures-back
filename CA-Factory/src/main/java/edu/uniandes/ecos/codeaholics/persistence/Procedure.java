@@ -20,8 +20,10 @@ public class Procedure {
 	public static final String REQUIRED = "required";
 	public static final String FIELDS = "fields";
 	public static final String MAYORALTY = "mayoralty";
+	public static final String MAYORALITYSLUG = "mayoraltyslug";
 	public static final String SLUG = "slug";
-
+	public static final String CODE = "code";
+	
 	@SerializedName("_id")
 	private String _id;
 	private String name;
@@ -30,6 +32,8 @@ public class Procedure {
 	private ArrayList<RequiredUpload> requiredUpload;
 	private ArrayList<FormField> fields;
 	private String slugProcedure;
+	private String slugMayoralty;
+	private String code;
 
 	public String getId() {
 		return _id;
@@ -87,6 +91,22 @@ public class Procedure {
 		this.mayoralty = mayoralty;
 	}
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getSlugMayoralty() {
+		return slugMayoralty;
+	}
+
+	public void setSlugMayoralty(String slugMayoralty) {
+		this.slugMayoralty = slugMayoralty;
+	}
+
 	public ArrayList<Document> activitiesDocuments() {
 		ArrayList<Document> activitiesDocs = new ArrayList<Document>();
 		if (!this.getActivities().isEmpty()) {
@@ -118,12 +138,15 @@ public class Procedure {
 	}
 	
 	public Document toDocument() {
+		
 		Document procedure = new Document();
 		procedure.append(NAME, getName());
+		procedure.append(CODE, getCode());
 		procedure.append(MAYORALTY, getMayoralty());
 		procedure.append(ACTIVITIES, activitiesDocuments());
 		procedure.append(REQUIRED, requiredDocuments());
 		procedure.append(SLUG, this.getName().replace(" ", "").toLowerCase());
+		procedure.append(MAYORALITYSLUG, this.getMayoralty().replace(" ", "").toLowerCase());
 		procedure.append(FIELDS, fieldsDocuments());
 
 		return procedure;

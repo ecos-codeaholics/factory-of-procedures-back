@@ -13,17 +13,31 @@ import org.junit.Test;
 import edu.uniandes.ecos.codeaholics.main.App;
 import spark.Spark;
 
+/**
+ * Package: edu.uniandes.ecos.codeaholics.test
+ *
+ * Class: ProcedureCreationTest ProcedureCreationTest.java
+ * 
+ * Original Author: @author JHEISON, SCC, AOSORIO
+ * 
+ * Description: This test class builds procedures and writes them in the DB
+ * 
+ * Implementation: [Notes on implementation]
+ *
+ * Created: Nov 19, 2016 9:34:40 PM
+ * 
+ */
 public class ProcedureCreationTest {
 
 	Logger logger = LogManager.getRootLogger();
 
-	private static String PROCEDURE_UNO = "Certificado de Residencia";
-	private static String PROCEDURE_DOS = "Auxilio para Gastos Sepelio";
-	private static String PROCEDURE_TRES = "Certificado de Estratificaci\u00F3n";
-	private static String PROCEDURE_CUATRO = "Solicitud De Contrataci\u00F3n Monitor Deportes";
+	private static String PROCEDURE_1 = "Certificado de Residencia";
+	private static String PROCEDURE_2 = "Auxilio para Gastos Sepelio";
+	private static String PROCEDURE_3 = "Certificado de Estratificaci\u00F3n";
+	private static String PROCEDURE_4 = "Solicitud De Contrataci\u00F3n Monitor Deportes";
 
-	private static ArrayList<String> PROCDEURES_LIST_UNO = new ArrayList<String>();
-	private static ArrayList<String> PROCDEURES_LIST_DOS = new ArrayList<String>();
+	private static ArrayList<String> PROCDEURES_LIST_1 = new ArrayList<String>();
+	private static ArrayList<String> PROCDEURES_LIST_2 = new ArrayList<String>();
 
 	
 	@BeforeClass
@@ -63,10 +77,16 @@ public class ProcedureCreationTest {
 	@Test
 	public void createProcedureTest() {
 
-		TestsUtil.addProcedureUno (PROCEDURE_UNO);
-		TestsUtil.addProcedureDos (PROCEDURE_DOS);
-		TestsUtil.addProcedureTres (PROCEDURE_TRES);
-		TestsUtil.addProcedureCuatro (PROCEDURE_CUATRO);
+		TestsUtil.addProcedureUno ("T11335", PROCEDURE_1,"Anapoima");
+		TestsUtil.addProcedureUno ("T11336", PROCEDURE_1,"El Rosal");
+		
+		TestsUtil.addProcedureDos ("T22335",PROCEDURE_2,"Anapoima");
+		TestsUtil.addProcedureDos ("T22336",PROCEDURE_2,"El Rosal");
+		
+		TestsUtil.addProcedureTres ("T33445",PROCEDURE_3,"Anapoima");
+		TestsUtil.addProcedureTres ("T33446",PROCEDURE_3,"El Rosal");
+		
+		TestsUtil.addProcedureCuatro ("T99115",PROCEDURE_4,"Anapoima");
 				
 		assertEquals(true, true);
 	}
@@ -74,17 +94,19 @@ public class ProcedureCreationTest {
 	@Test
 	public void createMayoraltiesTest(){
 		
-		PROCDEURES_LIST_UNO.add(PROCEDURE_UNO);
-		PROCDEURES_LIST_UNO.add(PROCEDURE_DOS);
-		PROCDEURES_LIST_UNO.add(PROCEDURE_TRES);
-		PROCDEURES_LIST_UNO.add(PROCEDURE_CUATRO);
+		//Test procedures associated to Anapoima
+		PROCDEURES_LIST_1.add(PROCEDURE_1);
+		PROCDEURES_LIST_1.add(PROCEDURE_2);
+		PROCDEURES_LIST_1.add(PROCEDURE_3);
+		PROCDEURES_LIST_1.add(PROCEDURE_4);
 		
-		PROCDEURES_LIST_DOS.add(PROCEDURE_UNO);
-		PROCDEURES_LIST_DOS.add(PROCEDURE_DOS);
-		PROCDEURES_LIST_DOS.add(PROCEDURE_CUATRO);
+		//Test procedures associated to El Rosal
+		PROCDEURES_LIST_2.add(PROCEDURE_1);
+		PROCDEURES_LIST_2.add(PROCEDURE_2);
+		PROCDEURES_LIST_2.add(PROCEDURE_3);
 		
-		TestsUtil.addMayoraltyUno(PROCDEURES_LIST_UNO);
-		TestsUtil.addMayoraltyDos(PROCDEURES_LIST_DOS);
+		TestsUtil.addMayoraltyUno(PROCDEURES_LIST_1);
+		TestsUtil.addMayoraltyDos(PROCDEURES_LIST_2);
 		
 		assertEquals(true, true);		
 	}

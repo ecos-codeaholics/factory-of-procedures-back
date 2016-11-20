@@ -10,13 +10,13 @@ import java.io.InputStreamReader;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 
 /**
  * Package: edu.uniandes.ecos.codeaholics.config
@@ -33,12 +33,12 @@ import com.google.gson.JsonParser;
  * 
  */
 public class ExternalSvcInvoker {
-	
+
 	static Logger logger = LogManager.getRootLogger();
-	
+
 	private static Object response;
 
-	public static void invoke(String pRoute) throws FileNotFoundException {
+	public static void invoke(String pRoute) throws FileNotFoundException, UnknownHostException {
 		
 		int httpResult = 0;
 		String httpMessage = "";
@@ -66,7 +66,7 @@ public class ExternalSvcInvoker {
 				jsonResponse += text;
 				result.append(text);
 			}
-			
+
 			reader.close();
 			in.close();
 			urlConnection.disconnect();
@@ -75,13 +75,16 @@ public class ExternalSvcInvoker {
 			JsonObject json = parser.parse(result.toString()).getAsJsonObject();
 
 			response = json;
-			
+
 			logger.info(httpResult);
 			logger.info(httpMessage);
 			logger.info(jsonResponse);
-			
+
 		} catch (FileNotFoundException ex) {
 			logger.info("Not found: " + pRoute);
+			throw ex;
+		} catch (UnknownHostException ex) {
+			logger.info("Problem reaching: " + pRoute);
 			throw ex;
 		} catch (Exception ex) {
 			ex.printStackTrace();
