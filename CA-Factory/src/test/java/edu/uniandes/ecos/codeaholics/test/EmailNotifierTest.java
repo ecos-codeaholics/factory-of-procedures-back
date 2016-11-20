@@ -104,12 +104,12 @@ public class EmailNotifierTest {
 		boolean success = false;
 
 		ArrayList<String> params = new ArrayList<String>();
-		params.add("Fecha y hora de hoy");
+		params.add("Prueba de creaci\u00F3n de tr\u00E1mite");
 		params.add("12345678790");
 
 		try {
 			TestsUtil.isConnected();
-			emailer.send(EmailType.INITPROCEDURE, "osorio.af@gmail.com", params);
+			emailer.send(EmailType.INITPROCEDURE, "aosorio@uniandes.edu.co", params);
 			success = true;
 			
 		} catch (

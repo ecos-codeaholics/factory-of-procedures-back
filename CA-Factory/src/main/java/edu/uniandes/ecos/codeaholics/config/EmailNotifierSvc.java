@@ -134,7 +134,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 		generateMailMessage.setSubject(pSubject);
 		
 		String emailBody = pEmailBody;
-		generateMailMessage.setContent(emailBody, "text/html");
+		generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
+		//generateMailMessage.setContent(emailBody, "text/html");
 		
 		log.debug("Mail Session has been created successfully..");
 		log.info("-----------------------------------");
