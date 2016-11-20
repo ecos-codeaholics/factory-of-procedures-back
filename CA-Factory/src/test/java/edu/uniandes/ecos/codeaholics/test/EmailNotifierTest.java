@@ -107,9 +107,10 @@ public class EmailNotifierTest {
 		params.add("Prueba de creaci\u00F3n de tr\u00E1mite");
 		params.add("12345678790");
 
+		String image = "./src/main/resources/tests/barcode.png";
 		try {
 			TestsUtil.isConnected();
-			emailer.send(EmailType.INITPROCEDURE, "aosorio@uniandes.edu.co", params);
+			emailer.send(EmailType.INITPROCEDURE, "aosorio@uniandes.edu.co", params,image);
 			success = true;
 			
 		} catch (

@@ -27,6 +27,7 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
+import edu.uniandes.ecos.codeaholics.config.FileUtil;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
@@ -174,6 +175,8 @@ public class CitizenServices {
 		}
 		// ..
 
+		String barcodeImg = null;
+		
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
@@ -181,6 +184,8 @@ public class CitizenServices {
 			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
 			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
 			procedureRequest.setFileNumber(json.get("code").getAsString());
+			
+			barcodeImg = FileUtil.getImageFromString( json.get("code").getAsString(), json.get("barcodeImg").getAsString() );
 
 		} catch ( FileNotFoundException | UnknownHostException ex ) {
 			log.info("Problem reaching external service");
@@ -253,7 +258,7 @@ public class CitizenServices {
 			parameters.add(procedureRequest.getFileNumber());
 
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
+			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters, barcodeImg);
 
 			response = messager
 					.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: "
