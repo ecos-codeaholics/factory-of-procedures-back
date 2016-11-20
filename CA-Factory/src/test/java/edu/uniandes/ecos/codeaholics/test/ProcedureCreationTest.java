@@ -77,16 +77,16 @@ public class ProcedureCreationTest {
 	@Test
 	public void createProcedureTest() {
 
-		TestsUtil.addProcedureUno ("T11335", PROCEDURE_1,"Anapoima");
-		TestsUtil.addProcedureUno ("T11336", PROCEDURE_1,"El Rosal");
+		TestsUtil.addProcedureUno( "T11335", PROCEDURE_1,"Anapoima");
+		TestsUtil.addProcedureUno( "T11336", PROCEDURE_1,"El Rosal");
 		
-		TestsUtil.addProcedureDos ("T22335",PROCEDURE_2,"Anapoima");
-		TestsUtil.addProcedureDos ("T22336",PROCEDURE_2,"El Rosal");
+		TestsUtil.addProcedureDos( "T22335", PROCEDURE_2,"Anapoima");
+		TestsUtil.addProcedureDos( "T22336", PROCEDURE_2,"El Rosal");
 		
-		TestsUtil.addProcedureTres ("T33445",PROCEDURE_3,"Anapoima");
-		TestsUtil.addProcedureTres ("T33446",PROCEDURE_3,"El Rosal");
+		TestsUtil.addProcedureTres( "T33445", PROCEDURE_3,"Anapoima");
+		TestsUtil.addProcedureTres( "T33446", PROCEDURE_3,"El Rosal");
 		
-		TestsUtil.addProcedureCuatro ("T99115",PROCEDURE_4,"Anapoima");
+		TestsUtil.addProcedureCuatro( "T99115", PROCEDURE_4,"Anapoima");
 				
 		assertEquals(true, true);
 	}

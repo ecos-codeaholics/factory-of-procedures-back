@@ -685,35 +685,22 @@ public class TestsUtil {
 
 		reqDocs.add(reqDoc1);
 
-		RequiredUpload reqDoc2 = new RequiredUpload();
+		if (pName.equals("Anapoima")) {
 
-		reqDoc2.setType("file");
-		reqDoc2.setRequired(true);
-		reqDoc2.setClassName("form-control");
+			RequiredUpload reqDoc2 = new RequiredUpload();
 
-		reqDoc2.setLabel("Recibo");
-		reqDoc2.setDescription("Adjunte su recibo en formato (png, jpeg)");
-		reqDoc2.setName("reciboAtt");
+			reqDoc2.setType("file");
+			reqDoc2.setRequired(true);
+			reqDoc2.setClassName("form-control");
 
-		reqDocs.add(reqDoc2);
+			reqDoc2.setLabel("Recibo de pago");
+			reqDoc2.setDescription("Adjunte su recibo de pago en formato (png, jpeg)");
+			reqDoc2.setName("reciboAtt");
+
+			reqDocs.add(reqDoc2);
+		}
 
 		procedure.setRequired(reqDocs);
-
-		// Form
-
-		// FormField field1 = new FormField();
-		//
-		// field1.setType("text");
-		// field1.setSubtype("tel");
-		// field1.setRequired(true);
-		// field1.setLabel("Identificaci\u00F3n");
-		// field1.setDescription("N\u00FAmero de documento de identidad");
-		// field1.setPlaceHolder("123456789");
-		// field1.setClassname("form-control");
-		// field1.setName("identification");
-		// field1.setMaxlenght(11);
-		//
-		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -792,7 +779,7 @@ public class TestsUtil {
 		procedure.setCode(pCode);
 		procedure.setName(pName);
 		procedure.setMayoralty(pMayoralty);
-		
+
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
 		Activity activity1 = new Activity();
@@ -832,17 +819,20 @@ public class TestsUtil {
 
 		reqDocs.add(reqDoc2);
 
-		RequiredUpload reqDoc3 = new RequiredUpload();
+		if (pName.equals("Anapoima")) {
+			
+			RequiredUpload reqDoc3 = new RequiredUpload();
 
-		reqDoc3.setType("file");
-		reqDoc3.setRequired(true);
-		reqDoc3.setClassName("form-control");
+			reqDoc3.setType("file");
+			reqDoc3.setRequired(true);
+			reqDoc3.setClassName("form-control");
 
-		reqDoc3.setLabel("Certificado Presidente de la junta");
-		reqDoc3.setDescription("Adjunte su recibo en formato (png, jpeg)");
-		reqDoc3.setName("juntaAtt");
+			reqDoc3.setLabel("Certificado Presidente de la junta");
+			reqDoc3.setDescription("Adjunte su recibo en formato (png, jpeg)");
+			reqDoc3.setName("juntaAtt");
 
-		reqDocs.add(reqDoc3);
+			reqDocs.add(reqDoc3);
+		}
 
 		procedure.setRequired(reqDocs);
 
@@ -940,7 +930,7 @@ public class TestsUtil {
 		procedure.setCode(pCode);
 		procedure.setName(pName);
 		procedure.setMayoralty(pMayoralty);
-		
+
 		// Activities
 		Activity activity1 = new Activity();
 		activity1.setStep(1);
@@ -1083,11 +1073,9 @@ public class TestsUtil {
 	}
 
 	/*
-	 * Procedure: This is not an actual procedure from *Cundinamarca*
-	 * (it is not even a procedure)
-	 * Added to test several activities
-	 * SCC
-	 */ 
+	 * Procedure: This is not an actual procedure from *Cundinamarca* (it is not
+	 * even a procedure) Added to test several activities SCC
+	 */
 	public static void addProcedureCuatro(String pCode, String pName, String pMayoralty) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
@@ -1226,7 +1214,7 @@ public class TestsUtil {
 		citizen.setLastName1("Osorio");
 		citizen.setLastName2("Vargas");
 		citizen.setBirthDate(getBirthdate());
-	
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1430,7 +1418,7 @@ public class TestsUtil {
 		citizen.setLastName1("Hernandez");
 		citizen.setLastName2("Schmidt");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1498,7 +1486,7 @@ public class TestsUtil {
 		citizen.setLastName1("Rodriguez");
 		citizen.setLastName2("Borja");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1563,7 +1551,7 @@ public class TestsUtil {
 		citizen.setLastName1("Rodriguez");
 		citizen.setLastName2("Borja");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1628,7 +1616,7 @@ public class TestsUtil {
 		citizen.setLastName1("Martinez");
 		citizen.setLastName2("Duarte");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1695,7 +1683,7 @@ public class TestsUtil {
 		citizen.setLastName1("Martinez");
 		citizen.setLastName2("Duarte");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1762,7 +1750,7 @@ public class TestsUtil {
 		citizen.setLastName1("Cardona");
 		citizen.setLastName2("Cueto");
 		citizen.setBirthDate(getBirthdate());
-		
+
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1829,7 +1817,7 @@ public class TestsUtil {
 		citizen.setPassword("Qwerty");
 		citizen.setUserProfile(Constants.CITIZEN_COLLECTION);
 		citizen.setBirthDate(getBirthdate());
-		
+
 	}
 
 	/**
