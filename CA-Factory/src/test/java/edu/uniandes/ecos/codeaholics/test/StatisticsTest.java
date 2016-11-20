@@ -19,7 +19,7 @@ import spark.Response;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Test of the statistics service that displays some numbers on the main page
  * 
  * Implementation: [Notes on implementation]
  *

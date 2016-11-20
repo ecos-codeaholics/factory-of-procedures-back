@@ -38,17 +38,18 @@ public class LoginFunctionaryTest {
 		Spark.stop();
 	}
 	
+	private void addTestFunctionary() {
+				
+		TestsUtil.addFunctionaryTres("Juan", "Valdez", "Velez", "jvaldez@elrosal.gov.co", "12345678");
+	}
+		
 	@Test
 	public void loginFunctionaryTest() {
 		
 		logger.info("Running loging test");
-
 		
-		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima.gov.co", "12345678");
-		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima.gov.co", "12345678");
-		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal.gov.co", "12345678");
-		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal.gov.co", "12345678");
-
+		addTestFunctionary();
+		
 		int httpResult = 0;
 		String httpMessage = "";
 		String jsonResponse = "";

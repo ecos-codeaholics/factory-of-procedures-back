@@ -52,10 +52,10 @@ public class ProcedureCreationTest {
 	@Test
 	public void createFunctionariesTest() {
 		
-		TestsUtil.addFunctionaryUno("Juan", "Valdez", "jvaldez@anapoima.gov.co", "12345678");
-		TestsUtil.addFunctionaryDos("Arturo", "Calle", "acalle@anapoima.gov.co", "12345678");
-		TestsUtil.addFunctionaryTres("Juan", "Valdez", "jvaldez@elrosal.gov.co", "12345678");
-		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "acalle@elrosal.gov.co", "12345678");
+		TestsUtil.addFunctionaryUno("Juan", "Valdez", "Velez", "jvaldez@anapoima.gov.co", "12345678");
+		TestsUtil.addFunctionaryDos("Arturo", "Calle", "Nieto", "acalle@anapoima.gov.co", "12345678");
+		TestsUtil.addFunctionaryTres("Juan", "Valdez", "Velez", "jvaldez@elrosal.gov.co", "12345678");
+		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "Nieto", "acalle@elrosal.gov.co", "12345678");
 		
 		assertEquals(true, true);		
 	}

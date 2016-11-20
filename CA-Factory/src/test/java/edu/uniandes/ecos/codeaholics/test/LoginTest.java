@@ -32,6 +32,8 @@ public class LoginTest {
 
 	Logger logger = LogManager.getRootLogger();
 
+	private TestsUtil utilities = new TestsUtil();
+	
 	@BeforeClass
 	public static void beforeClass() {
 		App.main(null);
@@ -42,13 +44,20 @@ public class LoginTest {
 		Spark.stop();
 	}
 
+	private void addTestCitizen() {
+			
+		utilities.addCitizen("Jean", "Valjean", "Fabre","jvaljean@uniandes.edu.co", "12345678");
+		
+	}
+	
+	
 	@Test
 	public void loginTest() {
+
 		logger.info("Running loging test");
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Jean", "Valjean", "jvaljean@uniandes.edu.co", "12345678");
-
+		addTestCitizen();
+		
 		int httpResult = 0;
 		String httpMessage = "";
 		String jsonResponse = "";

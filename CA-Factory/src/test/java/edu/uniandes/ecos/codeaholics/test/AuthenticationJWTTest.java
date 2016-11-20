@@ -46,14 +46,15 @@ public class AuthenticationJWTTest {
 	private final static String USER_PWD = "12345678";
 	private final static String USER_NAME = "David";
 	private final static String USER_LASTNAME = "Bernal";
-
+	private final static String USER_LASTNAME2 = "Diaz";
+	
 	private String token;
 
 	@Test
 	public void tokenCreationTest() {
 
 		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_EMAIL, USER_PWD);
+		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
 		String citizenSalt = utilities.getCitizenSalt();
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
@@ -105,7 +106,7 @@ public class AuthenticationJWTTest {
 	public void sessionTest() {
 
 		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_EMAIL, USER_PWD);
+		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
 
@@ -158,7 +159,7 @@ public class AuthenticationJWTTest {
 
 		TestsUtil utilities = new TestsUtil();
 
-		utilities.addCitizen("Emily", "Nurse", "emily@uniandes.edu.co", "12345678");
+		utilities.addCitizen("Emily", "Nurse", "Cox", "emily@uniandes.edu.co", "12345678");
 		String citizenSalt = utilities.getCitizenSalt();
 		logger.info(citizenSalt);
 

@@ -13,6 +13,8 @@ import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -57,7 +59,11 @@ import edu.uniandes.ecos.codeaholics.persistence.Session;
  */
 public class TestsUtil {
 
-	static Logger logger = LogManager.getRootLogger();
+	private static Logger logger = LogManager.getRootLogger();
+
+	private static String birthDateStr = "10-01-1990";
+
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyyy");
 
 	private static String citizenSalt;
 
@@ -76,7 +82,7 @@ public class TestsUtil {
 	 * @param pEmail
 	 * @param pPwd
 	 */
-	public void addCitizen(String pName, String pLastName1, String pEmail, String pPwd) {
+	public void addCitizen(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
@@ -84,10 +90,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -194,10 +202,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Andr\u00E9s");
 		citizen.setLastName1("Osorio");
+		citizen.setLastName2("Vargas");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -227,10 +237,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
+		citizen.setLastName2("Schmidt");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -260,10 +272,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
+		citizen.setLastName2("Borja");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -292,10 +306,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
+		citizen.setLastName2("Duarte");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -323,10 +339,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
+		citizen.setLastName2("Cueto");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setPassword("12345678");
 		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -445,7 +463,8 @@ public class TestsUtil {
 	 */
 
 	// funcionario1
-	public static void addFunctionaryUno(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryUno(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
@@ -460,10 +479,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Hacienda");
@@ -489,7 +510,8 @@ public class TestsUtil {
 	}
 
 	// funcionario2
-	public static void addFunctionaryDos(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryDos(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
@@ -503,10 +525,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
@@ -531,7 +555,8 @@ public class TestsUtil {
 	}
 
 	// funcionario2
-	public static void addFunctionaryTres(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryTres(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
@@ -545,10 +570,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Hacienda");
@@ -573,7 +600,8 @@ public class TestsUtil {
 	}
 
 	// funcionario4
-	public static void addFunctionaryCuatro(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryCuatro(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
@@ -587,10 +615,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
 		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
@@ -669,19 +699,19 @@ public class TestsUtil {
 
 		// Form
 
-//		FormField field1 = new FormField();
-//
-//		field1.setType("text");
-//		field1.setSubtype("tel");
-//		field1.setRequired(true);
-//		field1.setLabel("Identificaci\u00F3n");
-//		field1.setDescription("N\u00FAmero de documento de identidad");
-//		field1.setPlaceHolder("123456789");
-//		field1.setClassname("form-control");
-//		field1.setName("identification");
-//		field1.setMaxlenght(11);
-//
-//		formFields.add(field1);
+		// FormField field1 = new FormField();
+		//
+		// field1.setType("text");
+		// field1.setSubtype("tel");
+		// field1.setRequired(true);
+		// field1.setLabel("Identificaci\u00F3n");
+		// field1.setDescription("N\u00FAmero de documento de identidad");
+		// field1.setPlaceHolder("123456789");
+		// field1.setClassname("form-control");
+		// field1.setName("identification");
+		// field1.setMaxlenght(11);
+		//
+		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -814,19 +844,19 @@ public class TestsUtil {
 
 		// Form
 
-//		FormField field1 = new FormField();
-//
-//		field1.setType("text");
-//		field1.setSubtype("tel");
-//		field1.setRequired(true);
-//		field1.setLabel("Identificaci\u00F3n");
-//		field1.setDescription("N\u00FAmero de documento de identidad");
-//		field1.setPlaceHolder("123456789");
-//		field1.setClassname("form-control");
-//		field1.setName("identification");
-//		field1.setMaxlenght(11);
-//
-//		formFields.add(field1);
+		// FormField field1 = new FormField();
+		//
+		// field1.setType("text");
+		// field1.setSubtype("tel");
+		// field1.setRequired(true);
+		// field1.setLabel("Identificaci\u00F3n");
+		// field1.setDescription("N\u00FAmero de documento de identidad");
+		// field1.setPlaceHolder("123456789");
+		// field1.setClassname("form-control");
+		// field1.setName("identification");
+		// field1.setMaxlenght(11);
+		//
+		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -985,19 +1015,19 @@ public class TestsUtil {
 
 		// Form
 
-//		FormField field1 = new FormField();
-//
-//		field1.setType("text");
-//		field1.setSubtype("tel");
-//		field1.setRequired(true);
-//		field1.setLabel("Identificaci\u00F3n");
-//		field1.setDescription("N\u00FAmero de documento de identidad");
-//		field1.setPlaceHolder("123456789");
-//		field1.setClassname("form-control");
-//		field1.setName("identification");
-//		field1.setMaxlenght(11);
-//
-//		formFields.add(field1);
+		// FormField field1 = new FormField();
+		//
+		// field1.setType("text");
+		// field1.setSubtype("tel");
+		// field1.setRequired(true);
+		// field1.setLabel("Identificaci\u00F3n");
+		// field1.setDescription("N\u00FAmero de documento de identidad");
+		// field1.setPlaceHolder("123456789");
+		// field1.setClassname("form-control");
+		// field1.setName("identification");
+		// field1.setMaxlenght(11);
+		//
+		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -1088,8 +1118,8 @@ public class TestsUtil {
 				"Alcalde", 4, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Firma Ciudadano", "Firma del contrato por el ciudadano", "Ciudadan\u00EDa", 5, "",
 				Constants.STATUS_PENDING));
-		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6, "jvaldez@elrosal.gov.co",
-				Constants.STATUS_PENDING));
+		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6,
+				"jvaldez@elrosal.gov.co", Constants.STATUS_PENDING));
 		activities.add(new Activity("Informe de labor", "Informe del objeto contractual", "Ciudadan\u00EDa", 7, "",
 				Constants.STATUS_PENDING));
 		activities.add(new Activity("Informe supervisi\u00F3n", "Informe de supervisi\u00F3n del contrato",
@@ -1119,19 +1149,19 @@ public class TestsUtil {
 
 		// Form
 
-//		FormField field1 = new FormField();
-//
-//		field1.setType("text");
-//		field1.setSubtype("tel");
-//		field1.setRequired(true);
-//		field1.setLabel("Identificaci\u00F3n");
-//		field1.setDescription("N\u00FAmero de documento de identidad");
-//		field1.setPlaceHolder("123456789");
-//		field1.setClassname("form-control");
-//		field1.setName("identification");
-//		field1.setMaxlenght(11);
-//
-//		formFields.add(field1);
+		// FormField field1 = new FormField();
+		//
+		// field1.setType("text");
+		// field1.setSubtype("tel");
+		// field1.setRequired(true);
+		// field1.setLabel("Identificaci\u00F3n");
+		// field1.setDescription("N\u00FAmero de documento de identidad");
+		// field1.setPlaceHolder("123456789");
+		// field1.setClassname("form-control");
+		// field1.setName("identification");
+		// field1.setMaxlenght(11);
+		//
+		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -1214,7 +1244,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Andres");
 		citizen.setLastName1("Osorio");
-
+		citizen.setLastName2("Vargas");
+		citizen.setBirthDate(getBirthdate());
+	
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1282,6 +1314,8 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Andres");
 		citizen.setLastName1("Osorio");
+		citizen.setLastName2("Vargas");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
@@ -1347,6 +1381,8 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
+		citizen.setLastName2("Schmidt");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
@@ -1412,7 +1448,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
-
+		citizen.setLastName2("Schmidt");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1478,7 +1516,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
-
+		citizen.setLastName2("Borja");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1541,7 +1581,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
-
+		citizen.setLastName2("Borja");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
@@ -1604,7 +1646,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
-
+		citizen.setLastName2("Duarte");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1669,7 +1713,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
-
+		citizen.setLastName2("Duarte");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1734,7 +1780,9 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
-
+		citizen.setLastName2("Cueto");
+		citizen.setBirthDate(getBirthdate());
+		
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
@@ -1800,7 +1848,8 @@ public class TestsUtil {
 		citizen.setEmail("jvaldes@uniandes.edu.co");
 		citizen.setPassword("Qwerty");
 		citizen.setUserProfile(Constants.CITIZEN_COLLECTION);
-
+		citizen.setBirthDate(getBirthdate());
+		
 	}
 
 	/**
@@ -1959,6 +2008,20 @@ public class TestsUtil {
 			throw e;
 		}
 
+	}
+
+	public static Date getBirthdate() {
+
+		Date birthDate = null;
+
+		try {
+			birthDate = dateFormat.parse(birthDateStr);
+		} catch (ParseException e) {
+			logger.error("Bad date format");
+			e.printStackTrace();
+		}
+
+		return birthDate;
 	}
 
 }

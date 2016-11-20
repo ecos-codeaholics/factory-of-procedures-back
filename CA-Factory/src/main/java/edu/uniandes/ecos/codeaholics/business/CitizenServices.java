@@ -83,8 +83,6 @@ public class CitizenServices {
 
 	}
 
-	
-
 	/***
 	 * Obtiene toda la informacion de un ciudadano dado su numero de
 	 * identificacion.
@@ -163,8 +161,7 @@ public class CitizenServices {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
-			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE
-					);
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
 			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
 			procedureRequest.setFileNumber(json.get("code").getAsString());
 
@@ -210,10 +207,15 @@ public class CitizenServices {
 
 			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
 
-			Document citezenDoc = citizens.get(0);
-			citezenDoc.remove("_id");
-			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
+			Document citizenDoc = citizens.get(0);
+			citizenDoc.remove("_id");
+			citizenDoc.remove("birthDate"); // AO: Need to deal with
+											// ISODate to Java
+
+			Citizen citizen = GSON.fromJson(citizenDoc.toJson(), Citizen.class);
 			procedureRequest.setCitizen(citizen);
+
+			log.info("Found citizen " + citizen.toDocument());
 
 			String mayoraltyName = pRequest.params(":mayoraltyName");
 			procedureRequest.setMayoralty(mayoraltyName);
@@ -235,7 +237,7 @@ public class CitizenServices {
 			System.out.println(procedureRequest.toDocument());
 			DataBaseUtil.save(procedureRequest.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
 
-			//. Notify to citizen
+			// . Notify to citizen
 			ArrayList<String> parameters = new ArrayList<>();
 			parameters.add(procedureRequest.getProcedureClassName());
 			parameters.add(procedureRequest.getFileNumber());
@@ -243,15 +245,17 @@ public class CitizenServices {
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
 
-			response = messager.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: " + procedureRequest.getFileNumber());
-			
+			response = messager
+					.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: "
+							+ procedureRequest.getFileNumber());
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.info("There is a fucking error!!!!");
+			log.info("There is a problem with starting a new procedure");
 			log.info(e.getLocalizedMessage());
 			response = messager.getNotOkMessage("Registro de solicitud fallido");
 		}
-			
+
 		pResponse.type("application/json");
 
 		return response;
@@ -391,7 +395,7 @@ public class CitizenServices {
 			log.info("nombre del req: " + fileRequest);
 			log.info("ciuda: " + citizen);
 
-			//String nameFile = fileRequest + citizen;
+			// String nameFile = fileRequest + citizen;
 
 			fileManager.uploadDocument(pRequest);
 			response = messager.getOkMessage(((DocumentSvc) fileManager).getAnswerStr());
