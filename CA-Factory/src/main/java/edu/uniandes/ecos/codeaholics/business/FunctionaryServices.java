@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import edu.uniandes.ecos.codeaholics.config.Authorization;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
@@ -53,7 +54,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front
@@ -103,7 +104,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front
@@ -148,7 +149,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front

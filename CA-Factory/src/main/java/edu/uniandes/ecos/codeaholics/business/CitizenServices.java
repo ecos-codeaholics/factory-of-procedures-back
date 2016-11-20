@@ -14,6 +14,7 @@ import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
+import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
@@ -157,7 +158,7 @@ public class CitizenServices {
 		try {
 
 			// .
-			String email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			String email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 			// ..
 
 			if (email != null) {
@@ -214,7 +215,7 @@ public class CitizenServices {
 			String email;
 
 			try {
-				email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+				email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 			} catch (InvalidTokenException jwtEx) {
 				log.info(jwtEx.getMessage());
 				return "failed";
@@ -278,7 +279,7 @@ public class CitizenServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
@@ -302,6 +303,7 @@ public class CitizenServices {
 			dataset.add(item);
 		}
 
+		// TODO; Remove this from here: any test should be done through JUnit tests
 		// ayuda para probar el servicio
 		if (documents.isEmpty()) {
 			Document procedure1 = new Document();
@@ -348,7 +350,7 @@ public class CitizenServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";

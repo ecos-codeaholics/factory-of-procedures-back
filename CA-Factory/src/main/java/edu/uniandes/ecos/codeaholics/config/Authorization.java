@@ -54,8 +54,6 @@ public final class Authorization {
 
 	private static String authenticationMethod = "JWT"; // ... JWT, Simple
 
-	public static final String TOKEN_EMAIL_KEY = "jti";
-
 	// Metodos
 
 	/**
@@ -228,7 +226,7 @@ public final class Authorization {
 		// 1. Extract expiration date
 		try {
 
-			String email = (String) getTokenClaim(pToken, pSalt, TOKEN_EMAIL_KEY);
+			String email = (String) getTokenClaim(pToken, pSalt, Constants.TOKEN_EMAIL_KEY);
 
 			log.info("token has email: " + email);
 
