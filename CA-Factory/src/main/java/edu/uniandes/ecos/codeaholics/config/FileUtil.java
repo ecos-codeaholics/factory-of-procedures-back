@@ -155,6 +155,13 @@ public class FileUtil {
 
 	}
 
+	/**
+	 * Save an image enconde in a Base64 string
+	 * 
+	 * @param pImageName image full path
+	 * @param pImageStr base64 enconded image
+	 * @return
+	 */
 	public static String getImageFromString(String pImageName, String pImageStr) {
 
 		String testImg = "./src/main/resources/tests/barcode.png";

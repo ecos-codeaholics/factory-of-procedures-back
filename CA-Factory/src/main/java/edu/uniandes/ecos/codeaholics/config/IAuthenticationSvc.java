@@ -13,9 +13,9 @@ import edu.uniandes.ecos.codeaholics.exceptions.AuthenticationException.WrongUse
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Authentication interface
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: Implemented using JWT and plain authentication (hand made)
  *
  * Created: Aug 2, 2016 1:40:28 PM
  * 

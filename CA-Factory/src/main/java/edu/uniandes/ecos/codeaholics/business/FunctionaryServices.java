@@ -52,7 +52,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front
@@ -95,7 +95,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front
@@ -133,7 +133,7 @@ public class FunctionaryServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed"; //TODO: handle this exception at the front

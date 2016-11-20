@@ -10,9 +10,9 @@ package edu.uniandes.ecos.codeaholics.config;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Return message interface, communication between backend and frontend
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: 
  *
  * Created: Aug 23, 2016 4:01:41 PM
  * 

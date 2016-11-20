@@ -131,7 +131,7 @@ public class CitizenServices {
 		Object response = null;
 
 		try {
-			String email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			String email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 
 			if (email != null) {
 				Authentication.closeSession(email);
@@ -168,7 +168,7 @@ public class CitizenServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.error(jwtEx.getMessage());
 			return "failed";
@@ -292,7 +292,7 @@ public class CitizenServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
@@ -354,7 +354,7 @@ public class CitizenServices {
 		String email;
 
 		try {
-			email = Authorization.getFromToken(pRequest, Authorization.TOKEN_EMAIL_KEY);
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
