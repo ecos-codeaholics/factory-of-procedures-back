@@ -33,6 +33,13 @@ public class Routes {
 	//Rutas de servicios externos
 	
 	//1. Servicio de generacion de numero de radicado y codigo de barras
-	public static String BARCODER_EXTSVC_ROUTE = "https://warm-beach-98503.herokuapp.com/serialnumbers";
-
+	public static String BARCODER_EXTSVC_ROUTE;
+	
+	//2. Servicio Mock de verificacion de cedula
+	public static String IDCERTIFIER_EXTSVC_ROUTE;
+	
+	//3. Servicio Mock de pago PSE
+	public static String PSE_EXTSVC_ROUTE;
+	
+	
 }

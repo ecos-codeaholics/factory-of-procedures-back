@@ -203,6 +203,10 @@ public class App {
 			JETTY_SERVER_TIMEOUTMILLIS = Integer.parseInt(prop.getProperty("jetty.server.timeoutMillis"));
 			USE_SPARK_HTTPS = Boolean.parseBoolean(prop.getProperty("spark.https"));
 
+			Routes.BARCODER_EXTSVC_ROUTE = prop.getProperty("extsvc.barcoder");
+			Routes.IDCERTIFIER_EXTSVC_ROUTE = prop.getProperty("extsvc.idcert");
+			Routes.PSE_EXTSVC_ROUTE = prop.getProperty("extsvc.pse");
+					
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
