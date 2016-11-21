@@ -306,7 +306,7 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
-		citizen.setLastName2("Duarte");
+		citizen.setLastName2("Salcedo");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setPassword("12345678");
