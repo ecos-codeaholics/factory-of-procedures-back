@@ -189,19 +189,24 @@ public class MayoraltyServices {
 
 			ArrayList<Document> citizenList = DataBaseUtil.find(citizenDoc, Constants.CITIZEN_COLLECTION);
 			Document functionaryDoc = citizenList.get(0);
+			
 			Functionary functionary = GSON.fromJson(functionaryDoc.toJson(), Functionary.class);
 			functionary.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
-			functionary.setDependency("Atención al Ciudadano");
+			functionary.setDependency("Atenci\u00F3n al Ciudadano");
+			
 			DataBaseUtil.save(functionary.toDocument(), Constants.FUNCTIONARY_COLLECTION);
 
+			ArrayList<String> params = new ArrayList<String>();
+			params.add(functionary.getName());
+						
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.MAKE_FUNCTIONARY, functionary.getEmail());
+			sendEmail.send(EmailType.MAKE_FUNCTIONARY, functionary.getEmail(), params);
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
 
-		response = messager.getOkMessage("Registro exitoso de su solicitud, su tr�mite fue creado con el n�mero: ");
+		response = messager.getOkMessage("Registro exitoso de su solicitud");
 		pResponse.type("application/json");
 		// return "Proceso Exitoso";
 

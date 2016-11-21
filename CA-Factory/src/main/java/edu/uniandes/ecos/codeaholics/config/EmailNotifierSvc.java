@@ -53,7 +53,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private static final String RESET_FILE = "src/main/resources/email/reset.properties";
 	private static final String UPDATE_FILE = "src/main/resources/email/update.properties";
 	private static final String INITIATE_FILE = "src/main/resources/email/initiate.properties";
-
+	private static final String FUNCTIONARY_ROL_FILE = "src/main/resources/email/functionary.properties";
+	
 	private static Map<EmailType, String> context = new HashMap<EmailType, String>();
 
 	private static Properties mailServerProperties;
@@ -74,6 +75,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 		context.put(EmailType.RESET, RESET_FILE);
 		context.put(EmailType.UPDATE, UPDATE_FILE);
 		context.put(EmailType.INITPROCEDURE, INITIATE_FILE);
+		context.put(EmailType.MAKE_FUNCTIONARY, FUNCTIONARY_ROL_FILE);
 
 	}
 
@@ -93,10 +95,12 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 		if (pContext.equals(EmailType.REGISTRATION)) {
 			sendRegister(pToEmail);
-		}else if(pContext.equals(EmailType.MAKE_FUNCTIONARY)){
-			String emailBody = "Su registro como <b>funcionario</b> se ha realizado de manera exitosa en nuestro sistema. "
-					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
-			sendEmail(pToEmail,"De nuevo bienvenido a la Fabrica de Tramites", emailBody);
+			
+		} else if (pContext.equals(EmailType.MAKE_FUNCTIONARY)){
+	
+			EmailBuilder email = new EmailBuilder(context.get(pContext));
+			sendEmail(pToEmail, email.getSubject(), email.build());
+
 		}
 	}
 
@@ -116,6 +120,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 			throws AddressException, MessagingException {
 
 		sendWithParams(pContext, pToEmail, pParams);
+		
 	}
 	
 	/**
