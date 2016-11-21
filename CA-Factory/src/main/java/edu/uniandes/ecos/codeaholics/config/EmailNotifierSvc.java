@@ -46,7 +46,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
 
 	public enum EmailType {
-		REGISTRATION, RESET, UPDATE, CHANGE, INITPROCEDURE;
+		REGISTRATION, RESET, UPDATE, CHANGE, INITPROCEDURE, MAKE_FUNCTIONARY;
 	}
 
 	private static final String REGISTRATION_FILE = "src/main/resources/email/registration.properties";
@@ -93,6 +93,10 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 		if (pContext.equals(EmailType.REGISTRATION)) {
 			sendRegister(pToEmail);
+		}else if(pContext.equals(EmailType.MAKE_FUNCTIONARY)){
+			String emailBody = "Su registro como <b>funcionario</b> se ha realizado de manera exitosa en nuestro sistema. "
+					+ "<br><br> Cordial saludo, <br>Grupo Codeaholics";
+			sendEmail(pToEmail,"De nuevo bienvenido a la Fabrica de Tramites", emailBody);
 		}
 	}
 
