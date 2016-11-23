@@ -66,8 +66,10 @@ public class ProcedureCreationTest {
 	@Test
 	public void createFunctionariesTest() {
 		
+		//Functionary "uno" es admin
 		TestsUtil.addFunctionaryUno("Juan", "Valdez", "Velez", "jvaldez@anapoima.gov.co", "12345678");
 		TestsUtil.addFunctionaryDos("Arturo", "Calle", "Nieto", "acalle@anapoima.gov.co", "12345678");
+		//Functionary "tres" es admin
 		TestsUtil.addFunctionaryTres("Juan", "Valdez", "Velez", "jvaldez@elrosal.gov.co", "12345678");
 		TestsUtil.addFunctionaryCuatro("Arturo", "Calle", "Nieto", "acalle@elrosal.gov.co", "12345678");
 		

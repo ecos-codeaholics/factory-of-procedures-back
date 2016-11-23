@@ -339,7 +339,7 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
-		citizen.setLastName2("Cueto");
+		citizen.setLastName2("Correa");
 		citizen.setIdentification(1234567890);
 		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setPassword("12345678");

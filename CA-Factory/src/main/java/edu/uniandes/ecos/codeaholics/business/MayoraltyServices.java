@@ -184,7 +184,10 @@ public class MayoraltyServices {
 		
 		Document citizenDoc = GSON.fromJson(pRequest.body(), Document.class);
 		citizenDoc.remove("fullName");
-
+		citizenDoc.remove("_id");
+	
+		log.info(citizenDoc.toString());
+		
 		try {
 
 			ArrayList<Document> citizenList = DataBaseUtil.find(citizenDoc, Constants.CITIZEN_COLLECTION);
@@ -208,9 +211,9 @@ public class MayoraltyServices {
 
 		response = messager.getOkMessage("Registro exitoso de su solicitud");
 		pResponse.type("application/json");
+		
 		// return "Proceso Exitoso";
-
-		pRequest.body();
+		//pRequest.body();
 
 		return response;
 
