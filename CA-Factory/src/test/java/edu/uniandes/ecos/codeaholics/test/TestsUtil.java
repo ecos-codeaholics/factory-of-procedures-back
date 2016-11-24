@@ -68,13 +68,6 @@ public class TestsUtil {
 	private static String citizenSalt;
 
 	/**
-	 * @return the citizenSalt
-	 */
-	public String getCitizenSalt() {
-		return citizenSalt;
-	}
-
-	/**
 	 * add citizen to db for testing purposes. if it already exists, just update
 	 * 
 	 * @param pName
@@ -82,7 +75,7 @@ public class TestsUtil {
 	 * @param pEmail
 	 * @param pPwd
 	 */
-	public void addCitizen(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd) {
+	public static void addCitizen(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
@@ -113,16 +106,35 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
-
 	}
 
+	/**
+	 * @param pEmail
+	 * @return
+	 */
+	public static String getCitizenSalt( String pEmail ) {
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
+
+		if (documents.isEmpty()) {
+			return null;
+		} else {
+			Document citizenDoc = documents.get(0);
+			citizenSalt = (String) citizenDoc.get("salt");
+		}
+		
+		return citizenSalt;
+		
+	}
+	
 	/**
 	 * Cleanup DB of Test users
 	 * 
 	 * @param pEmail
 	 */
-	public void removeCitizen(String pEmail) {
+	public static void removeCitizen(String pEmail) {
 
 		Document user = new Document();
 		user.append("email", pEmail);
@@ -132,6 +144,20 @@ public class TestsUtil {
 	}
 
 	/**
+	 * Cleanup DB of Test users
+	 * 
+	 * @param pEmail
+	 */
+	public static void removeFunctionary(String pEmail) {
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		logger.info("Removing user with email ... " + pEmail);
+		DataBaseUtil.delete(user, Constants.FUNCTIONARY_COLLECTION);
+
+	}
+	
+	/**
 	 * Create a mock session for a specific user
 	 * 
 	 * @param pEmail
@@ -139,7 +165,7 @@ public class TestsUtil {
 	 * @param pToken
 	 * @param pSalt
 	 */
-	public void addSession(String pEmail, String pProfile, String pToken, String pSalt) {
+	public static void addSession(String pEmail, String pProfile, String pToken, String pSalt) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.SESSION_COLLECTION);
@@ -225,8 +251,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
-
 	}
 
 	// add citizen
@@ -259,8 +283,6 @@ public class TestsUtil {
 			collection.findOneAndDelete(user);
 			collection.insertOne(citizen.toDocument());
 		}
-
-		citizenSalt = hash[0];
 
 	}
 
@@ -295,7 +317,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// add citizen
@@ -329,7 +350,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	public static void addCitizenCinco() {
@@ -362,7 +382,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// add Alcaldia uno
@@ -455,20 +474,70 @@ public class TestsUtil {
 
 	}
 
+	
+	/**
+	 *  Add a generic functionary
+	 * @param pName
+	 * @param pLastName1
+	 * @param pLastName2
+	 * @param pEmail
+	 * @param pPwd
+	 * @param pRole
+	 */
+	public static void addFunctionary(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd, String pProfile) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
+		
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile(pProfile);
+		citizen.setBirthDate(getBirthdate());
+
+		citizen.setMayoralty("MiAlcaldia");
+		citizen.setDependency("Hacienda");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
+		
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+		
+	}
+
 	/**
 	 * @param pName
 	 * @param pLastName1
 	 * @param pEmail
 	 * @param pPwd
 	 */
-
 	// funcionario1
 	public static void addFunctionaryUno(String pName, String pLastName1, String pLastName2, String pEmail,
 			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
-		MongoCollection<Document> collectionC = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("Anapoima");
@@ -495,8 +564,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
-		collectionC.insertOne(citizen.toDocument());
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -506,7 +574,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario2
@@ -541,7 +608,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -551,7 +618,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario2
@@ -586,7 +652,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -596,7 +662,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario4
@@ -631,7 +696,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -641,7 +706,6 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// Procedure1
@@ -820,7 +884,7 @@ public class TestsUtil {
 		reqDocs.add(reqDoc2);
 
 		if (pName.equals("Anapoima")) {
-			
+
 			RequiredUpload reqDoc3 = new RequiredUpload();
 
 			reqDoc3.setType("file");

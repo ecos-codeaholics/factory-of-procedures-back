@@ -20,6 +20,7 @@ import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Functionary;
 import spark.Request;
 import spark.Response;
@@ -184,17 +185,28 @@ public class MayoraltyServices {
 		
 		Document citizenDoc = GSON.fromJson(pRequest.body(), Document.class);
 		citizenDoc.remove("fullName");
-		citizenDoc.remove("_id");
 	
 		log.info(citizenDoc.toString());
 		
 		try {
 
-			ArrayList<Document> citizenList = DataBaseUtil.find(citizenDoc, Constants.CITIZEN_COLLECTION);
-			Document functionaryDoc = citizenList.get(0);
+			Document filter = new Document();
+			filter.append("email", citizenDoc.get("email"));
+			filter.append("name", citizenDoc.get("name"));
 			
-			Functionary functionary = GSON.fromJson(functionaryDoc.toJson(), Functionary.class);
+			ArrayList<Document> citizenList = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
+			Document asCitizenDoc = citizenList.get(0);
+			
+			//problem with Document -- toJson --> POJO (when attributes are != basic objects
+			asCitizenDoc.remove("_id");
+			asCitizenDoc.remove("birthDate");
+
+			Citizen asCitizen = GSON.fromJson(asCitizenDoc.toJson(), Citizen.class);
+			
+			Functionary functionary = new Functionary(asCitizen);
+			
 			functionary.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
+			functionary.setMayoralty("xxxxxxxxxxx");
 			functionary.setDependency("Atenci\u00F3n al Ciudadano");
 			
 			DataBaseUtil.save(functionary.toDocument(), Constants.FUNCTIONARY_COLLECTION);
@@ -204,17 +216,16 @@ public class MayoraltyServices {
 						
 			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
 			sendEmail.send(EmailType.MAKE_FUNCTIONARY, functionary.getEmail(), params);
-
+			
+			response = messager.getOkMessage("Registro exitoso de su solicitud");
+			
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			response = messager.getNotOkMessage("Registro fallido.");
 		}
-
-		response = messager.getOkMessage("Registro exitoso de su solicitud");
+		
 		pResponse.type("application/json");
 		
-		// return "Proceso Exitoso";
-		//pRequest.body();
-
 		return response;
 
 	}

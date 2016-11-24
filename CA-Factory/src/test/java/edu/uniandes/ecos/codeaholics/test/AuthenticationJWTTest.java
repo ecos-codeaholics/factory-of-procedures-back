@@ -47,15 +47,15 @@ public class AuthenticationJWTTest {
 	private final static String USER_NAME = "David";
 	private final static String USER_LASTNAME = "Bernal";
 	private final static String USER_LASTNAME2 = "Diaz";
-	
+
 	private String token;
 
 	@Test
 	public void tokenCreationTest() {
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
-		String citizenSalt = utilities.getCitizenSalt();
+		// TestsUtil utilities = new TestsUtil();
+		TestsUtil.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
+		String citizenSalt = TestsUtil.getCitizenSalt(USER_EMAIL);
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
 
@@ -97,16 +97,15 @@ public class AuthenticationJWTTest {
 		}
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
-		utilities.removeCitizen(USER_EMAIL);
+
+		TestsUtil.removeCitizen(USER_EMAIL);
 
 	}
 
 	@Test
 	public void sessionTest() {
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
+		TestsUtil.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
 
@@ -149,24 +148,22 @@ public class AuthenticationJWTTest {
 		assertTrue(isAutorized);
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
-		utilities.removeCitizen(USER_EMAIL);
-		
+
+		TestsUtil.removeCitizen(USER_EMAIL);
+
 	}
 
 	@Test
 	public void tokenExpirationTest() {
 
-		TestsUtil utilities = new TestsUtil();
-
-		utilities.addCitizen("Emily", "Nurse", "Cox", "emily@uniandes.edu.co", "12345678");
-		String citizenSalt = utilities.getCitizenSalt();
+		TestsUtil.addCitizen("Emily", "Nurse", "Cox", "emily@uniandes.edu.co", "12345678");
+		String citizenSalt = TestsUtil.getCitizenSalt("emily@uniandes.edu.co");
 		logger.info(citizenSalt);
 
 		String expToken = createExpiredJWT("emily@uniandes.edu.co", citizenSalt);
 		logger.info(expToken);
 
-		utilities.addSession("emily@uniandes.edu.co", Constants.CITIZEN_USER_PROFILE, expToken, citizenSalt);
+		TestsUtil.addSession("emily@uniandes.edu.co", Constants.CITIZEN_USER_PROFILE, expToken, citizenSalt);
 
 		boolean isAutorized = false;
 
@@ -197,10 +194,10 @@ public class AuthenticationJWTTest {
 		}
 
 		assertFalse(isAutorized);
-		
+
 		AuthenticationJWT.closeSession("emily@uniandes.edu.co");
-		
-		utilities.removeCitizen("emily@uniandes.edu.co");
+
+		TestsUtil.removeCitizen("emily@uniandes.edu.co");
 
 	}
 
