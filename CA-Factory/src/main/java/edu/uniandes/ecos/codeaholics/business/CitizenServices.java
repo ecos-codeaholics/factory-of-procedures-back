@@ -19,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.mongodb.util.JSON;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
@@ -39,6 +40,7 @@ import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 //import edu.uniandes.ecos.codeaholics.persistence.ProcedureData;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
+import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 import spark.Request;
 import spark.Response;
 
@@ -65,13 +67,13 @@ public class CitizenServices {
 
 		String mayoraltyName = pRequest.params(":mayoraltyName");
 		String procedureName = pRequest.params(":procedureName");
-		
+
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
 		procedureFilter.append("mayoraltyslug", mayoraltyName);
 		procedureFilter.append("slug", procedureName);
-		
+
 		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -176,21 +178,22 @@ public class CitizenServices {
 		// ..
 
 		String barcodeImg = null;
-		
+
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
-			
+
 			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
 			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
 			procedureRequest.setFileNumber(json.get("code").getAsString());
-			
-			barcodeImg = FileUtil.getImageFromString( json.get("code").getAsString(), json.get("barcodeImg").getAsString() );
 
-		} catch ( FileNotFoundException | UnknownHostException ex ) {
+			barcodeImg = FileUtil.getImageFromString(json.get("code").getAsString(),
+					json.get("barcodeImg").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
 			log.info("Problem reaching external service");
 			procedureRequest.setFileNumber(UUID.randomUUID().toString());
-		} 
+		}
 
 		String mayoraltyName = pRequest.params(":mayoraltyName");
 		String procedureName = pRequest.params(":procedureName");
@@ -373,6 +376,59 @@ public class CitizenServices {
 		log.info("Consult procedure by id done");
 
 		return dataset;
+	}
+
+	/***
+	 * Consulta estado de un tramite.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object consultProceduresDocuments(Request pRequest, Response pResponse) {
+		try {
+			log.info(pRequest.params(":id"));
+			log.info(pRequest.uri());
+			log.info("Changing procedure status: " + pRequest.body());
+			Document procedureFilter = new Document();
+
+			String email;
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
+
+			procedureFilter.append("citizen.email", email);
+			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
+
+			List<Document> dataset = new ArrayList<>();
+			ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
+			
+			Document document = documents.get(0);
+			document.remove("_id");
+			document.remove("startDate");
+			document.remove("finishDate");
+			
+			ProcedureRequest procedureR = GSON.fromJson(document.toJson(), ProcedureRequest.class);
+			
+			log.info("deliveryDocs: "+ procedureR.getDeliveryDocs().toJson());
+			RequiredDocument obj= procedureR.getDeliveryDocs().get("Cédula de Ciudadanía",RequiredDocument.class);
+			//procedureR.getDeliveryDocs().ge
+			
+			if (!obj.equals(null)){
+				RequiredDocument req = (RequiredDocument)obj;
+				
+			}
+			
+			log.info("Consult procedure by id done");
+
+			return dataset;
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}catch (Exception e) {
+			log.info(e.getMessage());
+			return "failed";
+		}
 	}
 
 	/***
