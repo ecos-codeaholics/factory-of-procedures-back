@@ -4,6 +4,8 @@
 
 package edu.uniandes.ecos.codeaholics.config;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -149,5 +151,31 @@ public final class GeneralUtil {
 		return value;
 		
 	}
+	
+	public static String executeCommand(String command) {
+
+		//credit: http://www.mkyong.com/java/how-to-execute-shell-command-from-java/
+		StringBuffer output = new StringBuffer();
+
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader =
+                            new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                        String line = "";
+			while ((line = reader.readLine())!= null) {
+				output.append(line + "\n");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return output.toString();
+
+	}
+
 	
 }

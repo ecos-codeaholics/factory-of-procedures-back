@@ -13,7 +13,7 @@
 		<article>
 		<h2>About</h2>
   			<ul>
-    			<li>Version: 1.2</li>
+    			<li>Version: ${version}</li>
     			<li>IP: ${serverip}</li>
     			<li>Port: 4567</li>
     			<li>Platform: Linux</li>

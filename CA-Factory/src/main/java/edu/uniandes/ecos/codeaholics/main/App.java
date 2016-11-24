@@ -90,6 +90,7 @@ public class App {
 
 			e.printStackTrace();
 		}
+		
 		/**
 		 * Auth Routes
 		 */
@@ -257,12 +258,16 @@ public class App {
 	private static Object displayAbout(Request pRequest, Response pResponse) {
 
 		Object response = null;
+
+		String version = GeneralUtil.executeCommand("git branch").split("\n")[0];
+		
 		try {
 
 			Map<String, Object> root = new HashMap<>();
 			InetAddress addr = InetAddress.getLocalHost();
 	        String ipAddress = addr.getHostAddress();
 			root.put("serverip", ipAddress);
+			root.put("version", version);
 			StringWriter out = new StringWriter();
 			pseTemplate.process(root, out);
 
@@ -272,7 +277,7 @@ public class App {
 			return out;
 
 		} catch (Exception e) {
-			System.out.println("We got an exception");
+			System.out.println("We got a problem");
 			pResponse.status(400);
 			pResponse.type("application/json");
 			response = "{ errorCode : \"exception caught\"}";
