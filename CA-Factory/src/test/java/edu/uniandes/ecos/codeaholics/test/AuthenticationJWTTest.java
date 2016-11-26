@@ -102,6 +102,63 @@ public class AuthenticationJWTTest {
 
 	}
 
+	//@Test
+	public void functionaryTokenCreationTest() {
+
+		String FUNCTIONARY_EMAIL = "csanabria@anapoima.gov.co";
+		
+		TestsUtil.addFunctionary("Carlos", "Sanabria", "Garcia", FUNCTIONARY_EMAIL, "12345678",Constants.FUNCTIONARY_USER_PROFILE);
+		String functionarySalt = TestsUtil.getFunctionarySalt(FUNCTIONARY_EMAIL);
+				
+		AuthenticationJWT jwtToken = new AuthenticationJWT();
+
+		boolean authenticated = false;
+		try {
+			authenticated = jwtToken.doAuthentication(FUNCTIONARY_EMAIL, "12345678", Constants.FUNCTIONARY_USER_PROFILE);
+		} catch (WrongUserOrPasswordException e1) {
+			e1.printStackTrace();
+		}
+
+		if (authenticated) {
+			token = (String) jwtToken.getAnswer();
+			logger.info(token);
+
+			// Verify and decode
+			try {
+
+				logger.info("JWT is signed? " + Jwts.parser().isSigned(token));
+
+				Claims claims = Jwts.parser().setSigningKey(functionarySalt).parseClaimsJws(token).getBody();
+
+				logger.info("Claims: " + claims.toString());
+				
+				//logger.info("ID: " + claims.getId());
+				//logger.info("Subject: " + claims.getSubject());
+				//logger.info("Issuer: " + claims.getIssuer());
+				//logger.info("Expiration: " + claims.getExpiration());
+				//logger.info("Mayorality: " + claims.getCl());
+				
+				decode(token);
+
+				//assertEquals(FUNCTIONARY_EMAIL, claims.getId());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertFalse(true);
+				logger.info("Cannot get token claims");
+			}
+		} else {
+			logger.info("User not authenticated");
+			assertFalse(true);
+		}
+
+		//AuthenticationJWT.closeSession(FUNCTIONARY_EMAIL);
+
+		//TestsUtil.removeFunctionary(FUNCTIONARY_EMAIL);
+
+	}
+	
+	
 	@Test
 	public void sessionTest() {
 
