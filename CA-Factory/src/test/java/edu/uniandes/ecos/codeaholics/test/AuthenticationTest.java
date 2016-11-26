@@ -37,8 +37,7 @@ public class AuthenticationTest {
 	@Test
 	public void simpleAuthenticationTest() {
 		
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Andres", "Osorio", "Vargas", USER_EMAIL, "12345678");
+		TestsUtil.addCitizen("Andres", "Osorio", "Vargas", USER_EMAIL, "12345678");
 		
 		Authentication auth = new Authentication();
 				
@@ -50,7 +49,7 @@ public class AuthenticationTest {
 		
 		Authentication.closeSession(USER_EMAIL);
 		
-		utilities.removeCitizen(USER_EMAIL);
+		TestsUtil.removeCitizen(USER_EMAIL);
 		
 	}
 

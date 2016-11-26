@@ -34,6 +34,7 @@ public class EmailBuilder {
 	private String subject;
 	private String signature;
 	private String ending;
+	private String habeas;
 
 	public EmailBuilder(String pConfig) {
 
@@ -50,6 +51,7 @@ public class EmailBuilder {
 			salutation = prop.getProperty("email.salutation");
 			ending = prop.getProperty("email.ending");
 			signature = prop.getProperty("email.signature");
+			habeas = prop.getProperty("email.habeas");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -84,6 +86,14 @@ public class EmailBuilder {
 		return salutation;
 	}
 
+	public String getHabeas() {
+		return habeas;
+	}
+
+	public void setHabeas(String habeas) {
+		this.habeas = habeas;
+	}
+
 	public String build() {
 
 		StringBuilder emailBody = new StringBuilder();
@@ -97,7 +107,10 @@ public class EmailBuilder {
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(this.getSignature());
-
+		emailBody.append(EMAIL_BREAK);
+		emailBody.append(EMAIL_BREAK);
+		emailBody.append(this.getHabeas());
+		
 		return emailBody.toString();
 
 	}
@@ -105,11 +118,12 @@ public class EmailBuilder {
 	public String build(ArrayList<String> pParams) {
 
 		StringBuilder emailBody = new StringBuilder();
-		emailBody.append(this.getSalutation());
-		emailBody.append(EMAIL_BREAK);
-		emailBody.append(EMAIL_BREAK);
-
+		
 		Iterator<String> itrParam = pParams.iterator();
+		
+		emailBody.append(this.getSalutation());		
+		emailBody.append(EMAIL_BREAK);
+		emailBody.append(EMAIL_BREAK);
 
 		while (itrParam.hasNext()){
 			String param = itrParam.next();
@@ -124,7 +138,10 @@ public class EmailBuilder {
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(this.getSignature());
-
+		emailBody.append(EMAIL_BREAK);
+		emailBody.append(EMAIL_BREAK);
+		emailBody.append(this.getHabeas());
+		
 		return emailBody.toString();
 
 	}

@@ -23,6 +23,15 @@ public class Functionary extends Citizen {
 	private String mayoralty;
 	private String dependency;
 
+	public Functionary() {
+		
+	}
+	
+	public Functionary(Citizen asCitizen) {
+		super(asCitizen);
+	}
+
+	
 	public String getId() {
 		return _id;
 	}

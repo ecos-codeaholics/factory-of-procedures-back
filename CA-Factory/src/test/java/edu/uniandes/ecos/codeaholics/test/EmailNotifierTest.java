@@ -129,5 +129,35 @@ public class EmailNotifierTest {
 		assertTrue(success);
 
 	}
+	
+	@Test
+	public void emailMakeFunctionaryTest() {
+
+		boolean success = false;
+
+		ArrayList<String> params = new ArrayList<String>();
+		params.add("Maria Camila");
+
+		try {
+			TestsUtil.isConnected();
+			emailer.send(EmailType.MAKE_FUNCTIONARY, "aosorio@uniandes.edu.co", params);
+			success = true;
+			
+		} catch (
+
+		AddressException e) {
+			success = false;
+
+		} catch (MessagingException e) {
+			success = false;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			success = true; // There is no connection
+		}
+
+		assertTrue(success);
+
+	}
 
 }

@@ -33,7 +33,7 @@ public class Citizen {
 	public static final String LASTNAME2_ES = "Segundo Apellido";
 
 	@SerializedName("_id")
-	private String _id;
+	protected String _id;
 	private Integer identification;
 	private String name;
 	private String lastName1;
@@ -165,7 +165,6 @@ public class Citizen {
 	 */
 	public Citizen(Citizen otherCitizen) {
 		
-		this._id = otherCitizen.getId();
 		this.identification = otherCitizen.getIdentification();
 		this.name = otherCitizen.getName();
 		this.lastName1 = otherCitizen.getLastName1();

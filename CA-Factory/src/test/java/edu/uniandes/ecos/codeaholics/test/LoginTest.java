@@ -31,8 +31,6 @@ import spark.Spark;
 public class LoginTest {
 
 	Logger logger = LogManager.getRootLogger();
-
-	private TestsUtil utilities = new TestsUtil();
 	
 	@BeforeClass
 	public static void beforeClass() {
@@ -46,7 +44,7 @@ public class LoginTest {
 
 	private void addTestCitizen() {
 			
-		utilities.addCitizen("Jean", "Valjean", "Fabre","jvaljean@uniandes.edu.co", "12345678");
+		TestsUtil.addCitizen("Jean", "Valjean", "Fabre","jvaljean@uniandes.edu.co", "12345678");
 		
 	}
 	
@@ -119,7 +117,7 @@ public class LoginTest {
 		
 		Authentication.closeSession("jvaljean@uniandes.edu.co");
 		
-		utilities.removeCitizen("jvaljean@uniandes.edu.co");
+		TestsUtil.removeCitizen("jvaljean@uniandes.edu.co");
 		
 	}
 

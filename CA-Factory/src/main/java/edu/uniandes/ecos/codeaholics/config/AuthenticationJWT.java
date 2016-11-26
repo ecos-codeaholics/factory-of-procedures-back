@@ -40,12 +40,6 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	private final static Logger log = LogManager.getLogger(AuthenticationJWT.class);
 
 	private static Object token;
-
-	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
-
-	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
-
-	private static final String TOKEN_SUBJECT = "A subject";
 	
 	/*
 	 * (non-Javadoc)
@@ -138,7 +132,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		long nowMillis = System.currentTimeMillis();
 		Date now = new Date(nowMillis);
-		long expMillis = nowMillis + TOKEN_LIFETIME;
+		long expMillis = nowMillis + Constants.TOKEN_LIFETIME;
 		Date exp = new Date(expMillis);
 
 		log.debug(pSalt);
@@ -146,8 +140,8 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
-		builder.setSubject(TOKEN_SUBJECT);
-		builder.setIssuer(TOKEN_ISSUER);
+		builder.setSubject(Constants.TOKEN_SUBJECT);
+		builder.setIssuer(Constants.TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
 		builder.setAudience(pProfile);
