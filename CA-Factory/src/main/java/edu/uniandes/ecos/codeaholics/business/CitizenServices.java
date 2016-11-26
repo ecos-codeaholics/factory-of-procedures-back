@@ -19,7 +19,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.mongodb.util.JSON;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
 import edu.uniandes.ecos.codeaholics.config.Authorization;
@@ -27,9 +26,9 @@ import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
+import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
 import edu.uniandes.ecos.codeaholics.config.FileUtil;
-import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;

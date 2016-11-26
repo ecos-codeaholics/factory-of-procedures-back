@@ -82,8 +82,7 @@ public class AuthServices {
 				if (authenticationMethod.equals("JWT")) {
 					// 1. process header Autorization : Bearer <token>
 					StringBuilder bStr = new StringBuilder();
-					// bStr.append("Bearer");
-					// bStr.append(" ");
+
 					bStr.append((String) authenticate.getAnswer());
 					pResponse.header("access-control-expose-headers", "Authorization");
 					pResponse.header("Authorization", bStr.toString());
@@ -192,7 +191,7 @@ public class AuthServices {
 					} else {
 						validate = ValidationUtil.validateBithDate(pCitizen.getBirthDate());
 						if (!validate) {
-							message = "Debe tener m\u00E1s de 18 a\u00F1s para registrarse";
+							message = "Debe tener m\u00E1s de 18 a\u00F1os para registrarse";
 						}
 					}
 				}

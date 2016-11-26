@@ -130,6 +130,27 @@ public class TestsUtil {
 	}
 	
 	/**
+	 * @param pEmail
+	 * @return
+	 */
+	public static String getFunctionarySalt( String pEmail ) {
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
+
+		if (documents.isEmpty()) {
+			return null;
+		} else {
+			Document citizenDoc = documents.get(0);
+			citizenSalt = (String) citizenDoc.get("salt");
+		}
+		
+		return citizenSalt;
+		
+	}
+	
+	/**
 	 * Cleanup DB of Test users
 	 * 
 	 * @param pEmail

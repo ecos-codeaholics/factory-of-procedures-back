@@ -167,6 +167,10 @@ public class App {
 		/**
 		 * Routes Administrator Mayoralty
 		 */
+		
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		get(Routes.ADMIN+ "dependencies/", MayoraltyServices::dependenciesByMayoralty, GeneralUtil.json());
+		
 		// obtener lista de ciudadanos /CITIZENS/ metodo GET
 		get(Routes.ADMIN, MayoraltyServices::getCitizenListForFunctionary, GeneralUtil.json());
 

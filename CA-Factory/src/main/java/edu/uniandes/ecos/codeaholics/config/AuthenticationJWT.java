@@ -7,6 +7,11 @@ package edu.uniandes.ecos.codeaholics.config;
 import java.util.ArrayList;
 import java.util.Date;
 
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.util.List;
+
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -27,9 +32,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Authentication class using JWT
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: uses jsonwebtoken library
  *
  * Created: Aug 12, 2016 6:36:05 PM
  * 
@@ -40,7 +45,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	private final static Logger log = LogManager.getLogger(AuthenticationJWT.class);
 
 	private static Object token;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,7 +107,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		if (results.isEmpty()) {
 			throw new WrongUserOrPasswordException("La clave que ingresaste es incorrecta", "103");
-		}else{
+		} else {
 			rol = results.get(0).get("userProfile").toString();
 		}
 		return rol;
@@ -152,6 +157,43 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	}
 
 	/**
+	 * @param id
+	 * @param issuer
+	 * @param subject
+	 * @param ttlMillis
+	 * @return
+	 */
+	private static String createJWT(String pId, String pProfile, String pSalt, String pMayorality) {
+
+		// The JWT signature algorithm we will be using to sign the token
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+		long nowMillis = System.currentTimeMillis();
+		Date now = new Date(nowMillis);
+		long expMillis = nowMillis + Constants.TOKEN_LIFETIME;
+		Date exp = new Date(expMillis);
+
+		log.debug(pSalt);
+
+		// Let's set the JWT Claims
+		JwtBuilder builder = Jwts.builder().setId(pId);
+		builder.setIssuedAt(now);
+		builder.setSubject(pMayorality);
+		builder.setIssuer(Constants.TOKEN_ISSUER);
+		builder.signWith(signatureAlgorithm, pSalt);
+		builder.setExpiration(exp);
+		builder.setAudience(pProfile);
+
+		//Map<String, Object> customClaims = new HashMap<String, Object>();
+		//customClaims.put("mayorality", pMayorality);
+		//builder.setClaims(customClaims);
+
+		// Builds the JWT and serializes it to a compact, URL-safe string
+		return builder.compact();
+
+	}
+
+	/**
 	 * * Crea una sesion para un usuario dado su email.
 	 * 
 	 * @param pEmail
@@ -161,7 +203,18 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 */
 	private static void createSession(String pEmail, String pProfile, String pSalt) {
 
-		token = createJWT(pEmail, pProfile, pSalt);
+		if ( pProfile.equals(Constants.CITIZEN_USER_PROFILE)) {
+
+			token = createJWT(pEmail, pProfile, pSalt);
+		} else {
+			log.info("User is functionary: creating token for functionary");
+			
+			//TODO: this is not safe
+			Document filter = new Document();
+			filter.append("email", pEmail);
+			ArrayList<Document> functionary = DataBaseUtil.find(filter, Constants.FUNCTIONARY_COLLECTION);
+			token = createJWT(pEmail, pProfile, pSalt, functionary.get(0).get("mayoralty").toString());
+		}
 
 		Document session = new Document();
 		session.append("email", pEmail);
