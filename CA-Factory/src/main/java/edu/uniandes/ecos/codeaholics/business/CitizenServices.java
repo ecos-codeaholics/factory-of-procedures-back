@@ -411,13 +411,14 @@ public class CitizenServices {
 			ProcedureRequest procedureR = GSON.fromJson(document.toJson(), ProcedureRequest.class);
 			
 			log.info("deliveryDocs: "+ procedureR.getDeliveryDocs().toJson());
-			RequiredDocument obj= procedureR.getDeliveryDocs().get("Cédula de Ciudadanía",RequiredDocument.class);
+			//List<Object> obj= procedureR.getDeliveryDocs().values();
 			//procedureR.getDeliveryDocs().ge
 			
+			/*
 			if (!obj.equals(null)){
 				RequiredDocument req = (RequiredDocument)obj;
 				
-			}
+			}*/
 			
 			log.info("Consult procedure by id done");
 
