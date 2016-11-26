@@ -191,6 +191,7 @@ public class MayoraltyServices {
 		
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+		System.out.println(json.toString());
 		JsonObject citizenJson = (JsonObject) json.get("citizen");
 		JsonObject dependencyJson = (JsonObject) json.get("dependency");
 		
@@ -204,7 +205,6 @@ public class MayoraltyServices {
 			String mayoraltyStr;
 			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
 			
-
 			Document filter = new Document();
 			filter.append("email", citizenDoc.get("email"));
 			filter.append("name", citizenDoc.get("name"));

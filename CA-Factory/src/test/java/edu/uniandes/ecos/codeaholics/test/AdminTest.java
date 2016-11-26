@@ -61,6 +61,7 @@ public class AdminTest {
 	private final String USER_TO_UPDATE_LASTNAME2 = "Cardenas";
 	private final String USER_TO_UPDATE_EMAIL = "osorio.af@gmail.com";
 	private final String USER_TO_UPDATE_PWD = "12345678";
+	private final String USER_TO_UPDATE_DEPENDENCY = "Hacienda";
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -110,7 +111,7 @@ public class AdminTest {
 
 		try {
 			URL appUrl = new URL(serverPath + route);
-
+			
 			// TODO ... study and understand why this fixes the Connection
 			// refused error
 			System.out.println("===== 0.");
@@ -124,7 +125,8 @@ public class AdminTest {
 			urlConnection.setRequestProperty("Content-type", "application/json");
 			urlConnection.setRequestMethod("POST");
 
-			String loginData = "{email : \"" + USER_TO_UPDATE_EMAIL + "\", name : \"" + USER_TO_UPDATE_NAME + "\"}";
+			String loginData = "{email : \"" + USER_TO_UPDATE_EMAIL + "\"}";
+			loginData += "{ dependency : \"" + USER_TO_UPDATE_DEPENDENCY + "\" }";
 
 			Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
 			writer.write(loginData);
