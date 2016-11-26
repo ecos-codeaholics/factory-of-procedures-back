@@ -39,7 +39,6 @@ import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 //import edu.uniandes.ecos.codeaholics.persistence.ProcedureData;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 import spark.Request;
 import spark.Response;
 

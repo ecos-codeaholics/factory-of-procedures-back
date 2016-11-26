@@ -65,7 +65,8 @@ public class DocumentSvc implements IDocumentSvc {
 
 		try {
 			FileUtil.configTmpDir();
-			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			//uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			uploadDir = new File(new File(".").getAbsolutePath().toString()+"/src/main/resources/public/docs/");
 			uploadDir.mkdir();
 			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
 		} catch (Exception e) {

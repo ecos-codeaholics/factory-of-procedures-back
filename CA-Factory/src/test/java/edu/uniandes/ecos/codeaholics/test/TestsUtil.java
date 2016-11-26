@@ -6,10 +6,12 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -18,18 +20,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -1290,7 +1296,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("1");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("aosorio@uniandes.edu.co");
@@ -1360,7 +1375,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("2");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("aosorio@uniandes.edu.co");
@@ -1427,7 +1451,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("3");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("f.hernandez@uniandes.edu.co");
@@ -1494,7 +1527,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("4");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("f.hernandez@uniandes.edu.co");
@@ -1562,7 +1604,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("5");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
@@ -1627,7 +1678,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("6");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
@@ -1692,7 +1752,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("7");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("df.martinez1@uniandes.edu.co");
@@ -1759,7 +1828,16 @@ public class TestsUtil {
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("8");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
 		citizen.setEmail("df.martinez1@uniandes.edu.co");
