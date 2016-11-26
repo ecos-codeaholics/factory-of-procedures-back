@@ -130,7 +130,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @param ttlMillis
 	 * @return
 	 */
-	private static String createJWT(String pId, String pProfile, String pSalt) {
+	private static String createJWT(String pId, String pProfile, String pSalt, String pName, String pLast) {
 
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -142,10 +142,15 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		log.debug(pSalt);
 
+		StringBuilder subject = new StringBuilder();
+		subject.append(pName);
+		subject.append(",");
+		subject.append(pLast);
+		
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
-		builder.setSubject(Constants.TOKEN_SUBJECT);
+		builder.setSubject(subject.toString());
 		builder.setIssuer(Constants.TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
@@ -163,7 +168,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 * @param ttlMillis
 	 * @return
 	 */
-	private static String createJWT(String pId, String pProfile, String pSalt, String pMayorality) {
+	private static String createJWT(String pId, String pProfile, String pSalt, String pName, String pLast, String pMayorality) {
 
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -175,10 +180,17 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		log.debug(pSalt);
 
+		StringBuilder subject = new StringBuilder();
+		subject.append(pName);
+		subject.append(",");
+		subject.append(pLast);
+		subject.append(",");
+		subject.append(pMayorality);
+		
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
-		builder.setSubject(pMayorality);
+		builder.setSubject(subject.toString());
 		builder.setIssuer(Constants.TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
@@ -205,15 +217,30 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		if ( pProfile.equals(Constants.CITIZEN_USER_PROFILE)) {
 
-			token = createJWT(pEmail, pProfile, pSalt);
-		} else {
-			log.info("User is functionary: creating token for functionary");
+			//TODO: this is not safe
+			Document filter = new Document();
+			filter.append("email", pEmail);
+			ArrayList<Document> citizen = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
 			
+			String citizenName = citizen.get(0).get("name").toString();
+			String citizenLast = citizen.get(0).get("lastName1").toString();
+						
+			token = createJWT(pEmail, pProfile, pSalt, citizenName, citizenLast);
+			
+		} else {
+			
+			log.info("User is functionary: creating token for functionary");
 			//TODO: this is not safe
 			Document filter = new Document();
 			filter.append("email", pEmail);
 			ArrayList<Document> functionary = DataBaseUtil.find(filter, Constants.FUNCTIONARY_COLLECTION);
-			token = createJWT(pEmail, pProfile, pSalt, functionary.get(0).get("mayoralty").toString());
+			
+			String citizenName = functionary.get(0).get("name").toString();
+			String citizenLast = functionary.get(0).get("lastName1").toString();
+			String citizenMayoralty = functionary.get(0).get("lastName1").toString();
+			
+			token = createJWT(pEmail, pProfile, pSalt, citizenName, citizenLast, citizenMayoralty);
+		
 		}
 
 		Document session = new Document();

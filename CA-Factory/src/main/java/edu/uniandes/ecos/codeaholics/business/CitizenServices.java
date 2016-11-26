@@ -387,7 +387,9 @@ public class CitizenServices {
 	 * @return mensaje de proceso exitoso
 	 */
 	public static Object consultProceduresDocuments(Request pRequest, Response pResponse) {
+		
 		try {
+			
 			log.info(pRequest.params(":id"));
 		
 			Document procedureFilter = new Document();

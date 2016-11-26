@@ -252,7 +252,7 @@ public class DownloadFileTest {
 
 	}
 	
-	@Test
+	//@Test
 	public void citizenDocDownloadTest() {
 
 		int httpResult = 0;

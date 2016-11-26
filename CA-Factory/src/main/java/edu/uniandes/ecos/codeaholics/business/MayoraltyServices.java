@@ -202,8 +202,10 @@ public class MayoraltyServices {
 		log.info(citizenDoc.toString());
 		
 		try {
-			String mayoraltyStr;
-			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
+			
+			String subject;
+			subject = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
+			String mayoraltyStr = subject.split(",")[2];
 			
 			Document filter = new Document();
 			filter.append("email", citizenDoc.get("email"));
