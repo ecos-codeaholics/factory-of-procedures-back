@@ -6,8 +6,9 @@ package edu.uniandes.ecos.codeaholics.config;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -205,10 +206,13 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 			token = createJWT(pEmail, pProfile, pSalt);
 		} else {
 			log.info("User is functionary: creating token for functionary");
-			token = createJWT(pEmail, pProfile, pSalt, "Anapoima");
+			
+			//TODO: this is not safe
+			Document filter = new Document();
+			filter.append("email", pEmail);
+			ArrayList<Document> functionary = DataBaseUtil.find(filter, Constants.FUNCTIONARY_COLLECTION);
+			token = createJWT(pEmail, pProfile, pSalt, functionary.get(0).get("mayorality").toString());
 		}
-
-		// token = createJWT(pEmail, pProfile, pSalt);
 
 		Document session = new Document();
 		session.append("email", pEmail);
