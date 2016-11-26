@@ -389,17 +389,15 @@ public class CitizenServices {
 	public static Object consultProceduresDocuments(Request pRequest, Response pResponse) {
 		try {
 			log.info(pRequest.params(":id"));
-			log.info(pRequest.uri());
-			log.info("Changing procedure status: " + pRequest.body());
+		
 			Document procedureFilter = new Document();
 
-			String email;
-			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
-
+			String email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
+			String nameDoc = pRequest.params(":id");
+			
 			procedureFilter.append("citizen.email", email);
 			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
 
-			List<Document> dataset = new ArrayList<>();
 			ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 			
 			Document document = documents.get(0);
@@ -407,14 +405,19 @@ public class CitizenServices {
 			document.remove("startDate");
 			document.remove("finishDate");
 			
-			ProcedureRequest procedureR = GSON.fromJson(document.toJson(), ProcedureRequest.class);
+			Document deliveryDocsD = (Document) document.get("deliveryDocs");
+			Document theDoc = (Document) deliveryDocsD.get(nameDoc);
 			
-			log.info("deliveryDocs: "+ procedureR.getDeliveryDocs().toJson());
-			RequiredDocument obj= procedureR.getDeliveryDocs().get("Cédula de Ciudadanía",RequiredDocument.class);
-			//procedureR.getDeliveryDocs().ge
+			pResponse.type("application/force-download");
+			pResponse.header("Content-Transfer-Encoding", "binary");
+			pResponse.header("Content-Disposition","attachment; filename=\"" +theDoc.getString("tmpName")+ "\"");//fileName);
+			pResponse.status(200);
+
+			log.info("Documento enviado a descargar!");
+			return fileManager.downloadDocument(theDoc.getString("filePath"), theDoc.getString("tmpName"), pResponse.raw());
 			
 			if (!obj.equals(null)){
-				RequiredDocument req = (RequiredDocument)obj;
+				//RequiredDocument req = (RequiredDocument)obj;
 				
 			}
 			
