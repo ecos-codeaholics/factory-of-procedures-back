@@ -46,5 +46,7 @@ public class Constants {
 	public static final String TOKEN_SUBJECT = "A subject";
 	
 	public static final String TOKEN_EMAIL_KEY = "jti";
+	
+	public static final String TOKEN_SUBJECT_KEY = "sub";
 
 }

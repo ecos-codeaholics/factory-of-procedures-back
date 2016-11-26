@@ -13,13 +13,17 @@ import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
+import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Functionary;
 import spark.Request;
@@ -151,8 +155,10 @@ public class MayoraltyServices {
 			String fullName = "";
 			for (Document item : documents) {
 				item.remove("password");
+				item.remove("_id");
 				item.remove("salt");
 				item.remove("userProfile");
+				item.remove("birthDate");
 				ArrayList<Document> functionaries = DataBaseUtil.find(item, Constants.FUNCTIONARY_COLLECTION);
 				if(functionaries.isEmpty()){
 					fullName = item.get("name").toString() + " " + item.get("lastName1").toString()
@@ -183,12 +189,21 @@ public class MayoraltyServices {
 
 		Object response = null;
 		
-		Document citizenDoc = GSON.fromJson(pRequest.body(), Document.class);
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+		JsonObject citizenJson = (JsonObject) json.get("citizen");
+		JsonObject dependencyJson = (JsonObject) json.get("dependency");
+		
+		Document citizenDoc = GSON.fromJson(citizenJson, Document.class);
+		Document dependencyDoc = GSON.fromJson(dependencyJson, Document.class);
 		citizenDoc.remove("fullName");
 	
 		log.info(citizenDoc.toString());
 		
 		try {
+			String mayoraltyStr;
+			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
+			
 
 			Document filter = new Document();
 			filter.append("email", citizenDoc.get("email"));
@@ -203,11 +218,11 @@ public class MayoraltyServices {
 
 			Citizen asCitizen = GSON.fromJson(asCitizenDoc.toJson(), Citizen.class);
 			
-			Functionary functionary = new Functionary(asCitizen);
+			Functionary functionary  = new Functionary(asCitizen);
 			
 			functionary.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
-			functionary.setMayoralty("xxxxxxxxxxx");
-			functionary.setDependency("Atenci\u00F3n al Ciudadano");
+			functionary.setMayoralty(mayoraltyStr);
+			functionary.setDependency(dependencyDoc.getString("name"));
 			
 			DataBaseUtil.save(functionary.toDocument(), Constants.FUNCTIONARY_COLLECTION);
 
@@ -228,6 +243,44 @@ public class MayoraltyServices {
 		
 		return response;
 
+	}
+	
+	/***
+	 * Consulta lista de dependencias por alcaldia.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object dependenciesByMayoralty(Request pRequest, Response pResponse) {
+		
+		String mayoraltyStr;
+		try {
+			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.error(jwtEx.getMessage());
+			return "failed";
+		}
+		Document filter = new Document();
+		filter.append("name", mayoraltyStr);
+		log.info(mayoraltyStr);
+		
+		List<Document> dataset = new ArrayList<>();
+		ArrayList<Document> mayoralties = DataBaseUtil.find(filter, Constants.MAYORALTY_COLLECTION);
+		
+		if(!mayoralties.isEmpty()){
+			Document mayoralty = (Document) mayoralties.get(0);
+			@SuppressWarnings("unchecked")
+			ArrayList<Document> dependencies =  (ArrayList<Document>) mayoralty.get("dependencies");
+			for (Document item : dependencies) {
+				dataset.add(item);
+			}
+		}
+		
+		pResponse.type("application/json");
+		return dataset;
 	}
 
 }

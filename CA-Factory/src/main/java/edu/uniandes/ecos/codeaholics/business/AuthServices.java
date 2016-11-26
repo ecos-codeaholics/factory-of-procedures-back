@@ -192,7 +192,7 @@ public class AuthServices {
 					} else {
 						validate = ValidationUtil.validateBithDate(pCitizen.getBirthDate());
 						if (!validate) {
-							message = "Debe tener m\u00E1s de 18 a\u00F1s para registrarse";
+							message = "Debe tener m\u00E1s de 18 a\u00F1os para registrarse";
 						}
 					}
 				}
