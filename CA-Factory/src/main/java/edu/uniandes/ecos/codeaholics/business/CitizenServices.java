@@ -39,7 +39,6 @@ import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
 //import edu.uniandes.ecos.codeaholics.persistence.ProcedureData;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-import edu.uniandes.ecos.codeaholics.persistence.RequiredDocument;
 import spark.Request;
 import spark.Response;
 
@@ -416,14 +415,6 @@ public class CitizenServices {
 			log.info("Documento enviado a descargar!");
 			return fileManager.downloadDocument(theDoc.getString("filePath"), theDoc.getString("tmpName"), pResponse.raw());
 			
-			if (!obj.equals(null)){
-				//RequiredDocument req = (RequiredDocument)obj;
-				
-			}
-			
-			log.info("Consult procedure by id done");
-
-			return dataset;
 		} catch (InvalidTokenException jwtEx) {
 			log.info(jwtEx.getMessage());
 			return "failed";
