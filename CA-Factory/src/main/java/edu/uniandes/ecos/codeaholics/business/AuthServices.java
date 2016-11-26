@@ -82,8 +82,7 @@ public class AuthServices {
 				if (authenticationMethod.equals("JWT")) {
 					// 1. process header Autorization : Bearer <token>
 					StringBuilder bStr = new StringBuilder();
-					// bStr.append("Bearer");
-					// bStr.append(" ");
+
 					bStr.append((String) authenticate.getAnswer());
 					pResponse.header("access-control-expose-headers", "Authorization");
 					pResponse.header("Authorization", bStr.toString());

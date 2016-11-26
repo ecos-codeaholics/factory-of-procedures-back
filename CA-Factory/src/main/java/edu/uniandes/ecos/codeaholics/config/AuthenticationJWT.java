@@ -32,9 +32,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Authentication class using JWT
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: uses jsonwebtoken library
  *
  * Created: Aug 12, 2016 6:36:05 PM
  * 
@@ -203,7 +203,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 */
 	private static void createSession(String pEmail, String pProfile, String pSalt) {
 
-		if (pProfile.equals(Constants.CITIZEN_USER_PROFILE)) {
+		if ( pProfile.equals(Constants.CITIZEN_USER_PROFILE)) {
 
 			token = createJWT(pEmail, pProfile, pSalt);
 		} else {
@@ -213,7 +213,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 			Document filter = new Document();
 			filter.append("email", pEmail);
 			ArrayList<Document> functionary = DataBaseUtil.find(filter, Constants.FUNCTIONARY_COLLECTION);
-			token = createJWT(pEmail, pProfile, pSalt, functionary.get(0).get("mayorality").toString());
+			token = createJWT(pEmail, pProfile, pSalt, functionary.get(0).get("mayoralty").toString());
 		}
 
 		Document session = new Document();
