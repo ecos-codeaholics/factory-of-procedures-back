@@ -44,5 +44,8 @@ public interface IDocumentSvc {
 	 * 
 	 */
 	public String listDocuments();
+
+
+	HttpServletResponse downloadDocument(String locationDir, String name, HttpServletResponse pResponse);
 	
 }

@@ -139,8 +139,8 @@ public class App {
 		get(Routes.CITIZENS + "procedures/detail/:mayoraltyName/:procedureName/", CitizenServices::getProcedure, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/documents/:id/:procedureId/", CitizenServices::consultProceduresDocuments, GeneralUtil.json());
-
+		get(Routes.CITIZENS + "procedures/documents/:id/:procedureId/", CitizenServices::consultProceduresDocuments);
+		
 
 		// iniciar tramite /CITIZENS/ metodo POST {procedureData info json}
 		post(Routes.CITIZENS + "procedures/", CitizenServices::startProcedure, GeneralUtil.json());

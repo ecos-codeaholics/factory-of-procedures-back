@@ -158,6 +158,32 @@ public class DocumentSvc implements IDocumentSvc {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#downloadDocument()
+	 */
+	public HttpServletResponse downloadDocument(String locationDir, String name,HttpServletResponse raw) {
+		try {
+			Path path = Paths.get(locationDir + "/" + name);
+			byte[] data = null;
+			data = Files.readAllBytes(path);
+
+			raw.getOutputStream().write(data);
+			raw.getOutputStream().flush();
+			raw.getOutputStream().close();
+
+			return raw;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			locationDir = "";
+			logger.error(e.getMessage());
+			return null;
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#listDocuments()
 	 */
 	@Override
