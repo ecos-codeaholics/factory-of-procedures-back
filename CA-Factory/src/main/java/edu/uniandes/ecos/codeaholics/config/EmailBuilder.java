@@ -29,12 +29,12 @@ public class EmailBuilder {
 
 	public static final String EMAIL_BREAK = "<br>";
 
-	private String body;
-	private String salutation;
-	private String subject;
-	private String signature;
-	private String ending;
-	private String habeas;
+	private static String body;
+	private static String salutation;
+	private static String subject;
+	private static String signature;
+	private static String ending;
+	private static String habeas;
 
 	public EmailBuilder(String pConfig) {
 
@@ -88,10 +88,6 @@ public class EmailBuilder {
 
 	public String getHabeas() {
 		return habeas;
-	}
-
-	public void setHabeas(String habeas) {
-		this.habeas = habeas;
 	}
 
 	public String build() {

@@ -132,7 +132,8 @@ public class AuthServices {
 			
 			if(citizenValidation.get("result").toString().equals("true")){
 				DataBaseUtil.save(citizen.toDocument(), Constants.CITIZEN_COLLECTION);
-				EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+				//EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+				EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
 				sendEmail.send(EmailType.REGISTRATION, citizen.getEmail());
 
 				response = messager.getOkMessage("Registro exitoso");
@@ -289,9 +290,9 @@ public class AuthServices {
 			parametersEmail.add(newPassword);
 
 			// Send Email
-			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
-
-			sendPassword.send(EmailType.CHANGE, data.getEmail(), parametersEmail);
+			//EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
+			sendEmail.send(EmailType.CHANGE, data.getEmail(), parametersEmail);
 
 			response = messager.getOkMessage("Proceso exitoso");
 
@@ -379,8 +380,9 @@ public class AuthServices {
 			parametersEmail.add(newPassword);
 
 			// Send Email
-			EmailNotifierSvc sendPassword = new EmailNotifierSvc();
-			sendPassword.send(EmailType.CHANGE, documents.get(0).getString("email"), parametersEmail);
+			//EmailNotifierSvc sendPassword = new EmailNotifierSvc();
+			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
+			sendEmail.send(EmailType.CHANGE, documents.get(0).getString("email"), parametersEmail);
 
 			response = messager.getOkMessage("Proceso exitoso");
 

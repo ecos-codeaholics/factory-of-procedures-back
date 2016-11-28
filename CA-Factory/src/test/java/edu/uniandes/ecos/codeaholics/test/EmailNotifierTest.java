@@ -35,7 +35,7 @@ import edu.uniandes.ecos.codeaholics.config.INotifierSvc;
  */
 public class EmailNotifierTest {
 
-	private static INotifierSvc emailer = new EmailNotifierSvc();
+	private static INotifierSvc emailer = EmailNotifierSvc.getInstance();
 
 	private static ArrayList<EmailType> emailTypes = new ArrayList<EmailType>();
 

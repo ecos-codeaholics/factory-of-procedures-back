@@ -258,7 +258,8 @@ public class CitizenServices {
 			parameters.add(procedureRequest.getProcedureClassName());
 			parameters.add(procedureRequest.getFileNumber());
 
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			//EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
 			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters, barcodeImg);
 
 			response = messager

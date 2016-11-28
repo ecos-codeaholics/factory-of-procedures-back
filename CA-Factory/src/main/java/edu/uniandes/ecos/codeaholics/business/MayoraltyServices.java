@@ -231,7 +231,8 @@ public class MayoraltyServices {
 			ArrayList<String> params = new ArrayList<String>();
 			params.add(functionary.getName());
 						
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			//EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
 			sendEmail.send(EmailType.MAKE_FUNCTIONARY, functionary.getEmail(), params);
 			
 			response = messager.getOkMessage("Registro exitoso de su solicitud");

@@ -45,6 +45,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
 
+	private static EmailNotifierSvc instance = null;
+
 	public enum EmailType {
 		REGISTRATION, RESET, UPDATE, CHANGE, INITPROCEDURE, MAKE_FUNCTIONARY;
 	}
@@ -54,14 +56,14 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private static final String UPDATE_FILE = "src/main/resources/email/update.properties";
 	private static final String INITIATE_FILE = "src/main/resources/email/initiate.properties";
 	private static final String FUNCTIONARY_ROL_FILE = "src/main/resources/email/functionary.properties";
-	
+
 	private static Map<EmailType, String> context = new HashMap<EmailType, String>();
 
 	private static Properties mailServerProperties;
 	private static Session getMailSession;
 	private static MimeMessage generateMailMessage;
 
-	public EmailNotifierSvc() {
+	private EmailNotifierSvc() {
 
 		log.debug("setup Mail Server Properties..");
 		mailServerProperties = System.getProperties();
@@ -80,6 +82,18 @@ public class EmailNotifierSvc implements INotifierSvc {
 	}
 
 	/**
+	 * EmailNotifierSvc follows a Singleton pattern
+	 * 
+	 * @return
+	 */
+	public static EmailNotifierSvc getInstance() {
+		if (instance == null) {
+			instance = new EmailNotifierSvc();
+		}
+		return instance;
+	}
+
+	/**
 	 * 
 	 * 
 	 * @param pContext
@@ -93,15 +107,13 @@ public class EmailNotifierSvc implements INotifierSvc {
 	@Override
 	public void send(EmailType pContext, String pToEmail) throws AddressException, MessagingException {
 
-		if (pContext.equals(EmailType.REGISTRATION)) {
-			sendRegister(pToEmail);
-			
-		} else if (pContext.equals(EmailType.MAKE_FUNCTIONARY)){
-	
-			EmailBuilder email = new EmailBuilder(context.get(pContext));
-			sendEmail(pToEmail, email.getSubject(), email.build());
-
-		}
+		// if (pContext.equals(EmailType.REGISTRATION)) {
+		sendRegister(pToEmail);
+		// } else if (pContext.equals(EmailType.MAKE_FUNCTIONARY)) {
+		//
+		// EmailBuilder email = new EmailBuilder(context.get(pContext));
+		// sendEmail(pToEmail, email.getSubject(), email.build());
+		// }
 	}
 
 	/**
@@ -120,9 +132,9 @@ public class EmailNotifierSvc implements INotifierSvc {
 			throws AddressException, MessagingException {
 
 		sendWithParams(pContext, pToEmail, pParams);
-		
+
 	}
-	
+
 	/**
 	 * @param pContext
 	 * @param pToEmail
@@ -136,8 +148,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 			throws AddressException, MessagingException {
 
 		EmailBuilder email = new EmailBuilder(context.get(pContext));
-		sendEmailWithImage(pToEmail, email.getSubject(),  email.build(pParams), pImage);
-		
+		sendEmailWithImage(pToEmail, email.getSubject(), email.build(pParams), pImage);
+
 	}
 
 	/**
@@ -165,7 +177,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 		EmailBuilder email = new EmailBuilder(context.get(pContext));
 		sendEmail(pToEmail, email.getSubject(), email.build(pParams));
-		
+
 	}
 
 	/**
@@ -189,19 +201,18 @@ public class EmailNotifierSvc implements INotifierSvc {
 		generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
 		// generateMailMessage.setContent(emailBody, "text/html");
 
-		log.info("-----------------------------------");
 		log.info("Sending email message");
-		log.info("-----------------------------------");
 
 		Transport transport = getMailSession.getTransport("smtp");
 		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 		transport.close();
-	
+
 	}
 
 	/**
 	 * Send email with an attached image: logo, procedure bar, anything you need
+	 * 
 	 * @param pToEmail
 	 * @param pSubject
 	 * @param pEmailBody
@@ -221,39 +232,37 @@ public class EmailNotifierSvc implements INotifierSvc {
 		String emailBody = pEmailBody;
 
 		MimeMultipart multipart = new MimeMultipart("related");
-		
-		//.
+
+		// .
 		BodyPart messageBodyPart = new MimeBodyPart();
 		messageBodyPart.setContent(emailBody, "text/html; charset=UTF-8");
 		multipart.addBodyPart(messageBodyPart);
 
-		//..
+		// ..
 		messageBodyPart = new MimeBodyPart();
-        DataSource fds = new FileDataSource(pImage);
-        messageBodyPart.setDataHandler(new DataHandler(fds));
-        messageBodyPart.setHeader("Content-ID", "<image>");
-        multipart.addBodyPart(messageBodyPart);
-        
-        //.. send as attachment
-        messageBodyPart = new MimeBodyPart();
-        DataSource source = new FileDataSource(pImage);
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        String fileName = pImage.substring(pImage.lastIndexOf('/') + 1);
-        messageBodyPart.setFileName(fileName);
-        multipart.addBodyPart(messageBodyPart);
-        
-        //...
-        generateMailMessage.setContent(multipart);
-             
-		log.info("-----------------------------------");
+		DataSource fds = new FileDataSource(pImage);
+		messageBodyPart.setDataHandler(new DataHandler(fds));
+		messageBodyPart.setHeader("Content-ID", "<image>");
+		multipart.addBodyPart(messageBodyPart);
+
+		// .. send as attachment
+		messageBodyPart = new MimeBodyPart();
+		DataSource source = new FileDataSource(pImage);
+		messageBodyPart.setDataHandler(new DataHandler(source));
+		String fileName = pImage.substring(pImage.lastIndexOf('/') + 1);
+		messageBodyPart.setFileName(fileName);
+		multipart.addBodyPart(messageBodyPart);
+
+		// ...
+		generateMailMessage.setContent(multipart);
+
 		log.info("Sending email message");
-		log.info("-----------------------------------");
 
 		Transport transport = getMailSession.getTransport("smtp");
 		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 		transport.close();
-		
+
 	}
 
 }
