@@ -65,8 +65,8 @@ public class DocumentSvc implements IDocumentSvc {
 
 		try {
 			FileUtil.configTmpDir();
-			//uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
-			uploadDir = new File(new File(".").getAbsolutePath().toString()+"/src/main/resources/public/docs/");
+			// uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			uploadDir = new File(new File(".").getAbsolutePath().toString() + "/src/main/resources/public/docs/");
 			uploadDir.mkdir();
 			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
 		} catch (Exception e) {
@@ -85,7 +85,16 @@ public class DocumentSvc implements IDocumentSvc {
 
 			InputStream input = fPart.getInputStream();
 
-			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+			String fileExt = null;
+
+			try {
+				logger.info(fPart.getSubmittedFileName());
+				fileExt = fPart.getSubmittedFileName().split(".")[1];
+			} catch (Exception ioex) {
+				fileExt = ".tmp";
+			}
+
+			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileExt);
 
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
@@ -161,7 +170,7 @@ public class DocumentSvc implements IDocumentSvc {
 	 * 
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#downloadDocument()
 	 */
-	public HttpServletResponse downloadDocument(String locationDir, String name,HttpServletResponse raw) {
+	public HttpServletResponse downloadDocument(String locationDir, String name, HttpServletResponse raw) {
 		try {
 			Path path = Paths.get(locationDir + "/" + name);
 			byte[] data = null;
