@@ -36,6 +36,17 @@ public class EmailBuilder {
 	private static String ending;
 	private static String habeas;
 
+	public EmailBuilder() {
+
+		subject = "[F\u00E1brica de Tr\u00E1mites] Bienvenido(a) a la F\u00E1brica de Tr\u00E1mites";
+		body = "Apreciado ciudadano:";
+		salutation = "Su registro se ha realizado de forma exitosa en nuestro sistema.";
+		ending = "Gracias. Cordial saludo,";
+		signature = "Servicio de notificaciones<br>F\u00E1brica de Tr\u00E1mites";
+		habeas = "<p style=\"font-size:80%;\">Con la nueva ley de Habeas Data, estamos en la obligaci\u00F3n de informarte que est\u00E1s en nuestra base de datos y recibes esta informaci\u00F3n porque has tenido relaci\u00F3n con el Ministerio de las Tecnolog\u00EDas de Informaci\u00F3n y las comunicaciones.</p>";
+
+	}
+	
 	public EmailBuilder(String pConfig) {
 
 		Properties prop = new Properties();

@@ -46,6 +46,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 	private final static Logger log = LogManager.getLogger(EmailNotifierSvc.class);
 
 	private static EmailNotifierSvc instance = null;
+	
+	private static Transport transport;
 
 	public enum EmailType {
 		REGISTRATION, RESET, UPDATE, CHANGE, INITPROCEDURE, MAKE_FUNCTIONARY;
@@ -78,6 +80,15 @@ public class EmailNotifierSvc implements INotifierSvc {
 		context.put(EmailType.UPDATE, UPDATE_FILE);
 		context.put(EmailType.INITPROCEDURE, INITIATE_FILE);
 		context.put(EmailType.MAKE_FUNCTIONARY, FUNCTIONARY_ROL_FILE);
+		
+		try {
+			transport = getMailSession.getTransport("smtp");
+			transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+		} catch (MessagingException e) {
+			
+			e.printStackTrace();
+		}
+		
 
 	}
 
@@ -107,13 +118,8 @@ public class EmailNotifierSvc implements INotifierSvc {
 	@Override
 	public void send(EmailType pContext, String pToEmail) throws AddressException, MessagingException {
 
-		// if (pContext.equals(EmailType.REGISTRATION)) {
 		sendRegister(pToEmail);
-		// } else if (pContext.equals(EmailType.MAKE_FUNCTIONARY)) {
-		//
-		// EmailBuilder email = new EmailBuilder(context.get(pContext));
-		// sendEmail(pToEmail, email.getSubject(), email.build());
-		// }
+
 	}
 
 	/**
@@ -161,7 +167,7 @@ public class EmailNotifierSvc implements INotifierSvc {
 	 */
 	private void sendRegister(String pToEmail) throws AddressException, MessagingException {
 
-		EmailBuilder email = new EmailBuilder(REGISTRATION_FILE);
+		EmailBuilder email = new EmailBuilder();
 		sendEmail(pToEmail, email.getSubject(), email.build());
 	}
 
@@ -203,10 +209,10 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 		log.info("Sending email message");
 
-		Transport transport = getMailSession.getTransport("smtp");
-		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+		//Transport transport = getMailSession.getTransport("smtp");
+		//transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		transport.close();
+		//transport.close();
 
 	}
 
@@ -258,10 +264,10 @@ public class EmailNotifierSvc implements INotifierSvc {
 
 		log.info("Sending email message");
 
-		Transport transport = getMailSession.getTransport("smtp");
-		transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
+		//Transport transport = getMailSession.getTransport("smtp");
+		//transport.connect("smtp.gmail.com", "codeaholicsfactory@gmail.com", "codeaholics1");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		transport.close();
+		//transport.close();
 
 	}
 
