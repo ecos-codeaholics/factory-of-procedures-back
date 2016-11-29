@@ -52,6 +52,8 @@ public class App {
 	 * 
 	 */
 	public static void main(String[] args) {
+		
+		externalStaticFileLocation("src/main/resources/public/");
 
 		getConfig(CONFIG_FILE);
 		port(JETTY_SERVER_PORT);
@@ -69,7 +71,7 @@ public class App {
 		 */
 		DatabaseSingleton.getInstance();
 
-		staticFiles.location("/public");
+		//staticFiles.location("/public");
 
 		/**
 		 * Enable CORS
