@@ -123,7 +123,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		return token;
 	}
 
-	/**
+	/** This is the createJWT for citizen
 	 * @param id
 	 * @param issuer
 	 * @param subject
@@ -161,7 +161,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 	}
 
-	/**
+	/** This is the create JWT for functionary
 	 * @param id
 	 * @param issuer
 	 * @param subject
@@ -237,7 +237,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 			
 			String citizenName = functionary.get(0).get("name").toString();
 			String citizenLast = functionary.get(0).get("lastName1").toString();
-			String citizenMayoralty = functionary.get(0).get("lastName1").toString();
+			String citizenMayoralty = functionary.get(0).get("mayoralty").toString();
 			
 			token = createJWT(pEmail, pProfile, pSalt, citizenName, citizenLast, citizenMayoralty);
 		

@@ -235,7 +235,14 @@ public class MayoraltyServices {
 			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
 			sendEmail.send(EmailType.MAKE_FUNCTIONARY, functionary.getEmail(), params);
 			
-			response = messager.getOkMessage("Registro exitoso de su solicitud");
+			StringBuilder message = new StringBuilder();
+			message.append(functionary.getName());
+			message.append(" ");
+			message.append(functionary.getLastName1());
+			message.append(" ");
+			message.append(" es desde ahora funcionario");
+			
+			response = messager.getOkMessage(message.toString());
 			
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -261,7 +268,7 @@ public class MayoraltyServices {
 		
 		String mayoraltyStr;
 		try {
-			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY);
+			mayoraltyStr = Authorization.getFromToken(pRequest, Constants.TOKEN_SUBJECT_KEY).split(",")[2];
 		} catch (InvalidTokenException jwtEx) {
 			log.error(jwtEx.getMessage());
 			return "failed";
