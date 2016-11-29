@@ -62,13 +62,16 @@ public class DocumentSvc implements IDocumentSvc {
 	public void uploadDocument(Request pRequest) {
 
 		File uploadDir = null;
-
+		String sparkDocDirectory = new File(".").getAbsolutePath().toString() + "/src/main/resources/public/docs/";
+		long timestamp = System.currentTimeMillis();
+		
 		try {
-			FileUtil.configTmpDir();
+			FileUtil.configTmpDir(); //capture LOCAL_TMP_PATH from environment
 			//uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
-			uploadDir = new File(new File(".").getAbsolutePath().toString() + "/src/main/resources/public/docs/");
+			//logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
+			uploadDir = new File(sparkDocDirectory);
 			uploadDir.mkdir();
-			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
+
 		} catch (Exception e) {
 			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
@@ -94,19 +97,19 @@ public class DocumentSvc implements IDocumentSvc {
 				fileExt = ".tmp";
 			}
 
-			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileExt);
+			Path tempFile = Files.createTempFile(uploadDir.toPath(), String.valueOf(timestamp), fileExt);
 
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
 			RequiredDocument rDoc;
 
 			rDoc = new RequiredDocument();
-			rDoc.setFilePath(FileUtil.LOCAL_TMP_PATH);
+			rDoc.setFilePath(sparkDocDirectory);
 			rDoc.setTmpName(tempFile.getFileName().toString());
 			rDoc.setOriginalName(fPart.getSubmittedFileName());
 			rDoc.setFileSize(fPart.getSize());
 			rDoc.setRadicado(123456);
-			rDoc.setTimestamp(System.currentTimeMillis());
+			rDoc.setTimestamp(timestamp);
 
 			Gson gson = new Gson();
 			answerStr = gson.toJson(rDoc);
