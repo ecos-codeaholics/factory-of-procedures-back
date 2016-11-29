@@ -39,14 +39,14 @@ public class EmailBuilder {
 	public EmailBuilder() {
 
 		subject = "[F\u00E1brica de Tr\u00E1mites] Bienvenido(a) a la F\u00E1brica de Tr\u00E1mites";
-		body = "Apreciado ciudadano:";
-		salutation = "Su registro se ha realizado de forma exitosa en nuestro sistema.";
+		salutation = "Apreciado ciudadano:";
+		body = "Su registro se ha realizado de forma exitosa en nuestro sistema. Recuerde que su nombre de usuario es el mismo correo electr\u00F3nico.";
 		ending = "Gracias. Cordial saludo,";
 		signature = "Servicio de notificaciones<br>F\u00E1brica de Tr\u00E1mites";
 		habeas = "<p style=\"font-size:80%;\">Con la nueva ley de Habeas Data, estamos en la obligaci\u00F3n de informarte que est\u00E1s en nuestra base de datos y recibes esta informaci\u00F3n porque has tenido relaci\u00F3n con el Ministerio de las Tecnolog\u00EDas de Informaci\u00F3n y las comunicaciones.</p>";
 
 	}
-	
+
 	public EmailBuilder(String pConfig) {
 
 		Properties prop = new Properties();
@@ -58,8 +58,8 @@ public class EmailBuilder {
 			prop.load(input);
 
 			subject = prop.getProperty("email.subject");
-			body = prop.getProperty("email.body");
 			salutation = prop.getProperty("email.salutation");
+			body = prop.getProperty("email.body");			
 			ending = prop.getProperty("email.ending");
 			signature = prop.getProperty("email.signature");
 			habeas = prop.getProperty("email.habeas");
@@ -117,7 +117,7 @@ public class EmailBuilder {
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(this.getHabeas());
-		
+
 		return emailBody.toString();
 
 	}
@@ -125,20 +125,20 @@ public class EmailBuilder {
 	public String build(ArrayList<String> pParams) {
 
 		StringBuilder emailBody = new StringBuilder();
-		
+
 		Iterator<String> itrParam = pParams.iterator();
-		
-		emailBody.append(this.getSalutation());		
+
+		emailBody.append(this.getSalutation());
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 
-		while (itrParam.hasNext()){
+		while (itrParam.hasNext()) {
 			String param = itrParam.next();
-			body = this.getBody().replaceFirst("######", param);			
+			body = this.getBody().replaceFirst("######", param);
 		}
-		
+
 		emailBody.append(this.getBody());
-		
+
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(this.getEnding());
@@ -148,7 +148,7 @@ public class EmailBuilder {
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(EMAIL_BREAK);
 		emailBody.append(this.getHabeas());
-		
+
 		return emailBody.toString();
 
 	}
