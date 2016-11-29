@@ -21,6 +21,7 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.History;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
@@ -161,6 +162,17 @@ public class FunctionaryServices {
 			procedureDoc.remove("startDate");
 
 			ProcedureRequest procedure = GSON.fromJson(procedureDoc.toJson(), ProcedureRequest.class);
+			Document citizenFilter = new Document();
+			String emailCitizen = procedure.getCitizen().getEmail();
+			citizenFilter.append("email", emailCitizen);
+			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
+			Document citizenDoc = citizens.get(0);
+			citizenDoc.remove("_id");
+			citizenDoc.remove("birthDate"); // AO: Need to deal with
+											// ISODate --> Java
+
+			Citizen citizen = GSON.fromJson(citizenDoc.toJson(), Citizen.class);
+			procedure.setCitizen(citizen);
 			procedure.setId(id);
 			procedure.setStartDate(startDate);
 
