@@ -135,6 +135,7 @@ public class CitizenServices {
 
 			if (email != null) {
 				Authentication.closeSession(email);
+				pResponse.status(200);
 				response = messager.getOkMessage("Proceso Exitoso");
 			} else {
 				pResponse.status(417);

@@ -30,10 +30,10 @@ import spark.Spark;
 public class ProcedureCreationTest {
 
 	Logger logger = LogManager.getRootLogger();
-
+	
 	private static String PROCEDURE_1 = "Certificado de Residencia";
-	private static String PROCEDURE_2 = "Auxilio para Gastos Sepelio";
-	private static String PROCEDURE_3 = "Certificado de Estratificaci\u00F3n";
+	private static String PROCEDURE_2 = "Certificado de Estratificaci\u00F3n";
+	private static String PROCEDURE_3 = "Auxilio para Gastos Sepelio";
 	private static String PROCEDURE_4 = "Solicitud De Contrataci\u00F3n Monitor Deportes";
 
 	private static ArrayList<String> PROCDEURES_LIST_1 = new ArrayList<String>();
@@ -79,16 +79,16 @@ public class ProcedureCreationTest {
 	@Test
 	public void createProcedureTest() {
 
-		TestsUtil.addProcedureUno( "T11335", PROCEDURE_1,"Anapoima");
-		TestsUtil.addProcedureUno( "T11336", PROCEDURE_1,"El Rosal");
+		TestsUtil.addProcedureUno( "T11335", PROCEDURE_1,"Anapoima","acalle@anapoima.gov.co");
+		TestsUtil.addProcedureUno( "T11336", PROCEDURE_1,"El Rosal","acalle@elrosal.gov.co");
 		
-		TestsUtil.addProcedureDos( "T22335", PROCEDURE_2,"Anapoima");
-		TestsUtil.addProcedureDos( "T22336", PROCEDURE_2,"El Rosal");
+		TestsUtil.addProcedureDos( "T22335", PROCEDURE_2,"Anapoima","acalle@anapoima.gov.co");
+		TestsUtil.addProcedureDos( "T22336", PROCEDURE_2,"El Rosal","acalle@elrosal.gov.co");
 		
-		TestsUtil.addProcedureTres( "T33445", PROCEDURE_3,"Anapoima");
-		TestsUtil.addProcedureTres( "T33446", PROCEDURE_3,"El Rosal");
+		TestsUtil.addProcedureTres( "T33445", PROCEDURE_3,"Anapoima","acalle@anapoima.gov.co");
+		TestsUtil.addProcedureTres( "T33446", PROCEDURE_3,"El Rosal","acalle@elrosal.gov.co");
 		
-		TestsUtil.addProcedureCuatro( "T99115", PROCEDURE_4,"Anapoima");
+		//TestsUtil.addProcedureCuatro( "T99115", PROCEDURE_4,"Anapoima");
 				
 		assertEquals(true, true);
 	}

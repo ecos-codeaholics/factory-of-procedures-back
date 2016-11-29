@@ -736,7 +736,7 @@ public class TestsUtil {
 	}
 
 	// Procedure1
-	public static void addProcedureUno(String pCode, String pName, String pMayoralty) {
+	public static void addProcedureUno(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -756,7 +756,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@anapoima.gov.co");
+		activity1.setFunctionary(pFunctionary);
 		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
@@ -858,7 +858,7 @@ public class TestsUtil {
 	}
 
 	// Procedure2
-	public static void addProcedureDos(String pCode, String pName, String pMayoralty) {
+	public static void addProcedureDos(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -878,7 +878,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima.gov.co");
+		activity1.setFunctionary(pFunctionary);
 		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
@@ -1008,7 +1008,7 @@ public class TestsUtil {
 	}
 
 	// Procedure3
-	public static void addProcedureTres(String pCode, String pName, String pMayoralty) {
+	public static void addProcedureTres(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
@@ -1028,7 +1028,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@elrosal.gov.co");
+		activity1.setFunctionary(pFunctionary);
 		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
@@ -1419,7 +1419,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima.gov.co");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus(Constants.STATUS_PENDING);
 
@@ -1495,7 +1495,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal.gov.co");
+		activity1.setFunctionary("acalle@elrosal.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus(Constants.STATUS_PENDING);
 
@@ -1572,7 +1572,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("jvaldez@elrosal.gov.co");
+		activity1.setFunctionary("acalle@elrosal.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1768,7 +1768,7 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
-		citizen.setLastName2("Duarte");
+		citizen.setLastName2("Salcedo");
 		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
@@ -1844,7 +1844,7 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
-		citizen.setLastName2("Duarte");
+		citizen.setLastName2("Salcedo");
 		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
@@ -1911,7 +1911,7 @@ public class TestsUtil {
 		citizen.setIdentification(123456);
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
-		citizen.setLastName2("Cueto");
+		citizen.setLastName2("Correa");
 		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);

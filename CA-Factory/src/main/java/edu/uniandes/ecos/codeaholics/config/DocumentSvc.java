@@ -62,6 +62,8 @@ public class DocumentSvc implements IDocumentSvc {
 	public void uploadDocument(Request pRequest) {
 
 		File uploadDir = null;
+		
+		//TODO: this is a public route. We go with this solution in the meantime
 		String sparkDocDirectory = new File(".").getAbsolutePath().toString() + "/src/main/resources/public/docs/";
 		long timestamp = System.currentTimeMillis();
 		
@@ -73,6 +75,7 @@ public class DocumentSvc implements IDocumentSvc {
 			uploadDir.mkdir();
 
 		} catch (Exception e) {
+		
 			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
 			logger.error(e.getMessage());
