@@ -17,17 +17,17 @@ import edu.uniandes.ecos.codeaholics.config.ValidationUtil;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Field validation
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: Implemented email, names and numbers(string)
  *
  * Created: Oct 28, 2016 5:57:22 PM
  * 
  */
 public class FieldValidationTest {
 
-	private static String goodEmail = "andres@uniandes.edu.co";
-	private static String badEmail = "andres@uniandes";
+	private static String goodEmail = "aosorio@uniandes.edu.co";
+	private static String badEmail = "aosorio@uniandes";
 	private static String goodName = "Juan";
 	private static String badName = "F3l1p*";
 	private static String goodNumber = "1234567890";

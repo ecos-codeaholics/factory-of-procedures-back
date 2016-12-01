@@ -62,13 +62,20 @@ public class DocumentSvc implements IDocumentSvc {
 	public void uploadDocument(Request pRequest) {
 
 		File uploadDir = null;
-
+		
+		//TODO: this is a public route. We go with this solution in the meantime
+		String sparkDocDirectory = new File(".").getAbsolutePath().toString() + "/src/main/resources/public/docs/";
+		long timestamp = System.currentTimeMillis();
+		
 		try {
-			FileUtil.configTmpDir();
-			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			FileUtil.configTmpDir(); //capture LOCAL_TMP_PATH from environment
+			//uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
+			//logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
+			uploadDir = new File(sparkDocDirectory);
 			uploadDir.mkdir();
-			logger.info("LOCAL_TMP_PATH=" + FileUtil.LOCAL_TMP_PATH);
+
 		} catch (Exception e) {
+		
 			uploadDir = new File(FileUtil.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
 			logger.error(e.getMessage());
@@ -84,19 +91,28 @@ public class DocumentSvc implements IDocumentSvc {
 
 			InputStream input = fPart.getInputStream();
 
-			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+			String fileExt = null;
+
+			try {
+				logger.info(fPart.getSubmittedFileName());
+				fileExt = fPart.getSubmittedFileName().split(".")[1];
+			} catch (Exception ioex) {
+				fileExt = ".tmp";
+			}
+
+			Path tempFile = Files.createTempFile(uploadDir.toPath(), String.valueOf(timestamp), fileExt);
 
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
 			RequiredDocument rDoc;
 
 			rDoc = new RequiredDocument();
-			rDoc.setFilePath(FileUtil.LOCAL_TMP_PATH);
+			rDoc.setFilePath(sparkDocDirectory);
 			rDoc.setTmpName(tempFile.getFileName().toString());
 			rDoc.setOriginalName(fPart.getSubmittedFileName());
 			rDoc.setFileSize(fPart.getSize());
 			rDoc.setRadicado(123456);
-			rDoc.setTimestamp(System.currentTimeMillis());
+			rDoc.setTimestamp(timestamp);
 
 			Gson gson = new Gson();
 			answerStr = gson.toJson(rDoc);
@@ -158,6 +174,32 @@ public class DocumentSvc implements IDocumentSvc {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#downloadDocument()
+	 */
+	public HttpServletResponse downloadDocument(String locationDir, String name, HttpServletResponse raw) {
+		try {
+			Path path = Paths.get(locationDir + "/" + name);
+			byte[] data = null;
+			data = Files.readAllBytes(path);
+
+			raw.getOutputStream().write(data);
+			raw.getOutputStream().flush();
+			raw.getOutputStream().close();
+
+			return raw;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			locationDir = "";
+			logger.error(e.getMessage());
+			return null;
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.uniandes.ecos.codeaholics.config.IDocumentSvc#listDocuments()
 	 */
 	@Override
@@ -197,4 +239,3 @@ public class DocumentSvc implements IDocumentSvc {
 	}
 
 }
-

@@ -38,7 +38,8 @@ public class StatisticsServices {
 		
 		// 1. Number of citizen registered
 		Document filter = new Document();
-		filter.append("userProfile", "citizen");
+
+		filter.append("userProfile", Constants.CITIZEN_USER_PROFILE);
 
 		long ncitizen = db.getCollection(Constants.CITIZEN_COLLECTION).count(filter);
 			

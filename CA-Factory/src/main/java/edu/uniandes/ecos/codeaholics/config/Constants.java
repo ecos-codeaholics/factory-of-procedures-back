@@ -39,12 +39,14 @@ public class Constants {
 	
 	public static final String STATUS_PENDING = "Pendiente";
 		
-	public static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
+	public static final long TOKEN_LIFETIME = 1000 * 1800; // 30 min
 
 	public static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
 
 	public static final String TOKEN_SUBJECT = "A subject";
 	
 	public static final String TOKEN_EMAIL_KEY = "jti";
+
+	public static final String TOKEN_SUBJECT_KEY = "sub";
 
 }

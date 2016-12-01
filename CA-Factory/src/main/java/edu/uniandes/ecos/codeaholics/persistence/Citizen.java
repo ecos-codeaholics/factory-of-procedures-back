@@ -4,6 +4,8 @@
 
 package edu.uniandes.ecos.codeaholics.persistence;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bson.Document;
@@ -24,9 +26,14 @@ public class Citizen {
 	public static final String SALT = "salt";
 	public static final String BIRTHDATE = "birthDate";
 	public static final String PROFILE = "userProfile";
-	
+
+	public static final String IDENTIFICATION_ES = "Identificaci\u00F3n";
+	public static final String NAME_ES = "Nombre";
+	public static final String LASTNAME1_ES = "Primer Apellido";
+	public static final String LASTNAME2_ES = "Segundo Apellido";
+
 	@SerializedName("_id")
-	private String _id;
+	protected String _id;
 	private Integer identification;
 	private String name;
 	private String lastName1;
@@ -45,7 +52,8 @@ public class Citizen {
 	}
 
 	/**
-	 * @param userProfile the userProfile to set
+	 * @param userProfile
+	 *            the userProfile to set
 	 */
 	public void setUserProfile(String userProfile) {
 		this.userProfile = userProfile;
@@ -116,36 +124,77 @@ public class Citizen {
 	}
 
 	public Date getBirthDate() {
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//
-//		formatter.applyPattern(String.valueOf(birthDate));
-//		System.out.println(birthDate);
-//		try {
-//			this.birthDate = formatter.parse(String.valueOf(birthDate));
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
+		// SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		// formatter.applyPattern(String.valueOf(birthDate));
+		// System.out.println(birthDate);
+		// try {
+		// this.birthDate = formatter.parse(String.valueOf(birthDate));
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// }
 		return birthDate;
 	}
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
+
+	public void setBirthDate(String birthDateStr) {
+		
+		System.out.println(birthDate);
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddThh:mm:ssZ");		
+
+		try {
+			this.birthDate = dateFormat.parse(birthDateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 	
+	/**
+	 * Default constructor - no arguments
+	 */
+	public Citizen() {
+		
+	}
+	
+	/**
+	 * Copy Constructor - just in case if needed - AO
+	 * @param otherCitizen: citizen we want to make a copy into this
+	 */
+	public Citizen(Citizen otherCitizen) {
+		
+		this.identification = otherCitizen.getIdentification();
+		this.name = otherCitizen.getName();
+		this.lastName1 = otherCitizen.getLastName1();
+		this.lastName2 = otherCitizen.getLastName2();
+		this.email = otherCitizen.getEmail();
+		this.password = otherCitizen.getPassword();
+		this.salt = otherCitizen.getSalt();
+		this.birthDate = otherCitizen.getBirthDate();
+		this.userProfile = otherCitizen.getUserProfile();
+	
+	}
+
+
 	public Document toDocument() {
 		Document citizen = new Document();
-		citizen.append(IDENTIFICATION, this.getIdentification())
-				.append(NAME, this.getName())
-				.append(LASTNAME1, this.getLastName1())
-				.append(LASTNAME2, this.getLastName2())
-				.append(EMAIL, this.getEmail())
-				.append(SALT, this.getSalt())
-				.append(PASSWORD, this.getPassword())
-				.append(BIRTHDATE, this.getBirthDate())
-				.append(PROFILE, this.getUserProfile());
-		
+		citizen.append(IDENTIFICATION, this.getIdentification()).append(NAME, this.getName())
+				.append(LASTNAME1, this.getLastName1()).append(LASTNAME2, this.getLastName2())
+				.append(EMAIL, this.getEmail()).append(SALT, this.getSalt()).append(PASSWORD, this.getPassword())
+				.append(BIRTHDATE, this.getBirthDate()).append(PROFILE, this.getUserProfile());
+
 		return citizen;
 	}
 
-	
+	public Document toDocumentES() {
+		Document citizen = new Document();
+		citizen.append(IDENTIFICATION_ES, this.getIdentification())
+				.append(NAME_ES, this.getName() + " " + this.getLastName1() + " " + this.getLastName2())
+				.append(EMAIL, this.getEmail());
+
+		return citizen;
+	}
+
 }

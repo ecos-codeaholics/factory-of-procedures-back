@@ -42,19 +42,20 @@ public class AuthenticationJWTTest {
 	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
 	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
 
-	private final static String USER_EMAIL = "dbernal@uniandes";
+	private final static String USER_EMAIL = "dbernal@uniandes.edu.co";
 	private final static String USER_PWD = "12345678";
 	private final static String USER_NAME = "David";
 	private final static String USER_LASTNAME = "Bernal";
+	private final static String USER_LASTNAME2 = "Diaz";
 
 	private String token;
 
 	@Test
 	public void tokenCreationTest() {
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_EMAIL, USER_PWD);
-		String citizenSalt = utilities.getCitizenSalt();
+		// TestsUtil utilities = new TestsUtil();
+		TestsUtil.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
+		String citizenSalt = TestsUtil.getCitizenSalt(USER_EMAIL);
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
 
@@ -96,16 +97,72 @@ public class AuthenticationJWTTest {
 		}
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
-		utilities.removeCitizen(USER_EMAIL);
+
+		TestsUtil.removeCitizen(USER_EMAIL);
 
 	}
 
+	//@Test
+	public void functionaryTokenCreationTest() {
+
+		String FUNCTIONARY_EMAIL = "csanabria@anapoima.gov.co";
+		
+		TestsUtil.addFunctionary("Carlos", "Sanabria", "Garcia", FUNCTIONARY_EMAIL, "12345678",Constants.FUNCTIONARY_USER_PROFILE);
+		String functionarySalt = TestsUtil.getFunctionarySalt(FUNCTIONARY_EMAIL);
+				
+		AuthenticationJWT jwtToken = new AuthenticationJWT();
+
+		boolean authenticated = false;
+		try {
+			authenticated = jwtToken.doAuthentication(FUNCTIONARY_EMAIL, "12345678", Constants.FUNCTIONARY_USER_PROFILE);
+		} catch (WrongUserOrPasswordException e1) {
+			e1.printStackTrace();
+		}
+
+		if (authenticated) {
+			token = (String) jwtToken.getAnswer();
+			logger.info(token);
+
+			// Verify and decode
+			try {
+
+				logger.info("JWT is signed? " + Jwts.parser().isSigned(token));
+
+				Claims claims = Jwts.parser().setSigningKey(functionarySalt).parseClaimsJws(token).getBody();
+
+				logger.info("Claims: " + claims.toString());
+				
+				//logger.info("ID: " + claims.getId());
+				//logger.info("Subject: " + claims.getSubject());
+				//logger.info("Issuer: " + claims.getIssuer());
+				//logger.info("Expiration: " + claims.getExpiration());
+				//logger.info("Mayorality: " + claims.getCl());
+				
+				decode(token);
+
+				//assertEquals(FUNCTIONARY_EMAIL, claims.getId());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertFalse(true);
+				logger.info("Cannot get token claims");
+			}
+		} else {
+			logger.info("User not authenticated");
+			assertFalse(true);
+		}
+
+		//AuthenticationJWT.closeSession(FUNCTIONARY_EMAIL);
+
+		//TestsUtil.removeFunctionary(FUNCTIONARY_EMAIL);
+
+	}
+	
+	
 	@Test
 	public void sessionTest() {
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen(USER_NAME, USER_LASTNAME, USER_EMAIL, USER_PWD);
+		TestsUtil.addCitizen(USER_NAME, USER_LASTNAME, USER_LASTNAME2, USER_EMAIL, USER_PWD);
 
 		AuthenticationJWT jwtToken = new AuthenticationJWT();
 
@@ -123,7 +180,7 @@ public class AuthenticationJWTTest {
 
 			Document session = new Document();
 			session.append("email", USER_EMAIL);
-			session.append("user-profile", "citizen");
+			session.append("user-profile", Constants.CITIZEN_USER_PROFILE);
 
 			if (authenticated) {
 				token = (String) jwtToken.getAnswer();
@@ -148,32 +205,30 @@ public class AuthenticationJWTTest {
 		assertTrue(isAutorized);
 
 		AuthenticationJWT.closeSession(USER_EMAIL);
-		
-		utilities.removeCitizen(USER_EMAIL);
-		
+
+		TestsUtil.removeCitizen(USER_EMAIL);
+
 	}
 
 	@Test
 	public void tokenExpirationTest() {
 
-		TestsUtil utilities = new TestsUtil();
-
-		utilities.addCitizen("Emily", "Nurse", "emily@uniandes", "12345678");
-		String citizenSalt = utilities.getCitizenSalt();
+		TestsUtil.addCitizen("Emily", "Nurse", "Cox", "emily@uniandes.edu.co", "12345678");
+		String citizenSalt = TestsUtil.getCitizenSalt("emily@uniandes.edu.co");
 		logger.info(citizenSalt);
 
-		String expToken = createExpiredJWT("emily@uniandes", citizenSalt);
+		String expToken = createExpiredJWT("emily@uniandes.edu.co", citizenSalt);
 		logger.info(expToken);
 
-		utilities.addSession("emily@uniandes", "citizen", expToken, citizenSalt);
+		TestsUtil.addSession("emily@uniandes.edu.co", Constants.CITIZEN_USER_PROFILE, expToken, citizenSalt);
 
 		boolean isAutorized = false;
 
 		try {
 
 			Document session = new Document();
-			session.append("email", "emily@uniandes");
-			session.append("user-profile", "citizen");
+			session.append("email", "emily@uniandes.edu.co");
+			session.append("user-profile", Constants.CITIZEN_USER_PROFILE);
 
 			// Check against token
 			session.append("token", expToken);
@@ -196,10 +251,10 @@ public class AuthenticationJWTTest {
 		}
 
 		assertFalse(isAutorized);
-		
-		AuthenticationJWT.closeSession("emily@uniandes");
-		
-		utilities.removeCitizen("emily@uniandes");
+
+		AuthenticationJWT.closeSession("emily@uniandes.edu.co");
+
+		TestsUtil.removeCitizen("emily@uniandes.edu.co");
 
 	}
 
@@ -222,7 +277,7 @@ public class AuthenticationJWTTest {
 		builder.setIssuer(TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
-		builder.setAudience("citizen");
+		builder.setAudience(Constants.CITIZEN_USER_PROFILE);
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();

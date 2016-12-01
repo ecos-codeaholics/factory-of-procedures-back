@@ -1,6 +1,12 @@
+/** Copyright or License
+ *
+ */
 package edu.uniandes.ecos.codeaholics.business;
 
+import java.io.FileNotFoundException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +16,8 @@ import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import edu.uniandes.ecos.codeaholics.config.Authentication;
@@ -19,16 +27,18 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc;
 import edu.uniandes.ecos.codeaholics.config.EmailNotifierSvc.EmailType;
+import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
+import edu.uniandes.ecos.codeaholics.config.FileUtil;
 import edu.uniandes.ecos.codeaholics.config.IDocumentSvc;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
-
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
-
+import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.Procedure;
+//import edu.uniandes.ecos.codeaholics.persistence.ProcedureData;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
-
 import spark.Request;
 import spark.Response;
 
@@ -42,12 +52,6 @@ public class CitizenServices {
 
 	private static IDocumentSvc fileManager = new DocumentSvc();
 
-	private static String CITIZEN = "citizen";
-
-	private static String PROCEDURESREQUEST = "proceduresRequest";
-
-	private static String PROCEDURES = "procedures";
-
 	/***
 	 * Obtiene el modelo del tramite para ser iniciado.
 	 * 
@@ -59,12 +63,16 @@ public class CitizenServices {
 	 */
 	public static Object getProcedure(Request pRequest, Response pResponse) {
 
+		String mayoraltyName = pRequest.params(":mayoraltyName");
+		String procedureName = pRequest.params(":procedureName");
+
 		List<Document> dataset = new ArrayList<>();
 
 		Document procedureFilter = new Document();
-		procedureFilter.append("slug", pRequest.params(":procedureName"));
+		procedureFilter.append("mayoraltyslug", mayoraltyName);
+		procedureFilter.append("slug", procedureName);
 
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURES);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 		if (documents.isEmpty()) {
 			log.info("No data found for " + pRequest.params(":procedureName"));
@@ -79,39 +87,6 @@ public class CitizenServices {
 		pResponse.type("application/json");
 		return dataset;
 
-	}
-
-	/***
-	 * Obtiene la lista de todos los ciudadanos registrados en el sistema.
-	 * 
-	 * @param pRequest
-	 *            request
-	 * @param pResponse
-	 *            response
-	 * @return lista con json por cada ciudadano
-	 */
-	public static Object getCitizenList(Request pRequest, Response pResponse) {
-
-		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.getAll(CITIZEN);
-		String fullName = "";
-		for (Document item : documents) {
-			fullName = item.get("name").toString() + " " + item.get("lastName1").toString() + " "
-					+ item.get("email").toString();
-			item.remove("name");
-			item.remove("lastName1");
-			item.remove("lastName2");
-			item.remove("password");
-			item.remove("salt");
-			item.remove("birthDate");
-			item.remove("email");
-			item.put("fullName", fullName);
-			dataset.add(item);
-
-		}
-
-		pResponse.type("application/json");
-		return dataset;
 	}
 
 	/***
@@ -131,7 +106,7 @@ public class CitizenServices {
 		filter.append("name", Integer.parseInt(pRequest.params("identification")));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(filter, CITIZEN);
+		ArrayList<Document> documents = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
 		for (Document item : documents) {
 			item.remove("password");
 			item.remove("salt");
@@ -157,12 +132,11 @@ public class CitizenServices {
 
 		try {
 
-			// .
 			String email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
-			// ..
 
 			if (email != null) {
 				Authentication.closeSession(email);
+				pResponse.status(200);
 				response = messager.getOkMessage("Proceso Exitoso");
 			} else {
 				pResponse.status(417);
@@ -192,73 +166,117 @@ public class CitizenServices {
 
 		Object response = null;
 
-		ProcedureRequest procedureRequest = new ProcedureRequest();
-		procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		// .
+		String email;
 
-		String procedureName = pRequest.params(":procedureName");
-		Document procedureFilter = new Document();
-		procedureFilter.append("slug", procedureName);
+		try {
+			email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
+		} catch (InvalidTokenException jwtEx) {
+			log.error(jwtEx.getMessage());
+			return "failed";
+		}
+		// ..
+
+		String barcodeImg = null;
+
+		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		try {
 
-			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, PROCEDURES);
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+			barcodeImg = FileUtil.getImageFromString(json.get("code").getAsString(),
+					json.get("barcodeImg").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			log.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
+
+		String mayoraltyName = pRequest.params(":mayoraltyName");
+		String procedureName = pRequest.params(":procedureName");
+
+		Document procedureFilter = new Document();
+		procedureFilter.append("mayoraltyslug", mayoraltyName);
+		procedureFilter.append("slug", procedureName);
+
+		// ...
+		try {
+
+			ArrayList<Document> procedures = DataBaseUtil.find(procedureFilter, Constants.PROCEDURE_COLLECTION);
 
 			Document procedureDoc = procedures.get(0);
 			procedureDoc.remove("_id");
+
 			Procedure procedure = GSON.fromJson(procedureDoc.toJson(), Procedure.class);
 			procedureRequest.setProcedureClassName(procedure.getName());
 			procedureRequest.setActivities(procedure.getActivities());
+			procedureRequest.getActivities().get(0);
+
+
+			for (Activity activity : procedureRequest.getActivities()) {
+				if (activity.getStep() == 1)
+					activity.setStatus("En curso");
+			}
 
 			Document citizenFilter = new Document();
 
-			// .
-			String email;
-
-			try {
-				email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
-			} catch (InvalidTokenException jwtEx) {
-				log.info(jwtEx.getMessage());
-				return "failed";
-			}
-
 			citizenFilter.append("email", email);
-			// ..
-			// citizenFilter.append("email", pRequest.queryParams("email"));
 
-			ArrayList<Document> citezens = DataBaseUtil.find(citizenFilter, CITIZEN);
+			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
 
-			Document citezenDoc = citezens.get(0);
-			citezenDoc.remove("_id");
-			Citizen citizen = GSON.fromJson(citezenDoc.toJson(), Citizen.class);
+			Document citizenDoc = citizens.get(0);
+			citizenDoc.remove("_id");
+			citizenDoc.remove("birthDate"); // AO: Need to deal with
+											// ISODate --> Java
+
+			Citizen citizen = GSON.fromJson(citizenDoc.toJson(), Citizen.class);
 			procedureRequest.setCitizen(citizen);
 
-			String mayoraltyName = pRequest.params(":mayoraltyName");
-			procedureRequest.setMayoralty(mayoraltyName);
+			log.debug("Found citizen " + citizen.toDocument());
 
-			Document procedureData = GSON.fromJson(pRequest.body(), Document.class);
+			procedureRequest.setMayoralty(procedureDoc.get("mayoralty").toString());
+
+			JsonParser parser = new JsonParser();
+			JsonObject json = parser.parse(pRequest.body()).getAsJsonObject();
+			JsonObject jsonData = (JsonObject) json.get("dataForm");
+			JsonObject jsonDocs = (JsonObject) json.get("docs");
+
+			Document procedureData = GSON.fromJson(jsonData, Document.class);
 			procedureRequest.setProcedureData(procedureData);
 
-			Document deliveryDocs = new Document();
+			Document deliveryDocs = GSON.fromJson(jsonDocs, Document.class);
 			procedureRequest.setDeliveryDocs(deliveryDocs);
-			System.out.println(procedureRequest.toDocument());
-			DataBaseUtil.save(procedureRequest.toDocument(), "proceduresRequest");
 
+			procedureRequest.setStatus("En proceso");
+			procedureRequest.setStartDate(new Date());
+
+			System.out.println(procedureRequest.toDocument());
+			DataBaseUtil.save(procedureRequest.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
+
+			// .... Notify to citizen
 			ArrayList<String> parameters = new ArrayList<>();
 			parameters.add(procedureRequest.getProcedureClassName());
 			parameters.add(procedureRequest.getFileNumber());
 
-			EmailNotifierSvc sendEmail = new EmailNotifierSvc();
-			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters);
+			//EmailNotifierSvc sendEmail = new EmailNotifierSvc();
+			EmailNotifierSvc sendEmail = EmailNotifierSvc.getInstance();
+			sendEmail.send(EmailType.INITPROCEDURE, citizen.getEmail(), parameters, barcodeImg);
+
+			response = messager
+					.getOkMessage("Registro exitoso de su solicitud, su tr\u00E1mite fue creado con el n\u00FAmero: "
+							+ procedureRequest.getFileNumber());
 
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			e.printStackTrace();
+			log.info("There is a problem with starting a new procedure");
+			log.info(e.getLocalizedMessage());
+			response = messager.getNotOkMessage("Registro de solicitud fallido");
 		}
 
-		response = messager.getOkMessage("Registro Exitoso");
 		pResponse.type("application/json");
-		// return "Proceso Exitoso";
-
-		pRequest.body();
 
 		return response;
 
@@ -273,7 +291,7 @@ public class CitizenServices {
 	 *            response
 	 * @return mensaje de proceso exitoso
 	 */
-	public static Object consultProcedures(Request pRequest, Response pResponse) {
+	public static Object consultProcedureRequets(Request pRequest, Response pResponse) {
 
 		// .
 		String email;
@@ -290,16 +308,9 @@ public class CitizenServices {
 		procedureFilter.append("citizen.email", email);
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -346,7 +357,6 @@ public class CitizenServices {
 
 		Document procedureFilter = new Document();
 
-		// .
 		String email;
 
 		try {
@@ -355,29 +365,70 @@ public class CitizenServices {
 			log.info(jwtEx.getMessage());
 			return "failed";
 		}
-		// ..
 
 		procedureFilter.append("citizen.email", email);
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
-
 		}
 
-		log.info("Consult procedures by id done");
+		log.info("Consult procedure by id done");
 
 		return dataset;
+	}
+
+	/***
+	 * Consulta estado de un tramite.
+	 * 
+	 * @param pRequest
+	 *            request
+	 * @param pResponse
+	 *            response
+	 * @return mensaje de proceso exitoso
+	 */
+	public static Object consultProceduresDocuments(Request pRequest, Response pResponse) {
+		
+		try {
+			
+			log.info(pRequest.params(":id"));
+		
+			Document procedureFilter = new Document();
+
+			String email = Authorization.getFromToken(pRequest, Constants.TOKEN_EMAIL_KEY);
+			String nameDoc = pRequest.params(":id");
+			
+			procedureFilter.append("citizen.email", email);
+			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
+
+			ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
+			
+			Document document = documents.get(0);
+			document.remove("_id");
+			document.remove("startDate");
+			document.remove("finishDate");
+			
+			Document deliveryDocsD = (Document) document.get("deliveryDocs");
+			Document theDoc = (Document) deliveryDocsD.get(nameDoc);
+			
+			pResponse.type("application/force-download");
+			pResponse.header("Content-Transfer-Encoding", "binary");
+			pResponse.header("Content-Disposition","attachment; filename=\"" +theDoc.getString("tmpName")+ "\"");//fileName);
+			pResponse.status(200);
+
+			log.info("Documento enviado a descargar!");
+			return fileManager.downloadDocument(theDoc.getString("filePath"), theDoc.getString("tmpName"), pResponse.raw());
+			
+		} catch (InvalidTokenException jwtEx) {
+			log.info(jwtEx.getMessage());
+			return "failed";
+		}catch (Exception e) {
+			log.info(e.getMessage());
+			return "failed";
+		}
 	}
 
 	/***
@@ -408,8 +459,17 @@ public class CitizenServices {
 
 		log.info(pRequest.toString());
 		try {
+			log.info("headers: " + pRequest.headers());
+			String citizen = pRequest.headers("citizen");
+			String fileRequest = pRequest.headers("fileRequest");
+
+			log.info("nombre del req: " + fileRequest);
+			log.info("ciuda: " + citizen);
+
+			// String nameFile = fileRequest + citizen;
+
 			fileManager.uploadDocument(pRequest);
-			response = messager.getOkMessage(((DocumentSvc)fileManager).getAnswerStr());
+			response = messager.getOkMessage(((DocumentSvc) fileManager).getAnswerStr());
 
 		} catch (JsonSyntaxException e) {
 			pResponse.status(400);

@@ -7,6 +7,11 @@ package edu.uniandes.ecos.codeaholics.config;
 import java.util.ArrayList;
 import java.util.Date;
 
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.util.List;
+
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -27,9 +32,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Authentication class using JWT
  * 
- * Implementation: [Notes on implementation]
+ * Implementation: uses jsonwebtoken library
  *
  * Created: Aug 12, 2016 6:36:05 PM
  * 
@@ -41,12 +46,6 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 	private static Object token;
 
-	private static final long TOKEN_LIFETIME = 1000 * 600; // 10 min
-
-	private static final String TOKEN_ISSUER = "http://codeaholics.dynns.com";
-
-	private static final String TOKEN_SUBJECT = "A subject";
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,7 +107,7 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 
 		if (results.isEmpty()) {
 			throw new WrongUserOrPasswordException("La clave que ingresaste es incorrecta", "103");
-		}else{
+		} else {
 			rol = results.get(0).get("userProfile").toString();
 		}
 		return rol;
@@ -124,33 +123,82 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 		return token;
 	}
 
-	/**
+	/** This is the createJWT for citizen
 	 * @param id
 	 * @param issuer
 	 * @param subject
 	 * @param ttlMillis
 	 * @return
 	 */
-	private static String createJWT(String pId, String pProfile, String pSalt) {
+	private static String createJWT(String pId, String pProfile, String pSalt, String pName, String pLast) {
 
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
 		long nowMillis = System.currentTimeMillis();
 		Date now = new Date(nowMillis);
-		long expMillis = nowMillis + TOKEN_LIFETIME;
+		long expMillis = nowMillis + Constants.TOKEN_LIFETIME;
 		Date exp = new Date(expMillis);
 
 		log.debug(pSalt);
 
+		StringBuilder subject = new StringBuilder();
+		subject.append(pName);
+		subject.append(",");
+		subject.append(pLast);
+		
 		// Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(pId);
 		builder.setIssuedAt(now);
-		builder.setSubject(TOKEN_SUBJECT);
-		builder.setIssuer(TOKEN_ISSUER);
+		builder.setSubject(subject.toString());
+		builder.setIssuer(Constants.TOKEN_ISSUER);
 		builder.signWith(signatureAlgorithm, pSalt);
 		builder.setExpiration(exp);
 		builder.setAudience(pProfile);
+
+		// Builds the JWT and serializes it to a compact, URL-safe string
+		return builder.compact();
+
+	}
+
+	/** This is the create JWT for functionary
+	 * @param id
+	 * @param issuer
+	 * @param subject
+	 * @param ttlMillis
+	 * @return
+	 */
+	private static String createJWT(String pId, String pProfile, String pSalt, String pName, String pLast, String pMayorality) {
+
+		// The JWT signature algorithm we will be using to sign the token
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+		long nowMillis = System.currentTimeMillis();
+		Date now = new Date(nowMillis);
+		long expMillis = nowMillis + Constants.TOKEN_LIFETIME;
+		Date exp = new Date(expMillis);
+
+		log.debug(pSalt);
+
+		StringBuilder subject = new StringBuilder();
+		subject.append(pName);
+		subject.append(",");
+		subject.append(pLast);
+		subject.append(",");
+		subject.append(pMayorality);
+		
+		// Let's set the JWT Claims
+		JwtBuilder builder = Jwts.builder().setId(pId);
+		builder.setIssuedAt(now);
+		builder.setSubject(subject.toString());
+		builder.setIssuer(Constants.TOKEN_ISSUER);
+		builder.signWith(signatureAlgorithm, pSalt);
+		builder.setExpiration(exp);
+		builder.setAudience(pProfile);
+
+		//Map<String, Object> customClaims = new HashMap<String, Object>();
+		//customClaims.put("mayorality", pMayorality);
+		//builder.setClaims(customClaims);
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
@@ -167,7 +215,33 @@ public class AuthenticationJWT implements IAuthenticationSvc {
 	 */
 	private static void createSession(String pEmail, String pProfile, String pSalt) {
 
-		token = createJWT(pEmail, pProfile, pSalt);
+		if ( pProfile.equals(Constants.CITIZEN_USER_PROFILE)) {
+
+			//TODO: this is not safe
+			Document filter = new Document();
+			filter.append("email", pEmail);
+			ArrayList<Document> citizen = DataBaseUtil.find(filter, Constants.CITIZEN_COLLECTION);
+			
+			String citizenName = citizen.get(0).get("name").toString();
+			String citizenLast = citizen.get(0).get("lastName1").toString();
+						
+			token = createJWT(pEmail, pProfile, pSalt, citizenName, citizenLast);
+			
+		} else {
+			
+			log.info("User is functionary: creating token for functionary");
+			//TODO: this is not safe
+			Document filter = new Document();
+			filter.append("email", pEmail);
+			ArrayList<Document> functionary = DataBaseUtil.find(filter, Constants.FUNCTIONARY_COLLECTION);
+			
+			String citizenName = functionary.get(0).get("name").toString();
+			String citizenLast = functionary.get(0).get("lastName1").toString();
+			String citizenMayoralty = functionary.get(0).get("mayoralty").toString();
+			
+			token = createJWT(pEmail, pProfile, pSalt, citizenName, citizenLast, citizenMayoralty);
+		
+		}
 
 		Document session = new Document();
 		session.append("email", pEmail);

@@ -5,7 +5,10 @@
 package edu.uniandes.ecos.codeaholics.config;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 
 import com.google.gson.JsonObject;
@@ -31,24 +34,23 @@ import com.google.gson.JsonParser;
 public class FileUtil {
 
 	public static String LOCAL_TMP_PATH;
-	
+
 	public static final String LOCAL_TMP_PATH_ENV = "LOCAL_TMP_PATH_ENV";
-	
-	private static final int   MAX_DEPTH_LEVEL    = 1;
 
-	private static int currentLevel               = 0;
-	
-	private static ArrayList<String> allFiles     = new ArrayList<String>();
-	
+	private static final int MAX_DEPTH_LEVEL = 1;
+
+	private static int currentLevel = 0;
+
+	private static ArrayList<String> allFiles = new ArrayList<String>();
+
 	private static File[] files;
-
 
 	/**
 	 * 
 	 */
 	public static void processRoot(String pRoot) {
 
-		//TODO Need here an exception
+		// TODO Need here an exception
 		allFiles.clear();
 		files = new File(pRoot).listFiles();
 		currentLevel = 1;
@@ -64,7 +66,7 @@ public class FileUtil {
 	public static void getSourceFiles(File[] pCurrentFiles, ArrayList<String> pOutput, String pFileExt) {
 
 		for (File file : pCurrentFiles) {
-			if ( file.isDirectory() && (currentLevel < MAX_DEPTH_LEVEL) ) {
+			if (file.isDirectory() && (currentLevel < MAX_DEPTH_LEVEL)) {
 				getSourceFiles(file.listFiles(), pOutput, pFileExt);
 				currentLevel += 1;
 			} else {
@@ -99,7 +101,6 @@ public class FileUtil {
 	public static ArrayList<String> getAllFiles() {
 		return allFiles;
 	}
-
 
 	/**
 	 * @param pPath
@@ -143,7 +144,7 @@ public class FileUtil {
 			String value = System.getenv(testPath);
 			if (value != null) {
 				LOCAL_TMP_PATH = value;
-				//System.out.println("****" + LOCAL_TMP_PATH);
+				// System.out.println("****" + LOCAL_TMP_PATH);
 				found = true;
 				break;
 			}
@@ -152,6 +153,51 @@ public class FileUtil {
 		if (!found)
 			throw new Exception("LOCAL_TMP_PATH_ENV not defined!");
 
+	}
+
+	/**
+	 * Save an image enconde in a Base64 string
+	 * 
+	 * @param pImageName image full path
+	 * @param pImageStr base64 enconded image
+	 * @return
+	 */
+	public static String getImageFromString(String pImageName, String pImageStr) {
+
+		String testImg = "./src/main/resources/tests/barcode.png";
+		
+		try {
+			configTmpDir();
+		} catch (Exception e1) {
+			System.out.println("Cannot find localdirectory");
+			e1.printStackTrace();
+			return testImg;
+		}
+
+		byte[] bytes = Base64.getDecoder().decode(pImageStr);
+		FileOutputStream fos;
+		
+		try {
+
+			StringBuilder filePath = new StringBuilder();
+			filePath.append(LOCAL_TMP_PATH);
+			filePath.append("/");
+			filePath.append(pImageName);
+			filePath.append(".png");
+
+			fos = new FileOutputStream(filePath.toString());
+			fos.write(bytes);
+			fos.close();
+
+			return filePath.toString();
+
+		} catch (IOException e) {
+			System.out.println("Cannot save file");
+			e.printStackTrace();
+		}
+
+		return testImg;
+		
 	}
 
 }

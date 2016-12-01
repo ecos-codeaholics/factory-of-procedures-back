@@ -6,28 +6,36 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import edu.uniandes.ecos.codeaholics.config.Constants;
 import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
+import edu.uniandes.ecos.codeaholics.config.ExternalSvcInvoker;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
+import edu.uniandes.ecos.codeaholics.config.Routes;
 import edu.uniandes.ecos.codeaholics.main.App;
 import edu.uniandes.ecos.codeaholics.persistence.Activity;
 import edu.uniandes.ecos.codeaholics.persistence.Citizen;
@@ -57,16 +65,13 @@ import edu.uniandes.ecos.codeaholics.persistence.Session;
  */
 public class TestsUtil {
 
-	static Logger logger = LogManager.getRootLogger();
+	private static Logger logger = LogManager.getRootLogger();
+
+	private static String birthDateStr = "10-01-1990";
+
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyyy");
 
 	private static String citizenSalt;
-
-	/**
-	 * @return the citizenSalt
-	 */
-	public String getCitizenSalt() {
-		return citizenSalt;
-	}
 
 	/**
 	 * add citizen to db for testing purposes. if it already exists, just update
@@ -76,7 +81,7 @@ public class TestsUtil {
 	 * @param pEmail
 	 * @param pPwd
 	 */
-	public void addCitizen(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addCitizen(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
@@ -84,10 +89,12 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -105,29 +112,87 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
-
 	}
 
-	/** Cleanup DB of Test users
+	/**
+	 * @param pEmail
+	 * @return
+	 */
+	public static String getCitizenSalt( String pEmail ) {
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
+
+		if (documents.isEmpty()) {
+			return null;
+		} else {
+			Document citizenDoc = documents.get(0);
+			citizenSalt = (String) citizenDoc.get("salt");
+		}
+		
+		return citizenSalt;
+		
+	}
+	
+	/**
+	 * @param pEmail
+	 * @return
+	 */
+	public static String getFunctionarySalt( String pEmail ) {
+		
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
+
+		if (documents.isEmpty()) {
+			return null;
+		} else {
+			Document citizenDoc = documents.get(0);
+			citizenSalt = (String) citizenDoc.get("salt");
+		}
+		
+		return citizenSalt;
+		
+	}
+	
+	/**
+	 * Cleanup DB of Test users
+	 * 
 	 * @param pEmail
 	 */
-	public void removeCitizen(String pEmail) {
-		
+	public static void removeCitizen(String pEmail) {
+
 		Document user = new Document();
 		user.append("email", pEmail);
 		logger.info("Removing user with email ... " + pEmail);
 		DataBaseUtil.delete(user, Constants.CITIZEN_COLLECTION);
-		
+
+	}
+
+	/**
+	 * Cleanup DB of Test users
+	 * 
+	 * @param pEmail
+	 */
+	public static void removeFunctionary(String pEmail) {
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		logger.info("Removing user with email ... " + pEmail);
+		DataBaseUtil.delete(user, Constants.FUNCTIONARY_COLLECTION);
+
 	}
 	
-	/** Create a mock session for a specific user
+	/**
+	 * Create a mock session for a specific user
+	 * 
 	 * @param pEmail
 	 * @param pProfile
 	 * @param pToken
 	 * @param pSalt
 	 */
-	public void addSession(String pEmail, String pProfile, String pToken, String pSalt ) {
+	public static void addSession(String pEmail, String pProfile, String pToken, String pSalt) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection(Constants.SESSION_COLLECTION);
@@ -137,7 +202,7 @@ public class TestsUtil {
 		session.setUserProfile(pProfile);
 		session.setToken(pToken);
 		session.setSalt(pSalt);
-		
+
 		Document prevSession = new Document();
 		prevSession.append("email", pEmail);
 		ArrayList<Document> documents = DataBaseUtil.find(prevSession, Constants.SESSION_COLLECTION);
@@ -151,7 +216,7 @@ public class TestsUtil {
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -160,11 +225,11 @@ public class TestsUtil {
 		logger.info("clearing all existing collections in the default DB");
 
 		ArrayList<String> collections = new ArrayList<String>();
-		collections.add("citizen");
-		collections.add("functionary");
-		collections.add("mayoralty");
-		collections.add("procedures");
-		collections.add("proceduresRequest");
+		collections.add(Constants.CITIZEN_COLLECTION);
+		collections.add(Constants.FUNCTIONARY_COLLECTION);
+		collections.add(Constants.MAYORALTY_COLLECTION);
+		collections.add(Constants.PROCEDURE_COLLECTION);
+		collections.add(Constants.PROCEDUREREQUEST_COLLECTION);
 		collections.add(Constants.SESSION_COLLECTION);
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
@@ -190,17 +255,19 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Andr\u00E9s");
 		citizen.setLastName1("Osorio");
+		citizen.setLastName2("Vargas");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "andres@uniandes");
+		user.append("email", "aosorio@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -210,8 +277,6 @@ public class TestsUtil {
 			collection.findOneAndDelete(user);
 			collection.insertOne(citizen.toDocument());
 		}
-
-		citizenSalt = hash[0];
 
 	}
 
@@ -223,17 +288,19 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Fabian");
 		citizen.setLastName1("Hernandez");
+		citizen.setLastName2("Schmidt");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "fabian@uniandes");
+		user.append("email", "f.hernandez@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -243,8 +310,6 @@ public class TestsUtil {
 			collection.findOneAndDelete(user);
 			collection.insertOne(citizen.toDocument());
 		}
-
-		citizenSalt = hash[0];
 
 	}
 
@@ -256,17 +321,19 @@ public class TestsUtil {
 		Citizen citizen = new Citizen();
 		citizen.setName("Jheison");
 		citizen.setLastName1("Rodriguez");
+		citizen.setLastName2("Borja");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "jheison@uniandes");
+		user.append("email", "jl.rodriguez@uniandes.edu.co");
 		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
@@ -277,29 +344,30 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// add citizen
 	public static void addCitizenCuatro() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("David");
 		citizen.setLastName1("Martinez");
+		citizen.setLastName2("Salcedo");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "david@uniandes");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		user.append("email", "df.martinez1@uniandes.edu.co");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -309,28 +377,29 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	public static void addCitizenCinco() {
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.CITIZEN_COLLECTION);
 
 		Citizen citizen = new Citizen();
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
+		citizen.setLastName2("Correa");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("sebastian@uniandes");
+		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setPassword("12345678");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
 		citizen.setSalt(hash[0]);
 
 		Document user = new Document();
-		user.append("email", "sebastian@uniandes");
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		user.append("email", "s.cardona12@uniandes.edu.co");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.CITIZEN_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -340,11 +409,10 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// add Alcaldia uno
-	public static void addMayoraltyUno() {
+	public static void addMayoraltyUno(ArrayList<String> pProcedureList) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -361,7 +429,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
 		Functionary funcionarioUno = new Functionary();
 
-		funcionarioUno.setEmail("jvaldez@anapoima");
+		funcionarioUno.setEmail("jvaldez@anapoima.gov.co");
 		funcionaryUno.add(funcionarioUno);
 		dependencyUno.setFunctionaries(funcionaryUno);
 
@@ -371,7 +439,7 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
 
-		funcionarioDos.setEmail("acalle@anapoima");
+		funcionarioDos.setEmail("acalle@anapoima.gov.co");
 		funcionaryDos.add(funcionarioDos);
 		dependencyDos.setFunctionaries(funcionaryDos);
 
@@ -382,19 +450,14 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Certificado de residencia");
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
-
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedureList);
 
 		collection.insertOne(mayoralty.toDocument());
 
 	}
 
 	// add Alcaldia dos
-	public static void addMayoraltyDos() {
+	public static void addMayoraltyDos(ArrayList<String> pProcedure) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
 		MongoCollection<Document> collection = dbOne.getCollection("mayoralty");
@@ -411,17 +474,17 @@ public class TestsUtil {
 		ArrayList<Functionary> funcionaryUno = new ArrayList<>();
 		Functionary funcionarioUno = new Functionary();
 
-		funcionarioUno.setEmail("jvaldez@elrosal");
+		funcionarioUno.setEmail("jvaldez@elrosal.gov.co");
 		funcionaryUno.add(funcionarioUno);
 		dependencyUno.setFunctionaries(funcionaryUno);
 
 		Dependency dependencyDos = new Dependency();
-		dependencyDos.setName("Atenci\u00F3on al Ciudadano");
+		dependencyDos.setName("Atenci\u00F3n al Ciudadano");
 
 		ArrayList<Functionary> funcionaryDos = new ArrayList<>();
 		Functionary funcionarioDos = new Functionary();
 
-		funcionarioDos.setEmail("acalle@elrosal");
+		funcionarioDos.setEmail("acalle@elrosal.gov.co");
 		funcionaryDos.add(funcionarioDos);
 		dependencyDos.setFunctionaries(funcionaryDos);
 
@@ -432,15 +495,62 @@ public class TestsUtil {
 
 		mayoralty.setDependencies(dependencies);
 
-		ArrayList<String> procedures = new ArrayList<>();
-		procedures.add("Auxilio para Gastos Sepelio");
-		procedures.add("Certificado de estratificacion");
-		procedures.add("Solicitud De Contratacion Monitor Deportes");
-
-		mayoralty.setProcedures(procedures);
+		mayoralty.setProcedures(pProcedure);
 
 		collection.insertOne(mayoralty.toDocument());
 
+	}
+
+	
+	/**
+	 *  Add a generic functionary
+	 * @param pName
+	 * @param pLastName1
+	 * @param pLastName2
+	 * @param pEmail
+	 * @param pPwd
+	 * @param pRole
+	 */
+	public static void addFunctionary(String pName, String pLastName1, String pLastName2, String pEmail, String pPwd, String pProfile) {
+
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
+		
+		Mayoralty mayoralty = new Mayoralty();
+		mayoralty.setName("Anapoima");
+		mayoralty.setAddress("CRA 123 45 1");
+		mayoralty.setUrl("https://anapoima.gov.co");
+		mayoralty.setPhone("333555888");
+
+		Functionary citizen = new Functionary();
+		citizen.setName(pName);
+		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
+		citizen.setIdentification(1234567890);
+		citizen.setEmail(pEmail);
+		citizen.setPassword(pPwd);
+		citizen.setUserProfile(pProfile);
+		citizen.setBirthDate(getBirthdate());
+
+		citizen.setMayoralty("MiAlcaldia");
+		citizen.setDependency("Hacienda");
+
+		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
+		citizen.setPassword(hash[1]);
+		citizen.setSalt(hash[0]);
+
+		Document user = new Document();
+		user.append("email", pEmail);
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
+		
+		if (documents.isEmpty()) {
+			collection.insertOne(citizen.toDocument());
+		} else {
+			logger.info("user alreadery exists");
+			collection.findOneAndDelete(user);
+			collection.insertOne(citizen.toDocument());
+		}
+		
 	}
 
 	/**
@@ -449,13 +559,12 @@ public class TestsUtil {
 	 * @param pEmail
 	 * @param pPwd
 	 */
-
 	// funcionario1
-	public static void addFunctionaryUno(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryUno(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
-		MongoCollection<Document> collectionC = dbOne.getCollection("citizen");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("Anapoima");
@@ -466,10 +575,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("admin");
+		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Hacienda");
@@ -480,8 +591,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
-		collectionC.insertOne(citizen.toDocument());
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -491,14 +601,14 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario2
-	public static void addFunctionaryDos(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryDos(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("Anapoima");
@@ -509,10 +619,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("Anapoima");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
@@ -523,7 +635,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -533,14 +645,14 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario2
-	public static void addFunctionaryTres(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryTres(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("El Rosal");
@@ -551,10 +663,12 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("admin");
+		citizen.setUserProfile(Constants.ADMIN_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Hacienda");
@@ -565,7 +679,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -575,14 +689,14 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// funcionario4
-	public static void addFunctionaryCuatro(String pName, String pLastName1, String pEmail, String pPwd) {
+	public static void addFunctionaryCuatro(String pName, String pLastName1, String pLastName2, String pEmail,
+			String pPwd) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("functionary");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.FUNCTIONARY_COLLECTION);
 
 		Mayoralty mayoralty = new Mayoralty();
 		mayoralty.setName("El Rosal");
@@ -593,14 +707,15 @@ public class TestsUtil {
 		Functionary citizen = new Functionary();
 		citizen.setName(pName);
 		citizen.setLastName1(pLastName1);
+		citizen.setLastName2(pLastName2);
 		citizen.setIdentification(1234567890);
 		citizen.setEmail(pEmail);
 		citizen.setPassword(pPwd);
-		citizen.setUserProfile("functionary");
+		citizen.setUserProfile(Constants.FUNCTIONARY_USER_PROFILE);
+		citizen.setBirthDate(getBirthdate());
 
 		citizen.setMayoralty("El Rosal");
 		citizen.setDependency("Atenci\u00F3n al Ciudadano");
-		;
 
 		String[] hash = GeneralUtil.getHash(citizen.getPassword(), "");
 		citizen.setPassword(hash[1]);
@@ -608,7 +723,7 @@ public class TestsUtil {
 
 		Document user = new Document();
 		user.append("email", pEmail);
-		ArrayList<Document> documents = DataBaseUtil.find(user, "citizen");
+		ArrayList<Document> documents = DataBaseUtil.find(user, Constants.FUNCTIONARY_COLLECTION);
 
 		if (documents.isEmpty()) {
 			collection.insertOne(citizen.toDocument());
@@ -618,23 +733,22 @@ public class TestsUtil {
 			collection.insertOne(citizen.toDocument());
 		}
 
-		citizenSalt = hash[0];
 	}
 
 	// Procedure1
-	public static void addProcedureUno(String pName) {
+	public static void addProcedureUno(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
 		// Activities
 		Activity activity1 = new Activity();
@@ -642,8 +756,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
-		activity1.setStatus("En curso");
+		activity1.setFunctionary(pFunctionary);
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -662,35 +776,22 @@ public class TestsUtil {
 
 		reqDocs.add(reqDoc1);
 
-		RequiredUpload reqDoc2 = new RequiredUpload();
+		if (pName.equals("Anapoima")) {
 
-		reqDoc2.setType("file");
-		reqDoc2.setRequired(true);
-		reqDoc2.setClassName("form-control");
+			RequiredUpload reqDoc2 = new RequiredUpload();
 
-		reqDoc2.setLabel("Recibo");
-		reqDoc2.setDescription("Adjunte su recibo en formato (png, jpeg)");
-		reqDoc2.setName("reciboAtt");
+			reqDoc2.setType("file");
+			reqDoc2.setRequired(true);
+			reqDoc2.setClassName("form-control");
 
-		reqDocs.add(reqDoc2);
+			reqDoc2.setLabel("Recibo de pago");
+			reqDoc2.setDescription("Adjunte su recibo de pago en formato (png, jpeg)");
+			reqDoc2.setName("reciboAtt");
+
+			reqDocs.add(reqDoc2);
+		}
 
 		procedure.setRequired(reqDocs);
-
-		// Form
-
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -699,7 +800,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -757,18 +858,18 @@ public class TestsUtil {
 	}
 
 	// Procedure2
-	public static void addProcedureDos(String pName) {
+	public static void addProcedureDos(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 		// Activities
@@ -777,8 +878,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
-		activity1.setStatus("Finalizado");
+		activity1.setFunctionary(pFunctionary);
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -809,35 +910,38 @@ public class TestsUtil {
 
 		reqDocs.add(reqDoc2);
 
-		RequiredUpload reqDoc3 = new RequiredUpload();
+		if (pName.equals("Anapoima")) {
 
-		reqDoc3.setType("file");
-		reqDoc3.setRequired(true);
-		reqDoc3.setClassName("form-control");
+			RequiredUpload reqDoc3 = new RequiredUpload();
 
-		reqDoc3.setLabel("Certificado Presidente de la junta");
-		reqDoc3.setDescription("Adjunte su recibo en formato (png, jpeg)");
-		reqDoc3.setName("juntaAtt");
+			reqDoc3.setType("file");
+			reqDoc3.setRequired(true);
+			reqDoc3.setClassName("form-control");
 
-		reqDocs.add(reqDoc3);
+			reqDoc3.setLabel("Certificado Presidente de la junta");
+			reqDoc3.setDescription("Adjunte su recibo en formato (png, jpeg)");
+			reqDoc3.setName("juntaAtt");
+
+			reqDocs.add(reqDoc3);
+		}
 
 		procedure.setRequired(reqDocs);
 
 		// Form
 
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
+		// FormField field1 = new FormField();
+		//
+		// field1.setType("text");
+		// field1.setSubtype("tel");
+		// field1.setRequired(true);
+		// field1.setLabel("Identificaci\u00F3n");
+		// field1.setDescription("N\u00FAmero de documento de identidad");
+		// field1.setPlaceHolder("123456789");
+		// field1.setClassname("form-control");
+		// field1.setName("identification");
+		// field1.setMaxlenght(11);
+		//
+		// formFields.add(field1);
 
 		FormField field2 = new FormField();
 
@@ -846,7 +950,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -904,19 +1008,19 @@ public class TestsUtil {
 	}
 
 	// Procedure3
-	public static void addProcedureTres(String pName) {
+	public static void addProcedureTres(String pCode, String pName, String pMayoralty, String pFunctionary) {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
-		// ArrayList<Functionary> listOfFunctionaries = new
-		// ArrayList<Functionary>();
 		ArrayList<FormField> formFields = new ArrayList<FormField>();
 		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
 		ArrayList<Activity> activities = new ArrayList<Activity>();
 
 		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
 		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
 		// Activities
 		Activity activity1 = new Activity();
@@ -924,8 +1028,8 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
-		activity1.setStatus("En curso");
+		activity1.setFunctionary(pFunctionary);
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 
@@ -995,21 +1099,6 @@ public class TestsUtil {
 		procedure.setRequired(reqDocs);
 
 		// Form
-
-		FormField field1 = new FormField();
-
-		field1.setType("text");
-		field1.setSubtype("tel");
-		field1.setRequired(true);
-		field1.setLabel("Identificaci\u00F3n");
-		field1.setDescription("N\u00FAmero de documento de identidad");
-		field1.setPlaceHolder("123456789");
-		field1.setClassname("form-control");
-		field1.setName("identification");
-		field1.setMaxlenght(11);
-
-		formFields.add(field1);
-
 		FormField field2 = new FormField();
 
 		field2.setType("text");
@@ -1017,7 +1106,7 @@ public class TestsUtil {
 		field2.setRequired(true);
 		field2.setLabel("Direcci\u00F3n");
 		field2.setDescription("Direcci\u00F3n de residencia");
-		field2.setPlaceHolder("CAlle -- # -- --");
+		field2.setPlaceHolder("Calle 20 # 34 56");
 		field2.setClassname("form-control");
 		field2.setName("direccion");
 		field2.setMaxlenght(100);
@@ -1074,150 +1163,164 @@ public class TestsUtil {
 
 	}
 
-	// Procedure
-	// SCC
-		public static void addProcedureCuatro(String pName) {
+	/*
+	 * Procedure: This is not an actual procedure from *Cundinamarca* (it is not
+	 * even a procedure) Added to test several activities SCC
+	 */
+	public static void addProcedureCuatro(String pCode, String pName, String pMayoralty) {
 
-			MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-			MongoCollection<Document> collection = dbOne.getCollection("procedures");
+		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDURE_COLLECTION);
 
-			// ArrayList<Functionary> listOfFunctionaries = new
-			// ArrayList<Functionary>();
-			ArrayList<FormField> formFields = new ArrayList<FormField>();
-			ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
-			ArrayList<Activity> activities = new ArrayList<Activity>();
+		ArrayList<FormField> formFields = new ArrayList<FormField>();
+		ArrayList<RequiredUpload> reqDocs = new ArrayList<RequiredUpload>();
+		ArrayList<Activity> activities = new ArrayList<Activity>();
 
-			Procedure procedure = new Procedure();
-			procedure.setName(pName);
+		Procedure procedure = new Procedure();
+		procedure.setCode(pCode);
+		procedure.setName(pName);
+		procedure.setMayoralty(pMayoralty);
 
-			// Activities
-			activities.add(new Activity("CDP","Certificado de disponibilidad Presupuestal","Jefe de presupuesto",1,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Elaboraci\u00F3n Contrato","Realizaci\u00F3n del contrato","Coordinador de deportes ",2,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Aprobaci\u00F3n juridica","Aprobaci\u00F3n de propuesta","Juridico",3,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Firma Alcalde","Firma del alcalde y Documento de supervisor del contrato","Alcalde",4,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Firma Ciudadano","Firma del contrato por el ciudadano","Ciudadan\u00EDa",5,"","Pendiente"));
-			activities.add(new Activity("RP","Responsabilidad presupuestal","Jefe de presupuesto",6,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Informe de labor","Informe del objeto contractual","Ciudadan\u00EDa",7,"","Pendiente"));
-			activities.add(new Activity("Informe supervisi\u00F3n","Informe de supervisi\u00F3n del contrato","Coordinador del contrato",8,"jvaldez@elrosal","Pendiente"));
-			activities.add(new Activity("Orden de pago","Solicitud de orden de pago y comprobante de egreso","Tesoreria",9,"jvaldez@elrosal","Pendiente"));
+		// Activities
+		activities.add(new Activity("CDP", "Certificado de disponibilidad Presupuestal", "Jefe de presupuesto", 1,
+				"acalle@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Elaboraci\u00F3n Contrato", "Realizaci\u00F3n del contrato",
+				"Coordinador de deportes ", 2, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Aprobaci\u00F3n juridica", "Aprobaci\u00F3n de propuesta", "Juridico", 3,
+				"acalle@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Firma Alcalde", "Firma del alcalde y Documento de supervisor del contrato",
+				"Alcalde", 4, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Firma Ciudadano", "Firma del contrato por el ciudadano", "Ciudadan\u00EDa", 5, "",
+				Constants.STATUS_PENDING));
+		activities.add(new Activity("RP", "Responsabilidad presupuestal", "Jefe de presupuesto", 6,
+				"jvaldez@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Informe de labor", "Informe del objeto contractual", "Ciudadan\u00EDa", 7, "",
+				Constants.STATUS_PENDING));
+		activities.add(new Activity("Informe supervisi\u00F3n", "Informe de supervisi\u00F3n del contrato",
+				"Coordinador del contrato", 8, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
+		activities.add(new Activity("Orden de pago", "Solicitud de orden de pago y comprobante de egreso", "Tesoreria",
+				9, "acalle@elrosal.gov.co", Constants.STATUS_PENDING));
 
-			procedure.setActivities(activities);
+		procedure.setActivities(activities);
 
-			// Required
-	
-			reqDocs.add(new RequiredUpload("file", true, "C\u00E9dula de Ciudadan\u00EDa del solicitante", "Adjunte su c\u00E9dula en formato (png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social", "Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci\u00F3n publica", "Adjunte su hoja de vida de funci\u00F3n publica (pdf)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria", "Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales", "Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control", "cedulaAtt"));
-			procedure.setRequired(reqDocs);
+		// Required
 
-			// Form
+		reqDocs.add(new RequiredUpload("file", true, "C\u00E9dula de Ciudadan\u00EDa del solicitante",
+				"Adjunte su c\u00E9dula en formato (png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Documento de proyecto", "Adjunte el documento de proyecto (pdf)",
+				"form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Recibo seguridad social",
+				"Adjunte el recibo seguridad social (png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Hoja de vida de funci\u00F3n publica",
+				"Adjunte su hoja de vida de funci\u00F3n publica (pdf)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Antecedentes Contraloria",
+				"Adjunte sus antecedentes contraloria (pdf, png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "Antecedentes Fiscales",
+				"Adjunte sus antecedentes fiscales(pdf, png, jpeg)", "form-control", "cedulaAtt"));
+		reqDocs.add(new RequiredUpload("file", true, "RUT", "Adjunte su rut (pdf, png, jpeg)", "form-control",
+				"cedulaAtt"));
+		procedure.setRequired(reqDocs);
 
-			FormField field1 = new FormField();
+		// Form
+		FormField field2 = new FormField();
 
-			field1.setType("text");
-			field1.setSubtype("tel");
-			field1.setRequired(true);
-			field1.setLabel("Identificaci\u00F3n");
-			field1.setDescription("N\u00FAmero de documento de identidad");
-			field1.setPlaceHolder("123456789");
-			field1.setClassname("form-control");
-			field1.setName("identification");
-			field1.setMaxlenght(11);
+		field2.setType("text");
+		field2.setSubtype("text");
+		field2.setRequired(true);
+		field2.setLabel("Direcci\u00F3n");
+		field2.setDescription("Direcci\u00F3n de residencia");
+		field2.setPlaceHolder("Calle 20 # 34 56");
+		field2.setClassname("form-control");
+		field2.setName("direccion");
+		field2.setMaxlenght(100);
 
-			formFields.add(field1);
+		formFields.add(field2);
 
-			FormField field2 = new FormField();
+		FormField field3 = new FormField();
 
-			field2.setType("text");
-			field2.setSubtype("text");
-			field2.setRequired(true);
-			field2.setLabel("Direcci\u00F3n");
-			field2.setDescription("Direcci\u00F3n de residencia");
-			field2.setPlaceHolder("CAlle -- # -- --");
-			field2.setClassname("form-control");
-			field2.setName("direccion");
-			field2.setMaxlenght(100);
+		field3.setType("text");
+		field3.setSubtype("text");
+		field3.setRequired(true);
+		field3.setLabel("Barrio");
+		field3.setDescription("Barrio");
+		field3.setPlaceHolder("Barrio");
+		field3.setClassname("form-control");
+		field3.setName("barrio");
+		field3.setMaxlenght(50);
 
-			formFields.add(field2);
+		formFields.add(field3);
 
-			FormField field3 = new FormField();
+		FormField field4 = new FormField();
 
-			field3.setType("text");
-			field3.setSubtype("text");
-			field3.setRequired(true);
-			field3.setLabel("Barrio");
-			field3.setDescription("Barrio");
-			field3.setPlaceHolder("Barrio");
-			field3.setClassname("form-control");
-			field3.setName("barrio");
-			field3.setMaxlenght(50);
+		field4.setType("text");
+		field4.setSubtype("tel");
+		field4.setRequired(true);
+		field4.setLabel("Tel\u00E9fono");
+		field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
+		field4.setPlaceHolder("3-----");
+		field4.setClassname("form-control");
+		field4.setName("telefono");
+		field4.setMaxlenght(10);
 
-			formFields.add(field3);
+		formFields.add(field4);
 
-			FormField field4 = new FormField();
+		FormField field5 = new FormField();
 
-			field4.setType("text");
-			field4.setSubtype("tel");
-			field4.setRequired(true);
-			field4.setLabel("Tel\u00E9fono");
-			field4.setDescription("N\u00FAmero telef\u00F3nico de contacto");
-			field4.setPlaceHolder("3-----");
-			field4.setClassname("form-control");
-			field4.setName("telefono");
-			field4.setMaxlenght(10);
+		field5.setType("textarea");
+		field5.setRequired(true);
+		field5.setLabel("Carta de solicitud");
+		field5.setDescription("Carta de solicitud");
+		field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
+		field5.setClassname("form-control");
+		field5.setName("carta");
+		field5.setMaxlenght(5000);
 
-			formFields.add(field4);
+		formFields.add(field5);
 
-			FormField field5 = new FormField();
+		procedure.setFields(formFields);
 
-			field5.setType("textarea");
-			field5.setRequired(true);
-			field5.setLabel("Carta de solicitud");
-			field5.setDescription("Carta de solicitud");
-			field5.setPlaceHolder("Por favor diligencie su petici\u00F3n detalladamente");
-			field5.setClassname("form-control");
-			field5.setName("carta");
-			field5.setMaxlenght(5000);
+		logger.info("inserting new procedure instance");
 
-			formFields.add(field5);
+		System.out.println(procedure.getFields());
+		collection.insertOne(procedure.toDocument());
 
-			procedure.setFields(formFields);
-
-			logger.info("inserting new procedure instance");
-
-			System.out.println(procedure.getFields());
-			collection.insertOne(procedure.toDocument());
-
-		}
+	}
 
 	// ProcedureRequest1
 	@SuppressWarnings("deprecation")
 	public static <V> void addProcedureRequestUno() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("1");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("andres");
-		citizen.setLastName1("osorio");
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
+		citizen.setLastName2("Vargas");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Direcci\u00F3n", "Calle 1 # 12 21");
 		procedureData.put("Barrio", "El Castillo");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1239,7 +1342,7 @@ public class TestsUtil {
 		activity1.setDependency("Hacienda");
 		activity1.setFunctionary("Anapoima");
 		activity1.setAprobacion("En proceso");
-		activity1.setStatus("En curso");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
@@ -1267,25 +1370,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestDos() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("2");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("andres@uniandes");
+		citizen.setEmail("aosorio@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("andres");
-		citizen.setLastName1("osorio");
+		citizen.setName("Andres");
+		citizen.setLastName1("Osorio");
+		citizen.setLastName2("Vargas");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1305,18 +1419,18 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("En curso");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
-				
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1332,25 +1446,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestTres() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("3");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("fabian");
-		citizen.setLastName1("hernandez");
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
+		citizen.setLastName2("Schmidt");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1370,18 +1495,18 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("acalle@elrosal.gov.co");
 		activity1.setAprobacion("Finalizado");
-		activity1.setStatus("En curso");
+		activity1.setStatus(Constants.STATUS_PENDING);
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
-				
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
+
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1397,25 +1522,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestCuatro() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("4");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("fabian@uniandes");
+		citizen.setEmail("f.hernandez@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("fabian");
-		citizen.setLastName1("hernandez");
+		citizen.setName("Fabian");
+		citizen.setLastName1("Hernandez");
+		citizen.setLastName2("Schmidt");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1436,7 +1572,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("acalle@elrosal.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
@@ -1463,25 +1599,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestCinco() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("5");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("jheison");
-		citizen.setLastName1("rodriguez");
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
+		citizen.setLastName2("Borja");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 1 # 12 -12");
+		procedureData.put("Direcci\u00F3n", "Calle 1 # 12 21");
 		procedureData.put("Barrio", "El Castillo");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1501,16 +1648,16 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@anapoima");
+		activity1.setFunctionary("jvaldez@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(null);
 		procedureRequest.setStatus("En proceso");
@@ -1526,25 +1673,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestSeis() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Certificado de Residencia");
-		procedureRequest.setFileNumber("6");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("jheison@uniandes");
+		citizen.setEmail("jl.rodriguez@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("jheison");
-		citizen.setLastName1("rodriguez");
+		citizen.setName("Jheison");
+		citizen.setLastName1("Rodriguez");
+		citizen.setLastName2("Borja");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("Anapoima");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1564,16 +1722,16 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		procedureRequest.setActivities(activities);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/14"));
 		procedureRequest.setFinishDate(new Date("2016/08/14"));
 		procedureRequest.setStatus("Finalizado");
@@ -1589,25 +1747,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestSiete() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("7");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("david");
-		citizen.setLastName1("martinez");
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
+		citizen.setLastName2("Salcedo");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 2 # 23 -23");
+		procedureData.put("Direcci\u00F3n", "Calle 2 # 23 45");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1628,7 +1797,7 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Hacienda");
-		activity1.setFunctionary("jvaldez@elrosal");
+		activity1.setFunctionary("jvaldez@elrosal.gov.co");
 		activity1.setAprobacion("Finalizado");
 		activity1.setStatus("En curso");
 
@@ -1636,9 +1805,9 @@ public class TestsUtil {
 		procedureRequest.setActivities(activities);
 
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setStartDate(new Date("2016/07/21"));
 		procedureRequest.setFinishDate(new Date("2016/09/21"));
 		procedureRequest.setStatus("Finalizado");
@@ -1654,25 +1823,36 @@ public class TestsUtil {
 	public static <V> void addProcedureRequestOcho() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
 		procedureRequest.setProcedureClassName("Auxilio para Gastos Sepelio");
-		procedureRequest.setFileNumber("8");
+		try {
+
+			ExternalSvcInvoker.invoke(Routes.BARCODER_EXTSVC_ROUTE);
+			JsonObject json = (JsonObject) ExternalSvcInvoker.getResponse();
+			procedureRequest.setFileNumber(json.get("code").getAsString());
+
+		} catch (FileNotFoundException | UnknownHostException ex) {
+			logger.info("Problem reaching external service");
+			procedureRequest.setFileNumber(UUID.randomUUID().toString());
+		}
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("david@uniandes");
+		citizen.setEmail("df.martinez1@uniandes.edu.co");
 		citizen.setIdentification(123456);
-		citizen.setName("david");
-		citizen.setLastName1("martinez");
+		citizen.setName("David");
+		citizen.setLastName1("Martinez");
+		citizen.setLastName2("Salcedo");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1693,15 +1873,15 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
@@ -1713,14 +1893,13 @@ public class TestsUtil {
 
 	}
 
-
 	// ProcedureRequest9
-	//SCC
+	// SCC
 	@SuppressWarnings("deprecation")
 	public static <V> void addProcedureRequestNueve() {
 
 		MongoDatabase dbOne = DatabaseSingleton.getInstance().getDatabase();
-		MongoCollection<Document> collection = dbOne.getCollection("proceduresRequest");
+		MongoCollection<Document> collection = dbOne.getCollection(Constants.PROCEDUREREQUEST_COLLECTION);
 
 		ProcedureRequest procedureRequest = new ProcedureRequest();
 
@@ -1728,17 +1907,19 @@ public class TestsUtil {
 		procedureRequest.setFileNumber("9");
 
 		Citizen citizen = new Citizen();
-		citizen.setEmail("sebastian@uniandes");
+		citizen.setEmail("s.cardona12@uniandes.edu.co");
 		citizen.setIdentification(123456);
 		citizen.setName("Sebastian");
 		citizen.setLastName1("Cardona");
+		citizen.setLastName2("Correa");
+		citizen.setBirthDate(getBirthdate());
 
 		procedureRequest.setCitizen(citizen);
 		procedureRequest.setMayoralty("El Rosal");
 
 		Document procedureData = new Document();
 		procedureData.put("Identificaci\u00F3n", 123456);
-		procedureData.put("Direcci\u00F3n", "calle 10 # 10 - 10");
+		procedureData.put("Direcci\u00F3n", "Calle 10 # 10 30");
 		procedureData.put("Barrio", "La Soledad");
 		procedureData.put("Tel\u00E9fono", 55667733);
 		procedureData.put("Carta de solicitud", "Solicito amablemente un certificado de residencia");
@@ -1759,15 +1940,15 @@ public class TestsUtil {
 		activity1.setName("Aprobaci\u00F3n");
 		activity1.setDescription("Revisar documentaci\u00F3n y aprobar");
 		activity1.setDependency("Atenci\u00F3n al ciudadano");
-		activity1.setFunctionary("acalle@anapoima");
+		activity1.setFunctionary("acalle@anapoima.gov.co");
 		activity1.setAprobacion("En proceso");
 		activity1.setStatus("En curso");
 
 		activities.add(activity1);
 		// History
-				ArrayList<History> histories = new ArrayList<History>();
-				histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
-				procedureRequest.setHistories(histories);
+		ArrayList<History> histories = new ArrayList<History>();
+		histories.add(new History(0, "2016/10/26", citizen.getEmail(), "Iniciar", "Se inicia tramite"));
+		procedureRequest.setHistories(histories);
 		procedureRequest.setActivities(activities);
 		procedureRequest.setStartDate(new Date("2016/08/06"));
 		procedureRequest.setFinishDate(null);
@@ -1780,6 +1961,7 @@ public class TestsUtil {
 	}
 
 	public static void addProcedureRequest() {
+
 		ProcedureRequest procedure = new ProcedureRequest();
 
 		procedure.setProcedureClassName("Certificado de residencia");
@@ -1794,9 +1976,10 @@ public class TestsUtil {
 		citizen.setName("Juan");
 		citizen.setLastName1("Valdes");
 		citizen.setIdentification(1234567890);
-		citizen.setEmail("jvaldes@uniandes");
+		citizen.setEmail("jvaldes@uniandes.edu.co");
 		citizen.setPassword("Qwerty");
-		citizen.setUserProfile("citizen");
+		citizen.setUserProfile(Constants.CITIZEN_COLLECTION);
+		citizen.setBirthDate(getBirthdate());
 
 	}
 
@@ -1896,14 +2079,14 @@ public class TestsUtil {
 				found = true;
 				/*
 				 * File directoryName = new File(value + "/junittest"); if
-				 * (!directoryName.exists()) {
-				 * logger.info("creating directory: " + directoryName); boolean
-				 * result = false; try { directoryName.mkdir(); result = true; }
-				 * catch (SecurityException se) {
+				 * (!directoryName.exists()) { logger.info(
+				 * "creating directory: " + directoryName); boolean result =
+				 * false; try { directoryName.mkdir(); result = true; } catch
+				 * (SecurityException se) {
 				 * System.out.println(se.getLocalizedMessage()); } if (result) {
-				 * tmpPath = directoryName.toString();
-				 * logger.info("LOCALTMP + /junittest created"); } } else {
-				 * tmpPath = directoryName.toString(); }
+				 * tmpPath = directoryName.toString(); logger.info(
+				 * "LOCALTMP + /junittest created"); } } else { tmpPath =
+				 * directoryName.toString(); }
 				 */
 				break;
 			}
@@ -1956,6 +2139,20 @@ public class TestsUtil {
 			throw e;
 		}
 
+	}
+
+	public static Date getBirthdate() {
+
+		Date birthDate = null;
+
+		try {
+			birthDate = dateFormat.parse(birthDateStr);
+		} catch (ParseException e) {
+			logger.error("Bad date format");
+			e.printStackTrace();
+		}
+
+		return birthDate;
 	}
 
 }

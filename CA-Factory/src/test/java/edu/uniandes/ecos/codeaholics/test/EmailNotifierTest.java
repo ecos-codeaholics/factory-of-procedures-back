@@ -35,7 +35,7 @@ import edu.uniandes.ecos.codeaholics.config.INotifierSvc;
  */
 public class EmailNotifierTest {
 
-	private static INotifierSvc emailer = new EmailNotifierSvc();
+	private static INotifierSvc emailer = EmailNotifierSvc.getInstance();
 
 	private static ArrayList<EmailType> emailTypes = new ArrayList<EmailType>();
 
@@ -104,12 +104,43 @@ public class EmailNotifierTest {
 		boolean success = false;
 
 		ArrayList<String> params = new ArrayList<String>();
-		params.add("Fecha y hora de hoy");
+		params.add("Prueba de creaci\u00F3n de tr\u00E1mite");
 		params.add("12345678790");
+
+		String image = "./src/main/resources/tests/barcode.png";
+		try {
+			TestsUtil.isConnected();
+			emailer.send(EmailType.INITPROCEDURE, "aosorio@uniandes.edu.co", params,image);
+			success = true;
+			
+		} catch (
+
+		AddressException e) {
+			success = false;
+
+		} catch (MessagingException e) {
+			success = false;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			success = true; // There is no connection
+		}
+
+		assertTrue(success);
+
+	}
+	
+	@Test
+	public void emailMakeFunctionaryTest() {
+
+		boolean success = false;
+
+		ArrayList<String> params = new ArrayList<String>();
+		params.add("Maria Camila");
 
 		try {
 			TestsUtil.isConnected();
-			emailer.send(EmailType.INITPROCEDURE, "osorio.af@gmail.com", params);
+			emailer.send(EmailType.MAKE_FUNCTIONARY, "aosorio@uniandes.edu.co", params);
 			success = true;
 			
 		} catch (

@@ -9,15 +9,23 @@ import edu.uniandes.ecos.codeaholics.config.Authorization;
 import edu.uniandes.ecos.codeaholics.config.DatabaseSingleton;
 import edu.uniandes.ecos.codeaholics.config.GeneralUtil;
 import edu.uniandes.ecos.codeaholics.config.Routes;
-import edu.uniandes.ecos.codeaholics.config.SessionManager;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
+import spark.Request;
+import spark.Response;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import static spark.Spark.*;
-
 
 /**
  * 
@@ -33,6 +41,9 @@ public class App {
 	public static int JETTY_SERVER_TIMEOUTMILLIS = 30000;
 	public static boolean USE_SPARK_HTTPS = false;
 
+	private static Configuration cfg;
+	private static Template pseTemplate;
+
 	/***
 	 * Metodo principal del sistema.
 	 *
@@ -41,6 +52,8 @@ public class App {
 	 * 
 	 */
 	public static void main(String[] args) {
+		
+		externalStaticFileLocation("src/main/resources/public/");
 
 		getConfig(CONFIG_FILE);
 		port(JETTY_SERVER_PORT);
@@ -58,13 +71,28 @@ public class App {
 		 */
 		DatabaseSingleton.getInstance();
 
-		staticFiles.location("/public");
+		//staticFiles.location("/public");
 
 		/**
 		 * Enable CORS
 		 */
 		CorsFilter.apply();
 
+		cfg = new Configuration(Configuration.VERSION_2_3_23);
+
+		try {
+			cfg.setDirectoryForTemplateLoading(new File("src/main/resources/templates/"));
+			cfg.setDefaultEncoding("UTF-8");
+			cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+			cfg.setLogTemplateExceptions(false);
+
+			pseTemplate = cfg.getTemplate("about.ftlh");
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
 		/**
 		 * Auth Routes
 		 */
@@ -87,8 +115,6 @@ public class App {
 		/**
 		 * Citizen Routes
 		 */
-		// obtener lista de ciudadanos /CITIZENS/ metodo GET
-		get(Routes.CITIZENS, CitizenServices::getCitizenList, GeneralUtil.json());
 
 		// obtener detalles de unƒ ciudadano /CITIZENS/{id} --> template metodo
 		// GET
@@ -105,20 +131,26 @@ public class App {
 				GeneralUtil.json());
 
 		// obtener lista de tramites por ciudadano /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedures, GeneralUtil.json());
+		get(Routes.CITIZENS + "procedures/", CitizenServices::consultProcedureRequets, GeneralUtil.json());
 
 		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
 		get(Routes.CITIZENS + "procedures/edit/:id/", CitizenServices::consultProceduresById, GeneralUtil.json());
 
 		// obtener detalle de un tramite para iniciar /CITIZENS/ metodo GET
-		get(Routes.CITIZENS + "procedures/detail/:procedureName/", CitizenServices::getProcedure, GeneralUtil.json());
+
+		get(Routes.CITIZENS + "procedures/detail/:mayoraltyName/:procedureName/", CitizenServices::getProcedure, GeneralUtil.json());
+
+		// obtener detalle de un tramite por id /CITIZENS/ metodo GET
+		get(Routes.CITIZENS + "procedures/documents/:id/:procedureId/", CitizenServices::consultProceduresDocuments);
 		
+
 		// iniciar tramite /CITIZENS/ metodo POST {procedureData info json}
 		post(Routes.CITIZENS + "procedures/", CitizenServices::startProcedure, GeneralUtil.json());
 
 		//crear tramite iniciado por el ciudadano /CITIZENS/ metodo POST
 		post(Routes.CITIZENS + "procedures/iniciar/:mayoraltyName/:procedureName/", CitizenServices::startProcedure, GeneralUtil.json());
 		
+
 		/**
 		 * Routes Mayoralty
 		 */
@@ -137,6 +169,15 @@ public class App {
 		/**
 		 * Routes Administrator Mayoralty
 		 */
+		
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		get(Routes.ADMIN+ "dependencies/", MayoraltyServices::dependenciesByMayoralty, GeneralUtil.json());
+		
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		get(Routes.ADMIN, MayoraltyServices::getCitizenListForFunctionary, GeneralUtil.json());
+
+		// obtener lista de ciudadanos /CITIZENS/ metodo GET
+		post(Routes.ADMIN, MayoraltyServices::createFunctionary, GeneralUtil.json());
 		// TODO
 
 		/**
@@ -171,11 +212,18 @@ public class App {
 			return "OK";
 		});
 
-		//Statistics
-		get(Routes.AUTH, StatisticsServices::getBasicStats, GeneralUtil.json());
-				
-		SessionManager.test1();
-		
+		/*
+		 * Get some basic statistics to display at the Home page
+		 * 
+		 */
+		get(Routes.STATS + "basics/", StatisticsServices::getBasicStats, GeneralUtil.json());
+
+		/*
+		 * Get the backend info
+		 * 
+		 */
+		get("/about", App::displayAbout);
+
 	}
 
 	/**
@@ -200,6 +248,10 @@ public class App {
 			JETTY_SERVER_TIMEOUTMILLIS = Integer.parseInt(prop.getProperty("jetty.server.timeoutMillis"));
 			USE_SPARK_HTTPS = Boolean.parseBoolean(prop.getProperty("spark.https"));
 
+			Routes.BARCODER_EXTSVC_ROUTE = prop.getProperty("extsvc.barcoder");
+			Routes.IDCERTIFIER_EXTSVC_ROUTE = prop.getProperty("extsvc.idcert");
+			Routes.PSE_EXTSVC_ROUTE = prop.getProperty("extsvc.pse");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -212,5 +264,37 @@ public class App {
 			}
 		}
 	}
+
+	private static Object displayAbout(Request pRequest, Response pResponse) {
+
+		Object response = null;
+
+		String version = GeneralUtil.executeCommand("git branch").split("\n")[0];
+		
+		try {
+
+			Map<String, Object> root = new HashMap<>();
+			InetAddress addr = InetAddress.getLocalHost();
+	        String ipAddress = addr.getHostAddress();
+			root.put("serverip", ipAddress);
+			root.put("version", version);
+			StringWriter out = new StringWriter();
+			pseTemplate.process(root, out);
+
+			pResponse.type("text/html");
+			pResponse.status(200);
+
+			return out;
+
+		} catch (Exception e) {
+			System.out.println("We got a problem");
+			pResponse.status(400);
+			pResponse.type("application/json");
+			response = "{ errorCode : \"exception caught\"}";
+		}
+
+		return response;
+	}
 	
 }
+

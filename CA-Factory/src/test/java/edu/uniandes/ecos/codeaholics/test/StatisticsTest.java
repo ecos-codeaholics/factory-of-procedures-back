@@ -2,6 +2,8 @@ package edu.uniandes.ecos.codeaholics.test;
 
 import static org.junit.Assert.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
@@ -17,7 +19,7 @@ import spark.Response;
  * 
  * Original Author: @author AOSORIO
  * 
- * Description: [one line class summary]
+ * Description: Test of the statistics service that displays some numbers on the main page
  * 
  * Implementation: [Notes on implementation]
  *
@@ -26,6 +28,8 @@ import spark.Response;
  */
 public class StatisticsTest {
 
+	Logger logger = LogManager.getRootLogger();
+	
 	@Test
 	public void basicCounterTest() {
 
@@ -34,9 +38,9 @@ public class StatisticsTest {
 		
 		JsonObject json = (JsonObject) StatisticsServices.getBasicStats(pRequest, pResponse);
 		
-		System.out.println(json.get("citizen"));
-		System.out.println(json.get("mayoralties"));
-		System.out.println(json.get("procedures"));
+		logger.info("Number of citizen: " + json.get("citizen"));
+		logger.info("Number of mayoralties: " + json.get("mayoralties"));
+		logger.info("Number of procedures: " + json.get("procedures"));
 		
 		assertTrue(json.has("citizen"));
 	

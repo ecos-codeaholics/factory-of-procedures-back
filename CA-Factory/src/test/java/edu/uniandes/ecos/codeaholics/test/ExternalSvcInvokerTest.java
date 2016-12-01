@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 
+import java.net.UnknownHostException;
+
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
@@ -40,10 +42,9 @@ public class ExternalSvcInvokerTest {
 			JsonObject json = (JsonObject)ExternalSvcInvoker.getResponse();
 			System.out.println(json.get("code"));
 			assertTrue(json.has("code"));
-			
-		} catch (FileNotFoundException e) {
+
+		} catch (FileNotFoundException | UnknownHostException e) {
 			e.printStackTrace();
-			fail("Problem with service");
 		}
 		
 	}

@@ -31,7 +31,7 @@ import spark.Spark;
 public class LoginTest {
 
 	Logger logger = LogManager.getRootLogger();
-
+	
 	@BeforeClass
 	public static void beforeClass() {
 		App.main(null);
@@ -42,13 +42,20 @@ public class LoginTest {
 		Spark.stop();
 	}
 
+	private void addTestCitizen() {
+			
+		TestsUtil.addCitizen("Jean", "Valjean", "Fabre","jvaljean@uniandes.edu.co", "12345678");
+		
+	}
+	
+	
 	@Test
 	public void loginTest() {
+
 		logger.info("Running loging test");
 
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Jean", "Valjean", "jvaljean@uniandes", "12345678");
-
+		addTestCitizen();
+		
 		int httpResult = 0;
 		String httpMessage = "";
 		String jsonResponse = "";
@@ -72,7 +79,7 @@ public class LoginTest {
 			urlConnection.setRequestProperty("Content-type", "application/json");
 			urlConnection.setRequestMethod("POST");
 
-			String loginData = "{email : \"jvaljean@uniandes\", password : \"12345678\" , userProfile : \"citizen\"}";
+			String loginData = "{email : \"jvaljean@uniandes.edu.co\", password : \"12345678\" , userProfile : \"citizen\"}";
 
 			Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
 			writer.write(loginData);
@@ -108,9 +115,9 @@ public class LoginTest {
 			e.printStackTrace();
 		}
 		
-		Authentication.closeSession("jvaljean@uniandes");
+		Authentication.closeSession("jvaljean@uniandes.edu.co");
 		
-		utilities.removeCitizen("jvaljean@uniandes");
+		TestsUtil.removeCitizen("jvaljean@uniandes.edu.co");
 		
 	}
 

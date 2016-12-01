@@ -32,23 +32,24 @@ public class AuthenticationTest {
 
 	Logger logger = LogManager.getLogger(AuthenticationTest.class);
 	
+	private final static String USER_EMAIL = "dbernal@uniandes.edu.co";
+	
 	@Test
 	public void simpleAuthenticationTest() {
 		
-		TestsUtil utilities = new TestsUtil();
-		utilities.addCitizen("Andres", "Osorio", "aosorio@uniandes", "12345678");
+		TestsUtil.addCitizen("Andres", "Osorio", "Vargas", USER_EMAIL, "12345678");
 		
 		Authentication auth = new Authentication();
 				
 		try {
-			assertTrue(auth.doAuthentication("aosorio@uniandes", "12345678", Constants.CITIZEN_COLLECTION));
+			assertTrue(auth.doAuthentication(USER_EMAIL, "12345678", Constants.CITIZEN_COLLECTION));
 		} catch (WrongUserOrPasswordException e) {		
 			e.printStackTrace();
 		}
 		
-		Authentication.closeSession("aosorio@uniandes");
+		Authentication.closeSession(USER_EMAIL);
 		
-		utilities.removeCitizen("aosorio@uniandes");
+		TestsUtil.removeCitizen(USER_EMAIL);
 		
 	}
 

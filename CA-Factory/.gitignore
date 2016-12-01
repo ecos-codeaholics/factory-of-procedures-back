@@ -7,3 +7,4 @@ target
 src/main/*.iml
 src/test/*.iml
 codeaholics.log
+src/main/resources/public/docs/*.tmp

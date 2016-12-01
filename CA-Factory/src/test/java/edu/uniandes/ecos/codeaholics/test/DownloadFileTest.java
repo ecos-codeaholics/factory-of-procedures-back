@@ -37,8 +37,9 @@ public class DownloadFileTest {
 
 	private static String DOC_LIST_ROUTE = Routes.AUTH + "/citizens/documents/list";
 	private static String DOC_DOWNLOAD_ROUTE = Routes.AUTH + "/citizens/documents/download";
-		
-	private static final int BUFFER_SIZE = 4096;
+	private static String CITIZEN_DOWNLOAD_ROUTE = Routes.AUTH + "/citizens/documents/download";
+	
+	private final int BUFFER_SIZE = 4096;
 
 	private class DocumentPath {
 
@@ -182,6 +183,110 @@ public class DownloadFileTest {
 		try {
 
 			appUrl = new URL(serverPath + DOC_DOWNLOAD_ROUTE + "?filepath=" + tmpFile);
+
+			// TODO ... study and understand why this fixes the Connection
+			// refused error
+			System.out.println("===== 0. ");
+			InputStream response = new URL("http://stackoverflow.com").openStream();
+			response.close();
+			System.out.println("===== 0. =====");
+
+			HttpURLConnection urlConnection = (HttpURLConnection) appUrl.openConnection();
+
+			httpResult = urlConnection.getResponseCode();
+			httpMessage = urlConnection.getResponseMessage();
+
+			if (httpResult == HttpURLConnection.HTTP_OK) {
+
+				String fileName = "";
+				String disposition = urlConnection.getHeaderField("Content-Disposition");
+				String contentType = urlConnection.getContentType();
+				int contentLength = urlConnection.getContentLength();
+
+				if (disposition != null) {
+					// extracts file name from header field
+					int index = disposition.indexOf("filename=");
+					if (index > 0) {
+						fileName = disposition.substring(index + 9, disposition.length());
+					}
+				} else {
+					fileName = tmpFile;
+				}
+
+				logger.info("Content-Type = " + contentType);
+				logger.info("Content-Disposition = " + disposition);
+				logger.info("Content-Length = " + contentLength);
+				logger.info("fileName = " + fileName);
+
+				// opens input stream from the HTTP connection
+				InputStream inputStream = urlConnection.getInputStream();
+
+				String saveFilePath = saveDir + File.separator + fileName;
+				// opens an output stream to save into file
+				FileOutputStream outputStream = new FileOutputStream(saveFilePath);
+
+				int bytesRead = -1;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+
+				outputStream.close();
+				inputStream.close();
+
+				success = true;
+
+				logger.info("File downloaded");
+			} else {
+				logger.info("No file to download. Server replied HTTP code: " + httpResult);
+			}
+		} catch (IOException e) {
+			logger.info("downloadTest> fails " + e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+
+		TestsUtil.removeTestFile(tmpFilePath);
+		assertEquals(200, httpResult);
+		assertEquals("OK", httpMessage);
+		assertTrue(success);
+
+	}
+	
+	//@Test
+	public void citizenDocDownloadTest() {
+
+		int httpResult = 0;
+		String httpMessage = "";
+
+		String serverPath = TestsUtil.getServerPath();
+		String tmpFile = "DownHelloWorld.txt";
+		String tmpFilePath = "";
+		String saveDir = "";
+
+		try {
+			String tmpDirectory = TestsUtil.getTmpDir();
+			logger.info("downloadTest> Temporary directory is: " + tmpDirectory);
+			tmpFilePath = tmpDirectory + File.separator + tmpFile;
+			saveDir = TestsUtil.getTmpDir() + File.separator + "downloads";		
+			TestsUtil.checkDir(saveDir);
+			logger.info("downloadTest> will save files under: " + saveDir);
+			
+		} catch (Exception e1) {
+			tmpFilePath = tmpFile;
+			logger.info("downloadTest> Problem setting the working directory " + e1.getMessage());
+			e1.printStackTrace();
+			//fail();
+		}
+
+		TestsUtil.createTestFile(tmpFilePath);
+
+		boolean success = false;
+
+		URL appUrl;
+
+		try {
+
+			appUrl = new URL(serverPath + CITIZEN_DOWNLOAD_ROUTE + "?filepath=" + tmpFile);
 
 			// TODO ... study and understand why this fixes the Connection
 			// refused error

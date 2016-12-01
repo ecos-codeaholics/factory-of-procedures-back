@@ -21,6 +21,7 @@ import edu.uniandes.ecos.codeaholics.config.DataBaseUtil;
 import edu.uniandes.ecos.codeaholics.config.IMessageSvc;
 import edu.uniandes.ecos.codeaholics.config.ResponseMessage;
 import edu.uniandes.ecos.codeaholics.exceptions.AuthorizationException.InvalidTokenException;
+import edu.uniandes.ecos.codeaholics.persistence.Citizen;
 import edu.uniandes.ecos.codeaholics.persistence.History;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureRequest;
 import edu.uniandes.ecos.codeaholics.persistence.ProcedureStatus;
@@ -34,8 +35,6 @@ public class FunctionaryServices {
 	private static IMessageSvc messager = new ResponseMessage();
 
 	private static Gson GSON = new GsonBuilder().serializeNulls().create();
-
-	private static String PROCEDURESREQUEST = "proceduresRequest";
 
 	/***
 	 * Consulta tramites asignados a un funcionario.
@@ -67,15 +66,8 @@ public class FunctionaryServices {
 
 		List<Document> dataset = new ArrayList<>();
 
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -115,15 +107,8 @@ public class FunctionaryServices {
 
 		procedureFilter.append("fileNumber", pRequest.params(":id"));
 		List<Document> dataset = new ArrayList<>();
-		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+		ArrayList<Document> documents = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 		for (Document item : documents) {
-			item.remove("dependencies");
-			item.remove("procedures");
-			item.remove("address");
-			item.remove("url");
-			item.remove("phone");
-			item.remove("state");
-			item.remove("schedule");
 			dataset.add(item);
 		}
 
@@ -167,7 +152,7 @@ public class FunctionaryServices {
 			procedureFilter.append("fileNumber", pRequest.params(":procedureId"));
 
 			ProcedureStatus status = GSON.fromJson(pRequest.body(), ProcedureStatus.class);
-			ArrayList<Document> procedureRequest = DataBaseUtil.find(procedureFilter, PROCEDURESREQUEST);
+			ArrayList<Document> procedureRequest = DataBaseUtil.find(procedureFilter, Constants.PROCEDUREREQUEST_COLLECTION);
 
 			Document procedureDoc = procedureRequest.get(0);
 			String id = procedureDoc.get("_id").toString();
@@ -177,6 +162,17 @@ public class FunctionaryServices {
 			procedureDoc.remove("startDate");
 
 			ProcedureRequest procedure = GSON.fromJson(procedureDoc.toJson(), ProcedureRequest.class);
+			Document citizenFilter = new Document();
+			String emailCitizen = procedure.getCitizen().getEmail();
+			citizenFilter.append("email", emailCitizen);
+			ArrayList<Document> citizens = DataBaseUtil.find(citizenFilter, Constants.CITIZEN_COLLECTION);
+			Document citizenDoc = citizens.get(0);
+			citizenDoc.remove("_id");
+			citizenDoc.remove("birthDate"); // AO: Need to deal with
+											// ISODate --> Java
+
+			Citizen citizen = GSON.fromJson(citizenDoc.toJson(), Citizen.class);
+			procedure.setCitizen(citizen);
 			procedure.setId(id);
 			procedure.setStartDate(startDate);
 
@@ -214,12 +210,12 @@ public class FunctionaryServices {
 					procedure.setStatus("Finalizado");
 					procedure.setFinishDate(new Date());
 				} else {
-					procedure.getActivities().get(i - 1).setStatus("Pendiente");
+					procedure.getActivities().get(i - 1).setStatus(Constants.STATUS_PENDING);
 					procedure.getActivities().get(i - 2).setStatus("En curso");
 				}
 			}
 
-			DataBaseUtil.update(procedureFilter, procedure.toDocument(), PROCEDURESREQUEST);
+			DataBaseUtil.update(procedureFilter, procedure.toDocument(), Constants.PROCEDUREREQUEST_COLLECTION);
 
 			response = messager.getOkMessage(status.getStatusProcedure());
 		} catch (Exception e) {

@@ -85,7 +85,7 @@ public class DBUpdateTest {
 		public MockActivity() {
 			step = 1;
 			description = "Activity One";
-			email = "jvaldez@anapoima";
+			email = "jvaldez@anapoima.gov.co";
 			status = "ONGOING"; // "DONE"
 		}
 
@@ -217,7 +217,7 @@ public class DBUpdateTest {
 			
 		// we will test an uptade field with simple query
 		Document filter = new Document();
-		filter.append("email", "jvaldez@anapoima");
+		filter.append("email", "jvaldez@anapoima.gov.co");
 		filter.append("step", 1);
 
 		Document valueToReplace = new Document();
